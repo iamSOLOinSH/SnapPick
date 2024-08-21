@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
+import lombok.Setter;
 
 @Builder
 @Schema(description = "스토어 생성 요청 DTO")
@@ -29,6 +30,10 @@ public class StoreCreateReq {
 
     @Schema(description = "태그 목록")
     private List<String> tags;
+
+    @Schema(description = "스토어 이미지 목록. 비워서 주세요")
+    @Setter
+    private List<StoreImageDto> images;
 
     @Schema(description = "운영 시간 목록")
     private List<StoreRunningTimeDto> runningTimes;
