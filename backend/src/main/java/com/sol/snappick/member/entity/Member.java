@@ -24,23 +24,23 @@ public class Member extends BaseEntity {
     @Column
     private Role role;
 
-    @Column(name = "pin_code", length = 4)
+    @Column(length = 4)
     private String pinCode;
 
-    @Column(name = "phone_number", length = 15)
+    @Column(length = 15)
     private String phoneNumber;
 
-    @Column(name = "account_number")
+    @Column
     private String accountNumber;
 
     @Column(name = "business_registration_number", length = 20)
     private String businessNumber;
 
-    @Column(name = "user_key", length = 36)
+    @Column(length = 36)
     private String userKey;
 
     ////////////// 양방향 매핑
-    
+
     // 방문 기록 목록
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 //    private List<StoreVisite> visits;
