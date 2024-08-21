@@ -1,7 +1,7 @@
 package com.sol.snappick.store.dto;
 
-import com.sol.snappick.store.entity.DayOfWeek;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;
