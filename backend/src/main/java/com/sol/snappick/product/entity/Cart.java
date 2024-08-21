@@ -21,8 +21,8 @@ public class Cart extends BaseEntity {
     private Store storeId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member customerId;
+    @JoinColumn(name = "customer_id")
+    private Member customer;
 
     // 아이템 목록
     @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)

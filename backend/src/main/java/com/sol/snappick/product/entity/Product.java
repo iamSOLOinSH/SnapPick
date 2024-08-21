@@ -5,6 +5,7 @@ import com.sol.snappick.store.entity.Store;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +29,14 @@ public class Product extends BaseEntity {
 
     @Column
     private Integer personalLimit;
+
+    // 상품 이미지
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<ProductImage> images;
+
+    // 상품 옵션
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<ProductOption> options;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
