@@ -9,13 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StoreImage {
 
@@ -32,4 +31,11 @@ public class StoreImage {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @Builder
+    public StoreImage(String originImageUrl, String thumbnailImageUrl, Store store) {
+        this.originImageUrl = originImageUrl;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+        this.store = store;
+    }
 }
