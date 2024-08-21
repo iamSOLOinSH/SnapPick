@@ -1,5 +1,6 @@
 package com.sol.snappick.store.entity;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,4 +40,17 @@ public class StoreRunningTime {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @Builder
+    public StoreRunningTime(
+        DayOfWeek dayOfWeek,
+        LocalTime startTime,
+        LocalTime endTime,
+        Store store
+    ) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.store = store;
+    }
 }
