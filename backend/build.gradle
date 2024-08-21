@@ -41,6 +41,9 @@ dependencies {
 	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.4.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // Spring Boot DevTools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     // QueryDSL JPA
     implementation 'com.querydsl:querydsl-jpa:4.4.0'
     annotationProcessor "com.querydsl:querydsl-apt:4.4.0:jpa"
