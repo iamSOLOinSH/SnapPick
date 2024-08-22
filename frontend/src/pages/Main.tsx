@@ -6,19 +6,20 @@ import { Input } from "../components/common/Input";
 import { Card } from "../components/common/Card";
 import { NumberSelector } from "../components/common/NumberSelector";
 import { ProgressSteps } from "../components/common/ProgressSteps";
-import { TicketCard } from "../components/common/TickedCard";
+import { TicketCard } from "../components/common/TicketCard";
 import { Success } from "../components/common/Success";
 
 import { BsQuestionCircle } from "react-icons/bs";
 
 import { useBoundStore } from "../store/store";
+import { InputLabel } from "../components/common/InputLabel";
 
 const Main = () => {
-  const { stores, getAllStores, user, login } = useBoundStore((state) => ({
+  const { stores } = useBoundStore((state) => ({
     stores: state.stores,
-    getAllStores: state.getAllStores,
-    user: state.user,
-    login: state.login,
+    // getAllStores: state.getAllStores,
+    // user: state.user,
+    // login: state.login,
   }));
 
   const [quantity, setQuantity] = useState(3);
@@ -32,28 +33,48 @@ const Main = () => {
       <div className="mb-36" />
       <Button variant="primary" content="다음" />
       <div className="my-2" />
-      <Button variant="secondary" content="취소" />
+      <Button
+        variant="secondary"
+        content="취소"
+        onClick={() => {
+          console.log("연결했어용");
+        }}
+      />
       <div className="my-2" />
-      <Input variant="full" placeholder="스토어 이름(최대 50자)" />
+      <InputLabel name="스토어 이름" />
+      <Input
+        variant="full"
+        name="스토어 이름"
+        placeholder="스토어 이름(최대 50자)"
+      />
       <div className="my-2" />
       <div>
-        <Input variant="half" placeholder="수량" /> <span> </span>
-        <Input variant="half" placeholder="수량" />
+        <InputLabel name="수량" />
+        <Input name="수량" variant="half" placeholder="수량" /> <span> </span>
+        <Input name="수량" variant="half" placeholder="수량" />
+      </div>
+      <div className="my-2" />
+      <InputLabel name="전화번호" />
+      <div>
+        <Input name="전화번호" variant="third" placeholder="010" />{" "}
+        <span> - </span>
+        <Input name="전화번호" variant="third" placeholder="010" />{" "}
+        <span> - </span>
+        <Input name="전화번호" variant="third" placeholder="010" />
       </div>
       <div className="my-2" />
       <div>
-        <Input variant="third" placeholder="010" /> <span> - </span>
-        <Input variant="third" placeholder="010" /> <span> - </span>
-        <Input variant="third" placeholder="010" />
-      </div>
-      <div className="my-2" />
-      <div>
-        <span>월 </span>
-        <Input variant="twoThirds" placeholder="09:00 - 18:00" />
+        <InputLabel name="영업 시간" />
+        <span className="mx-4">월 </span>
+        <Input
+          name="영업 시간"
+          variant="twoThirds"
+          placeholder="09:00 - 18:00"
+        />
       </div>
       <div className="my-2" />
       <div className="align-center flex">
-        <Input variant="check" type="checkbox" />
+        <Input name="요일 선택" variant="check" type="checkbox" />
         <span className="ml-2">해당 없음</span>
       </div>
       <div className="my-2" />

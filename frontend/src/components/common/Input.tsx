@@ -14,6 +14,7 @@ const INPUT_VARIANTS = {
 } as const;
 
 type InputProps = {
+  name: string;
   className?: string;
   variant?: keyof typeof INPUT_VARIANTS;
   type?: string;
@@ -21,16 +22,20 @@ type InputProps = {
 };
 
 export const Input = ({
+  name,
   className,
   variant = "full",
   type = "text",
   placeholder = "",
 }: InputProps) => {
   return (
-    <input
-      className={clsx(className, INPUT_VARIANTS[variant])}
-      type={type}
-      placeholder={placeholder}
-    />
+    <>
+      <input
+        name={name}
+        className={clsx(className, INPUT_VARIANTS[variant])}
+        type={type}
+        placeholder={placeholder}
+      />
+    </>
   );
 };

@@ -118,7 +118,7 @@ export const Card: React.FC<CardProps> = ({
         )}
         {toggle && (
           <div className="flex justify-end">
-            <p className={styles.toggle}>{toggle}</p>
+            <div className={styles.toggle}>{toggle}</div>
           </div>
         )}
       </div>
