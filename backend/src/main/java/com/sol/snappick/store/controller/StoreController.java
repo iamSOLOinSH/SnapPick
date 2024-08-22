@@ -21,7 +21,7 @@ public class StoreController {
 
     public final StoreService storeService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "팝업 스토어 등록", description = "팝업 스토어 등록 API")
     public ResponseEntity<StoreRes> createPopupStore(
         @RequestPart("storeCreateReq") StoreCreateReq storeCreateReq,
@@ -30,5 +30,11 @@ public class StoreController {
         StoreRes response = storeService.createPopupStore(storeCreateReq, images);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(response);
+    }
+
+    @PostMapping("/init")
+    public ResponseEntity<HttpStatus> postInitData() throws Exception {
+        storeService.postInitData();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
