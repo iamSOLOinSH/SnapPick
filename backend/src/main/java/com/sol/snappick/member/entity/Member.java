@@ -1,19 +1,13 @@
 package com.sol.snappick.member.entity;
 
 import com.sol.snappick.global.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 
 @Entity
 @Getter
-//@Setter
 public class Member extends BaseEntity {
 
     @Id
@@ -60,6 +54,12 @@ public class Member extends BaseEntity {
     //    private List<Cart> carts;
 
     protected Member() {
+    }
+
+    @Builder
+    public Member(String email, String name) {
+        this.email = email;
+        this.name = name;
     }
 
 }
