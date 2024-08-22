@@ -11,8 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ProductCreateReq {
+public class ProductDetailRes {
 
+    private Integer id;
     private String name;
     private String description;
     private Integer price;
@@ -20,6 +21,8 @@ public class ProductCreateReq {
     private Integer dailyLimit;
     private Integer personalLimit;
 
-    @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
-    private List<ProductOptionReq> options;
+    @ArraySchema(schema = @Schema(implementation = ProductOptionRes.class))
+    private List<ProductOptionRes> options;
+
+    private List<String> originImageUrls;
 }
