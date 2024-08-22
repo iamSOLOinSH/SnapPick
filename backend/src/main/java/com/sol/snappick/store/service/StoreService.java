@@ -45,7 +45,7 @@ public class StoreService {
         StoreCreateReq storeCreateReq,
         MultipartFile[] images
     ) throws Exception {
-        if (images.length > 3) {
+        if (images != null && images.length > 3) {
             throw new StoreImageLimitExceedException();
         }
         // 1. Store 엔티티 생성
@@ -53,10 +53,11 @@ public class StoreService {
         storeToCreate = storeRepository.save(storeToCreate);
 
         // 2. 이미지 처리 및 저장
-        List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
-        storeImageRepository.saveAll(storeImages);
-
-        storeToCreate.setImages(storeImages);
+        if(images != null) {
+            List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
+            storeImageRepository.saveAll(storeImages);
+            storeToCreate.setImages(storeImages);
+        }
 
         // 3. 태그 처리
         List<StoreTag> storeTags = storeTagMapper.toEntityList(
