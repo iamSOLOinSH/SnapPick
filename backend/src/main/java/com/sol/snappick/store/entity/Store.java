@@ -31,11 +31,17 @@ public class Store extends BaseEntity {
     @Column
     private String name;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
     private String location;
+
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
 
     @Column
     private LocalDate operateStartAt;
@@ -67,6 +73,8 @@ public class Store extends BaseEntity {
         String name,
         String description,
         String location,
+        Double latitude,
+        Double longitude,
         LocalDate operateStartAt,
         LocalDate operateEndAt,
         Member member,
@@ -77,6 +85,8 @@ public class Store extends BaseEntity {
         this.name = name;
         this.description = description;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.operateStartAt = operateStartAt;
         this.operateEndAt = operateEndAt;
         this.member = member;
