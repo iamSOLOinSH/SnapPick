@@ -79,8 +79,8 @@ const Main = () => {
       <Card
         variant="product"
         title="스토어 상품 1"
-        subtitle="개당 ￦16,000"
-        price={`${quantity * 16000}원`}
+        price={16000}
+        totalPrice={quantity * 16000}
         imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         toggle={
           <NumberSelector
@@ -96,7 +96,7 @@ const Main = () => {
         date="2024년 8월 17일"
         time="15:02"
         imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-        spend="-156,000원"
+        spend={156000}
       />
       <Card
         variant="simple"
@@ -134,27 +134,27 @@ const Main = () => {
       <div className="max-w-md gap-1 overflow-auto whitespace-nowrap">
         <Card
           variant="mini"
-          title="인기 팝업 스토어 2asdasdasdas"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300" // 이미지 URL을 여기에 추가하세요.
+          title="인기 팝업 스토어"
+          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         />
         <Card
           variant="mini"
-          title="인기 팝업 스토어 2asdasdasdas"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300" // 이미지 URL을 여기에 추가하세요.
+          title="인기 팝업 스토어"
+          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         />
         <Card
           variant="mini"
-          title="인기 팝업 스토어 2asdasdasdas"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300" // 이미지 URL을 여기에 추가하세요.
+          title="인기 팝업 스토어"
+          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         />
         <Card
           variant="mini"
-          title="인기 팝업 스토어 2asdasdasdas"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300" // 이미지 URL을 여기에 추가하세요.
+          title="인기 팝업 스토어"
+          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         />
         <Card
           variant="mini"
-          title="인기 팝업 스토어 2asdasdasdas"
+          title="인기 팝업 스토어"
           imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
         />
       </div>

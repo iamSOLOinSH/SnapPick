@@ -1,3 +1,5 @@
+import { IoCloseSharp } from "react-icons/io5";
+
 interface VariantStyles {
   container: string;
   image?: string;
@@ -9,6 +11,7 @@ interface VariantStyles {
   price?: string;
   toggle?: string;
   spend?: string;
+  totalPrice?: string;
 }
 
 const CARD_VARIANTS: Record<string, VariantStyles> = {
@@ -29,8 +32,8 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
     container: "mb-2 flex justify-between rounded-sm bg-white p-4",
     image: "mr-4 h-32 w-32 rounded-lg",
     title: "text-medium text-lg ",
-    subtitle: "text-sm",
-    price: "text-medium text-xl",
+    price: "text-sm",
+    totalPrice: "text-medium text-xl",
     toggle: "mt-1",
   },
   simple: {
@@ -53,13 +56,14 @@ type CardProps = {
   title: string;
   subtitle?: string;
   description?: string;
-  price?: string;
+  price?: number;
+  totalPrice?: number;
   date?: string;
   time?: string;
   content?: React.ReactElement;
   toggle?: React.ReactElement;
   quantity?: number;
-  spend?: string;
+  spend?: number;
 };
 
 export const Card: React.FC<CardProps> = ({
@@ -74,6 +78,7 @@ export const Card: React.FC<CardProps> = ({
   content,
   toggle,
   spend,
+  totalPrice,
 }) => {
   const styles = CARD_VARIANTS[variant];
 
@@ -94,15 +99,21 @@ export const Card: React.FC<CardProps> = ({
           </div>
           {spend && (
             <div className="text-right">
-              <p className={styles.spend}>{spend}</p>
+              <p className={styles.spend}>-{spend.toLocaleString()}원</p>
             </div>
+          )}
+          {price && (
+            <IoCloseSharp className="h-6 w-6 rounded-full text-gray-500 hover:bg-secondary" />
           )}
         </div>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
-        {description && <p className={styles.description}>{description}</p>}
         {price && (
+          <p className={styles.price}>개당 ￦{price.toLocaleString()}</p>
+        )}
+        {description && <p className={styles.description}>{description}</p>}
+        {totalPrice && (
           <div className="mt-6 text-right">
-            <p className={styles.price}>{price}</p>
+            <p className={styles.totalPrice}>{totalPrice.toLocaleString()}원</p>
           </div>
         )}
         {toggle && (
