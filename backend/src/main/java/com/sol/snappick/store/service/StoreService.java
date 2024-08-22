@@ -2,6 +2,8 @@ package com.sol.snappick.store.service;
 
 import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreRes;
+import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
+import com.sol.snappick.store.dto.storeAPI.StoreAPIRes;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreImage;
 import com.sol.snappick.store.entity.StoreRunningTime;
@@ -17,6 +19,8 @@ import com.sol.snappick.store.repository.StoreRunningTimeRepository;
 import com.sol.snappick.store.repository.StoreTagRepository;
 import com.sol.snappick.util.ImageUploadRes;
 import com.sol.snappick.util.MinioUtil;
+import com.sol.snappick.util.PopplyHandler;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +40,9 @@ public class StoreService {
     public final StoreTagMapper storeTagMapper;
     public final StoreRunningTimeMapper storeRunningTimeMapper;
     public final StoreImageMapper storeImageMapper;
+
+    public final PopplyHandler popplyHandler;
+
     // MINIO 버킷 이름
     private final String BUCKET_NAME = "snappick-store";
     private final MinioUtil minioUtil;
@@ -109,5 +116,22 @@ public class StoreService {
             storeImages.add(storeImage);
         }
         return storeImages;
+    }
+
+    public void postInitData() throws IOException, InterruptedException {
+        // API 로 받은 데이터
+        StoreAPIRes storeAPIData = popplyHandler.searchStore();
+        // 생성 데이터
+        List<StoreCreateReq> createDtos = new ArrayList<>();
+        for(StoreAPIDataDto data : storeAPIData.getData()) {
+            StoreCreateReq storeCreateReq = storeMapper.apiDataToStoreCreateReq(data);
+            createDtos.add(storeCreateReq);
+        }
+
+        // dto list -> entity list
+        List<Store> stores = storeMapper.toEntityList(createDtos);
+
+        // saveAll
+        storeRepository.saveAll(stores);
     }
 }
