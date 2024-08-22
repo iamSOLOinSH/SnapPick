@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -30,6 +32,7 @@ public class StoreImage {
 
     @ManyToOne
     @JoinColumn(name = "store_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Store store;
 
     @Builder

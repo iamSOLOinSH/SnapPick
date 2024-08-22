@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -39,6 +41,7 @@ public class StoreRunningTime {
 
     @ManyToOne
     @JoinColumn(name = "store_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Store store;
 
     @Builder
