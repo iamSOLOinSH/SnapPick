@@ -1,3 +1,5 @@
+import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+
 type NumberSelectorProps = {
   quantity: number;
   onIncrease: () => void;
@@ -11,19 +13,15 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({
 }) => {
   return (
     <div className="flex items-center space-x-6">
-      <button
+      <CiCircleMinus
         onClick={onDecrease}
-        className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary pb-1 text-2xl text-primary hover:bg-secondary"
-      >
-        -
-      </button>
+        className="h-8 w-8 rounded-full text-primary hover:bg-secondary"
+      />
       <span className="text-xl">{quantity}</span>
-      <button
+      <CiCirclePlus
         onClick={onIncrease}
-        className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary pb-1 text-2xl text-primary hover:bg-secondary"
-      >
-        +
-      </button>
+        className="h-8 w-8 rounded-full text-primary hover:bg-secondary"
+      />
     </div>
   );
 };

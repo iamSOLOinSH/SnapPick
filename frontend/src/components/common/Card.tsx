@@ -14,31 +14,36 @@ interface VariantStyles {
 const CARD_VARIANTS: Record<string, VariantStyles> = {
   status: {
     container:
-      "p-4 mb-2 w-full bg-base rounded-full shadow flex flex-row justify-between items-center",
+      "mb-2 flex w-full flex-row items-center justify-between rounded-full bg-base p-4 shadow",
     title: "ml-2",
     content: "pr-2",
   },
   store: {
-    container: "p-4 mb-2 bg-white flex",
-    image: "w-32 h-32 rounded-lg bg-gray-200 mr-4",
+    container: "mb-2 flex bg-white p-4",
+    image: "mr-4 h-32 w-32 rounded-lg",
     title: "text-lg font-medium text-black",
-    subtitle: "text-gray-500 text-sm",
-    description: "text-gray-500 text-sm mt-12",
+    subtitle: "text-sm text-gray-500",
+    description: "mt-12 text-sm text-gray-500",
   },
   product: {
-    container: "p-4 mb-2 bg-white rounded-sm flex justify-between",
-    image: "w-32 h-32 rounded-lg bg-gray-200 mr-4",
-    title: "text-lg font-medium",
+    container: "mb-2 flex justify-between rounded-sm bg-white p-4",
+    image: "mr-4 h-32 w-32 rounded-lg",
+    title: "text-medium text-lg ",
     subtitle: "text-sm",
-    price: "text-xl text-medium",
+    price: "text-medium text-xl",
     toggle: "mt-1",
   },
   simple: {
-    container: "p-4 mb-2 rounded-lg flex items-center",
-    image: "w-12 h-12 rounded-lg bg-gray-200 mr-4",
+    container: "mb-2 flex items-center rounded-lg p-4",
+    image: "mr-4 h-12 w-12 rounded-lg",
     title: "text-lg font-medium text-black",
-    date: "text-gray-500 text-sm",
+    date: "text-sm text-gray-500",
     spend: "text-xl font-medium text-black",
+  },
+  mini: {
+    container: "mr-1 inline-block w-32 truncate",
+    image: "h-32 w-32 rounded-lg",
+    title: "mt-1 pl-0.5 text-sm",
   },
 } as const;
 
