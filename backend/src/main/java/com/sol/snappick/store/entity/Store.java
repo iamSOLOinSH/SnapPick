@@ -48,17 +48,17 @@ public class Store extends BaseEntity {
     private Member member;
 
     // 태그 목록
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "store")
     @Setter
     private List<StoreTag> tags;
 
     // 스토어 이미지
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "store")
     @Setter
     private List<StoreImage> images;
 
     // 운영 시간
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "store")
     @Setter
     private List<StoreRunningTime> runningTimes;
 
