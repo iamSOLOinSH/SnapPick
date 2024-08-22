@@ -51,6 +51,9 @@ public interface StoreMapper {
     // storeImage -> storeImageDto
     @Named("mapImageDtos")
     default List<StoreImageDto> mapImageDtos(List<StoreImage> images) {
+        if(images == null) {
+            return null;
+        }
         return images.stream()
                      .map(image -> StoreImageDto.builder()
                                                 .originImageUrl(image.getOriginImageUrl())
