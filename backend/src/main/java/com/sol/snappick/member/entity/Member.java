@@ -1,9 +1,15 @@
 package com.sol.snappick.member.entity;
 
 import com.sol.snappick.global.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 
-import javax.persistence.*;
 
 @Entity
 @Getter
@@ -42,16 +48,16 @@ public class Member extends BaseEntity {
     ////////////// 양방향 매핑
 
     // 방문 기록 목록
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-//    private List<StoreVisite> visits;
+    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    //    private List<StoreVisite> visits;
 
     // 판매자가 운영중인 스토어 목록
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-//    private List<Store> stores;
+    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    //    private List<Store> stores;
 
     // 결제 내역과 장바구니
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-//    private List<Cart> carts;
+    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    //    private List<Cart> carts;
 
     protected Member() {
     }
