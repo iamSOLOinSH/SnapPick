@@ -9,6 +9,7 @@ import io.minio.http.Method;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,13 @@ public class MinioUtil {
                                                  .build());
         }
 
-        String fileName = file.getOriginalFilename();
+        String originFileName = file.getOriginalFilename();
+        // filename 이 비어있으면 에러
+        if(originFileName == null) {
+            throw new ImageNameNullException();
+        }
+        String fileName = generateUniqueFileName(originFileName);
+
         InputStream inputStream = file.getInputStream();
 
         // 업로드할 파일의 썸네일 생성
@@ -51,7 +58,7 @@ public class MinioUtil {
         // 원본 이미지 업로드
         String originImageUrl = uploadToMinio(
             bucketName, fileName, file.getContentType(), file.getInputStream());
-        System.out.println("originImageUrl = " + originImageUrl);
+
         // 썸네일 이미지 업로드
         String thumbnailFileName = "thumbnail_" + fileName;
         String thumbnailImageUrl = uploadToMinio(
@@ -103,5 +110,20 @@ public class MinioUtil {
                                                                                        bucketName)
                                                                                    .object(fileName)
                                                                                    .build());
+    }
+
+    public static String generateUniqueFileName(String originalFileName) {
+        // UUID 생성
+        String uuid = UUID.randomUUID().toString();
+
+        // 확장자 추출
+        String extension = "";
+        int dotIndex = originalFileName.lastIndexOf('.');
+        if (dotIndex > 0) {
+            extension = originalFileName.substring(dotIndex);
+        }
+
+        // UUID와 원본 파일 이름을 결합하여 고유한 파일 이름 생성
+        return uuid + extension;
     }
 }
