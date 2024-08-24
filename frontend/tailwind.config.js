@@ -138,6 +138,14 @@ export default {
           "80%": { transform: "scale(1.2)", opacity: "1" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        fadeInSlideUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        buttonActivate: {
+          "0%": { transform: "scale(0.95)", opacity: "0.5" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         explode: "explode 0.8s forwards cubic-bezier(0.25, 0.1, 0.25, 1)",
@@ -147,6 +155,8 @@ export default {
         moveBlob2: "moveBlob2 10s ease-in-out infinite",
         moveBlob3: "moveBlob3 13s ease-in-out infinite",
         popIn: "popIn 0.5s ease-out forwards",
+        fadeInSlideUp: "fadeInSlideUp 0.5s ease-out forwards",
+        buttonActivate: "buttonActivate 0.3s ease-out forwards",
       },
     },
   },

@@ -9,10 +9,10 @@ const Main = () => {
     <Layout>
       {/* 배경 박스들 */}
       <div className="relative">
-        <div className="animate-moveBlob1 absolute left-[-56px] top-[-132px]">
+        <div className="animate-moveBlob1 absolute left-[-46px] top-[-122px]">
           <Blob_2 />
         </div>
-        <div className="animate-moveBlob2 absolute right-[-142px] top-[-112px]">
+        <div className="animate-moveBlob2 absolute right-[-122px] top-[-112px]">
           <Blob_1 />
         </div>
         <div className="animate-moveBlob3 absolute left-[-267px] top-[329px]">

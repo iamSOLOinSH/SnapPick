@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import clsx from "clsx";
 
 const INPUT_VARIANTS = {
@@ -19,23 +20,44 @@ type InputProps = {
   variant?: keyof typeof INPUT_VARIANTS;
   type?: string;
   placeholder?: string;
+  value?: string;
+  checked?: boolean;
+  maxLength?: number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
-export const Input = ({
-  name,
-  className,
-  variant = "full",
-  type = "text",
-  placeholder = "",
-}: InputProps) => {
-  return (
-    <>
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      name,
+      className,
+      variant = "full",
+      type = "text",
+      placeholder = "",
+      value,
+      onChange,
+      checked,
+      maxLength,
+      onKeyDown,
+    },
+    ref,
+  ) => {
+    return (
       <input
         name={name}
         className={clsx(className, INPUT_VARIANTS[variant])}
         type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        checked={checked}
+        maxLength={maxLength}
+        ref={ref}
       />
-    </>
-  );
-};
+    );
+  },
+);
+
+Input.displayName = "Input";
