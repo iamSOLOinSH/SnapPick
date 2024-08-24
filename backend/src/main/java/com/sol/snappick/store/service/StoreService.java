@@ -64,32 +64,16 @@ public class StoreService {
         if (images != null && images.length > 3) {
             throw new StoreImageLimitExceedException();
         }
-        // 1. Store 엔티티 생성
-        Store storeToCreate = storeMapper.toEntity(storeCreateReq);
-        storeToCreate = storeRepository.save(storeToCreate);
 
-        // 2. 이미지 처리 및 저장
+        Store storeToCreate = createStoreWithDetails(storeCreateReq);
+
+        // 이미지 처리 및 저장
         if (images != null) {
             List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
             storeImageRepository.saveAll(storeImages);
             storeToCreate.setImages(storeImages);
         }
 
-        // 3. 태그 처리
-        List<StoreTag> storeTags = storeTagMapper.toEntityList(
-            storeCreateReq.getTags(), storeToCreate);
-        storeTagRepository.saveAll(storeTags);
-
-        storeToCreate.setTags(storeTags);
-
-        // 4. 운영 시간 처리
-        List<StoreRunningTime> storeRunningTimes = storeRunningTimeMapper.toEntityList(
-            storeCreateReq.getRunningTimes(), storeToCreate);
-        storeRunningRepository.saveAll(storeRunningTimes);
-
-        storeToCreate.setRunningTimes(storeRunningTimes);
-
-        // 5. 최종 DTO로 변환하여 반환
         return storeMapper.toDto(storeToCreate);
     }
 
@@ -140,33 +124,37 @@ public class StoreService {
         // 생성 데이터
         for (StoreAPIDataDto data : storeAPIData.getData()) {
             StoreCreateReq storeCreateReq = storeMapper.apiDataToStoreCreateReq(data);
-            //            createDtos.add(storeCreateReq);
-            // 1. Store 엔티티 생성
-            Store storeToCreate = storeMapper.toEntity(storeCreateReq);
-            storeToCreate = storeRepository.save(storeToCreate);
 
-            // 2. 이미지 처리 및 저장
-            if (storeCreateReq.getImages() != null) {
-                List<StoreImage> storeImages = storeImageMapper.toEntityList(
-                    storeCreateReq.getImages(), storeToCreate);
-                storeImageRepository.saveAll(storeImages);
-                storeToCreate.setImages(storeImages);
-            }
-
-            // 3. 태그 처리
-            List<StoreTag> storeTags = storeTagMapper.toEntityList(
-                storeCreateReq.getTags(), storeToCreate);
-            storeTagRepository.saveAll(storeTags);
-
-            storeToCreate.setTags(storeTags);
-
-            // 4. 운영 시간 처리
-            List<StoreRunningTime> storeRunningTimes = storeRunningTimeMapper.toEntityList(
-                storeCreateReq.getRunningTimes(), storeToCreate);
-            storeRunningRepository.saveAll(storeRunningTimes);
-
-            storeToCreate.setRunningTimes(storeRunningTimes);
+            createStoreWithDetails(storeCreateReq);
         }
 
+    }
+
+    private Store createStoreWithDetails(StoreCreateReq storeCreateReq) {
+        // 1. Store 엔티티 생성
+        Store storeToCreate = storeMapper.toEntity(storeCreateReq);
+        storeToCreate = storeRepository.save(storeToCreate);
+
+        // 2. 태그 처리
+        List<StoreTag> storeTags = storeTagMapper.toEntityList(
+            storeCreateReq.getTags(), storeToCreate);
+        storeTagRepository.saveAll(storeTags);
+        storeToCreate.setTags(storeTags);
+
+        // 이미지 처리
+        if (storeCreateReq.getImages() != null) {
+            List<StoreImage> storeImages = storeImageMapper.toEntityList(
+                storeCreateReq.getImages(), storeToCreate);
+            storeImageRepository.saveAll(storeImages);
+            storeToCreate.setImages(storeImages);
+        }
+
+        // 3. 운영 시간 처리
+        List<StoreRunningTime> storeRunningTimes = storeRunningTimeMapper.toEntityList(
+            storeCreateReq.getRunningTimes(), storeToCreate);
+        storeRunningRepository.saveAll(storeRunningTimes);
+        storeToCreate.setRunningTimes(storeRunningTimes);
+
+        return storeToCreate;
     }
 }
