@@ -13,39 +13,38 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class PopplyHandler {
+
     private final String BASE_URL = "https://api.popply.co.kr/api/store/";
 
     public StoreAPIRes searchStore() throws IOException, InterruptedException {
-        String fromDate = LocalDate.now().toString();
-        System.out.println("fromDate = " + fromDate);
-        String toDate = LocalDate.now().toString();
-        System.out.println("toDate = " + toDate);
-
-        String search_url = BASE_URL + "?query=&status=all&area=all&fromDate=2024-08-22&toDate=2024-08-22";
+        String fromDate = LocalDate.now()
+                                   .toString();
+        String toDate = LocalDate.now()
+                                 .toString();
 
         URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                                       .queryParam("query", "")
                                       .queryParam("status", "all")
                                       .queryParam("area", "all")
-//                                      .queryParam("fromDate", fromDate)
-//                                      .queryParam("toDate", toDate)
-                                      .queryParam("fromDate", "2024-08-22")
-                                      .queryParam("toDate", "2024-08-22")
+                                      .queryParam("fromDate", fromDate)
+                                      .queryParam("toDate", toDate)
                                       .build()
                                       .toUri();
 
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(uri).build();
+        HttpRequest request = HttpRequest.newBuilder(uri)
+                                         .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if(response.statusCode() == 200) {
+        if (response.statusCode() == 200) {
             ObjectMapper mapper = new ObjectMapper();
             StoreAPIRes originResponse = mapper.readValue(response.body(), StoreAPIRes.class);
-            if(originResponse.getIsSuccess())
+            if (originResponse.getIsSuccess()) {
                 return originResponse;
-            else
+            } else {
                 return null;
+            }
         }
         return null;
     }
