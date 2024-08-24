@@ -36,6 +36,7 @@ public class StoreService {
     public final StoreImageRepository storeImageRepository;
     public final StoreRunningTimeRepository storeRunningRepository;
     public final StoreTagRepository storeTagRepository;
+
     public final StoreMapper storeMapper;
     public final StoreTagMapper storeTagMapper;
     public final StoreRunningTimeMapper storeRunningTimeMapper;
@@ -47,6 +48,14 @@ public class StoreService {
     private final String BUCKET_NAME = "snappick-store";
     private final MinioUtil minioUtil;
 
+    /**
+     * pop up store create 서비스 로직
+     *
+     * @param storeCreateReq
+     * @param images
+     * @return
+     * @throws Exception
+     */
     @Transactional
     public StoreRes createPopupStore(
         StoreCreateReq storeCreateReq,
@@ -60,7 +69,7 @@ public class StoreService {
         storeToCreate = storeRepository.save(storeToCreate);
 
         // 2. 이미지 처리 및 저장
-        if(images != null) {
+        if (images != null) {
             List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
             storeImageRepository.saveAll(storeImages);
             storeToCreate.setImages(storeImages);
@@ -118,20 +127,46 @@ public class StoreService {
         return storeImages;
     }
 
+    /**
+     * api 를 사용하여 초기 팝업스토어 정보 넣기
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Transactional
     public void postInitData() throws IOException, InterruptedException {
         // API 로 받은 데이터
         StoreAPIRes storeAPIData = popplyHandler.searchStore();
         // 생성 데이터
-        List<StoreCreateReq> createDtos = new ArrayList<>();
-        for(StoreAPIDataDto data : storeAPIData.getData()) {
+        for (StoreAPIDataDto data : storeAPIData.getData()) {
             StoreCreateReq storeCreateReq = storeMapper.apiDataToStoreCreateReq(data);
-            createDtos.add(storeCreateReq);
+            //            createDtos.add(storeCreateReq);
+            // 1. Store 엔티티 생성
+            Store storeToCreate = storeMapper.toEntity(storeCreateReq);
+            storeToCreate = storeRepository.save(storeToCreate);
+
+            // 2. 이미지 처리 및 저장
+            if (storeCreateReq.getImages() != null) {
+                List<StoreImage> storeImages = storeImageMapper.toEntityList(
+                    storeCreateReq.getImages(), storeToCreate);
+                storeImageRepository.saveAll(storeImages);
+                storeToCreate.setImages(storeImages);
+            }
+
+            // 3. 태그 처리
+            List<StoreTag> storeTags = storeTagMapper.toEntityList(
+                storeCreateReq.getTags(), storeToCreate);
+            storeTagRepository.saveAll(storeTags);
+
+            storeToCreate.setTags(storeTags);
+
+            // 4. 운영 시간 처리
+            List<StoreRunningTime> storeRunningTimes = storeRunningTimeMapper.toEntityList(
+                storeCreateReq.getRunningTimes(), storeToCreate);
+            storeRunningRepository.saveAll(storeRunningTimes);
+
+            storeToCreate.setRunningTimes(storeRunningTimes);
         }
 
-        // dto list -> entity list
-        List<Store> stores = storeMapper.toEntityList(createDtos);
-
-        // saveAll
-        storeRepository.saveAll(stores);
     }
 }
