@@ -13,6 +13,9 @@ import { BsQuestionCircle } from "react-icons/bs";
 
 import { useBoundStore } from "../store/store";
 import { InputLabel } from "../components/common/InputLabel";
+import Spinner from "../components/common/Spinner";
+import { Tag } from "../components/common/Tag";
+import { PhotoUploader } from "../components/common/PhotoUploader";
 
 const Main = () => {
   const { stores } = useBoundStore((state) => ({
@@ -26,6 +29,14 @@ const Main = () => {
 
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity - 1);
+
+  const [selectedPhotos, setSelectedPhotos] = useState<File[]>([]);
+
+  const handlePhotosChange = (photos: File[]) => {
+    setSelectedPhotos(photos);
+
+    console.log(photos);
+  };
   return (
     <Layout>
       <div className="mt-36" />
@@ -83,7 +94,7 @@ const Main = () => {
         title="상태"
         content={
           <div className="flex items-center gap-4">
-            <div className="h-3 w-3 rounded-full bg-red-500"></div>
+            <div className="bg-red-500 h-3 w-3 rounded-full"></div>
             <span>품절</span>
             <BsQuestionCircle />
           </div>
@@ -150,6 +161,14 @@ const Main = () => {
         buttonText="상세보기"
         isActive={false}
       />
+      {/* <Spinner /> */}
+      <div className="my-3">
+        <Tag content="#태그 1" />
+        <Tag content="#태그 2" variant="green" />
+        <Tag content="#태그 3" variant="red" />
+      </div>
+
+      <PhotoUploader onPhotosChange={handlePhotosChange} />
       <div>{stores[0].name}</div>
       <div className="my-2" />
       <div className="max-w-md gap-1 overflow-auto whitespace-nowrap">
