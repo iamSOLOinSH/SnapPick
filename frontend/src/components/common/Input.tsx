@@ -11,7 +11,7 @@ const INPUT_VARIANTS = {
   quarter:
     "h-14 w-1/5 rounded-full bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   check:
-    "h-6 w-6 rounded-full bg-base shadow-md outline-none checked:bg-primary",
+    "h-4 w-4 rounded-full bg-base shadow-md outline-none checked:bg-primary",
 } as const;
 
 type InputProps = {

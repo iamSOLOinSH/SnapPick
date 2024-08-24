@@ -3,6 +3,7 @@ import { Layout } from "../components/common/Layout";
 import { InputLabel } from "../components/common/InputLabel";
 import { Input } from "../components/common/Input";
 import { Button } from "../components/common/Button";
+import { Blob_1 } from "../components/common/Background/Blob_1";
 
 const Signup = () => {
   const [userType, setUserType] = useState<"buyer" | "seller" | "">("");
@@ -88,13 +89,19 @@ const Signup = () => {
 
   return (
     <Layout>
-      <div className="flex min-h-screen flex-col">
+      <div className="relative">
+        <div className="absolute right-[-142px] top-[-202px] animate-moveBlob2">
+          <Blob_1 />
+        </div>
+      </div>
+      <div className="mt-20 flex min-h-screen flex-col">
         <div className="mb-8">
           <h1 className="my-12 ml-4 text-3xl font-bold">회원가입</h1>
-
-          <InputLabel name="서비스를 어떻게 이용하실 계획이신가요?" />
+          <div className="ml-4">
+            <InputLabel name="서비스를 어떻게 이용하실 계획이신가요?" />
+          </div>
           <div className="mb-4 flex justify-around space-x-4">
-            <div className="flex items-center space-x-2 rounded-full bg-base px-14 py-4 shadow-md">
+            <div className="flex items-center space-x-2 rounded-full bg-base px-12 py-4 shadow-md">
               <span>구매자</span>
               <Input
                 variant="check"
@@ -104,7 +111,7 @@ const Signup = () => {
                 onChange={handleUserTypeChange}
               />
             </div>
-            <div className="flex items-center space-x-2 rounded-full bg-base px-14 py-4 shadow-md">
+            <div className="flex items-center space-x-2 rounded-full bg-base px-12 py-4 shadow-md">
               <span>판매자</span>
               <Input
                 variant="check"
@@ -119,7 +126,7 @@ const Signup = () => {
           <div className="h-24">
             {" "}
             {showAccount ? (
-              <div className="animate-fadeInSlideUp">
+              <div className="mx-4 animate-fadeInSlideUp">
                 <InputLabel name="계좌를 생성하거나 등록해주세요." />
                 <Input
                   name="계좌 등록"
@@ -136,7 +143,7 @@ const Signup = () => {
           <div className="h-24">
             {" "}
             {showContact ? (
-              <div className="animate-fadeInSlideUp">
+              <div className="mx-4 animate-fadeInSlideUp">
                 <InputLabel name="연락처를 알려주세요." />
                 <div className="flex items-center justify-between space-x-2">
                   <Input

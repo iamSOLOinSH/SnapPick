@@ -9,18 +9,18 @@ const Main = () => {
     <Layout>
       {/* 배경 박스들 */}
       <div className="relative">
-        <div className="animate-moveBlob1 absolute left-[-46px] top-[-122px]">
+        <div className="absolute left-[-46px] top-[-122px] animate-moveBlob1">
           <Blob_2 />
         </div>
-        <div className="animate-moveBlob2 absolute right-[-122px] top-[-112px]">
+        <div className="absolute right-[-122px] top-[-112px] animate-moveBlob2">
           <Blob_1 />
         </div>
-        <div className="animate-moveBlob3 absolute left-[-267px] top-[329px]">
+        <div className="absolute left-[-267px] top-[329px] animate-moveBlob3">
           <Blob_3 />
         </div>
       </div>
       {/* 로고 */}
-      <div className="animate-popIn relative z-10 my-56 flex flex-col items-center justify-center">
+      <div className="relative z-10 my-56 flex animate-popIn flex-col items-center justify-center">
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
