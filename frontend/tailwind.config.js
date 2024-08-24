@@ -13,6 +13,8 @@ export default {
         enabled: "#4F9F57",
         disabled: "#E94F4F",
         kakao: "#FEE500",
+        green: "#4F9F57",
+        red: "#E94F4F",
       },
       spacing: {
         sm: "4px",
