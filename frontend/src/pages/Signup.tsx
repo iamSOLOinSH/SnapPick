@@ -94,9 +94,9 @@ const Signup = () => {
           <Blob_1 />
         </div>
       </div>
-      <div className="mt-20 flex min-h-screen flex-col">
-        <div className="mb-8">
-          <h1 className="my-12 ml-4 text-3xl font-bold">회원가입</h1>
+      <div className="mt-20 flex min-h-[85vh] flex-col">
+        <div className="mb-4">
+          <h1 className="my-8 ml-8 text-3xl font-bold">회원가입</h1>
           <div className="ml-4">
             <InputLabel name="서비스를 어떻게 이용하실 계획이신가요?" />
           </div>
@@ -185,7 +185,7 @@ const Signup = () => {
           <div className="h-24">
             {" "}
             {showBusinessNumber && userType === "seller" ? (
-              <div className="animate-fadeInSlideUp">
+              <div className="mx-4 animate-fadeInSlideUp">
                 <InputLabel name="사업자 등록 번호를 입력해주세요." />
                 <Input
                   name="사업자 등록 번호"
