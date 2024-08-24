@@ -64,7 +64,7 @@ public interface StoreMapper {
     // storeImage -> storeImageDto
     @Named("mapImageDtos")
     default List<StoreImageDto> mapImageDtos(List<StoreImage> images) {
-        if(images == null) {
+        if (images == null) {
             return null;
         }
         return images.stream()
@@ -94,12 +94,13 @@ public interface StoreMapper {
 
     /**
      * storeAPI 데이터 -> 우리 서비스 데이터 생성 DTO
+     *
      * @param dto StoreAPIDataDto
      * @return StoreCreateReq
      * @throws JsonProcessingException
      */
     default StoreCreateReq apiDataToStoreCreateReq(StoreAPIDataDto dto)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // string hashtag -> tag list
@@ -109,25 +110,23 @@ public interface StoreMapper {
         // runningTime
         List<StoreRunningTimeDto> runningTimes = new ArrayList<>();
 
-        if(dto.getStoreImage() != null) {
+        if (dto.getStoreImage() != null) {
             // image 바꿔서 넣기
             for (StoreAPIImageDto image : dto.getStoreImage()) {
-                images.add(
-                        StoreImageDto.builder()
-                                     .originImageUrl(image.getUrl())
-                                     .build()
-                );
+                images.add(StoreImageDto.builder()
+                                        .originImageUrl(image.getUrl())
+                                        .build());
             }
         }
 
         // runningTime 바꿔서 넣기
         ObjectMapper objectMapper = new ObjectMapper();
 
-        if(dto.getWorkingTime() != null) {
+        if (dto.getWorkingTime() != null) {
             // JSON 문자열 -> List<Map<String, Object>> 로 변환
             List<Map<String, Object>> runningTimeList = objectMapper.readValue(dto.getWorkingTime(),
-                    new TypeReference<List<Map<String, Object>>>() {
-                    });
+                                                                               new TypeReference<List<Map<String, Object>>>() {}
+            );
 
             // StoreRunningTimeDto 리스트로 변환
             for (Map<String, Object> map : runningTimeList) {
@@ -141,24 +140,29 @@ public interface StoreMapper {
                 String startTime = (String) map.get("startDate");
                 String endTime = (String) map.get("endDate");
 
-                runningTimes.add(
-                        StoreRunningTimeDto.builder()
-                                           .dayOfWeek(dayOfWeek)
-                                           .startTime(startTime)
-                                           .endTime(endTime)
-                                           .build()
-                );
+                runningTimes.add(StoreRunningTimeDto.builder()
+                                                    .dayOfWeek(dayOfWeek)
+                                                    .startTime(startTime)
+                                                    .endTime(endTime)
+                                                    .build());
             }
         }
 
         return StoreCreateReq.builder()
                              .name(dto.getName())
-                             .description(dto.getStoreDetail().getContents())
+                             .description(dto.getStoreDetail()
+                                             .getContents())
                              .location(dto.getAddress())
-                             .operateStartAt(LocalDate.parse(dto.getStartDate().substring(0, 10)))  // Converting to LocalDate
-                             .operateEndAt(LocalDate.parse(dto.getEndDate().substring(0, 10)))
-                             .tags(hashtagList)
+                             .latitude(dto.getLatitude())
+                             .longitude(dto.getLongitude())
+                             .operateStartAt(LocalDate.parse(dto.getStartDate()
+                                                                .substring(0,
+                                                                           10
+                                                                )))  // Converting to LocalDate
+                             .operateEndAt(LocalDate.parse(dto.getEndDate()
+                                                              .substring(0, 10)))
                              .sellerId(null)
+                             .tags(hashtagList)
                              .images(images)
                              .runningTimes(runningTimes)
                              .build();
