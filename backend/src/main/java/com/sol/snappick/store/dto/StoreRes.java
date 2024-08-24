@@ -19,6 +19,10 @@ public class StoreRes {
 
     private String location;
 
+    private Double latitude;
+
+    private Double longitude;
+
     private LocalDate operateStartAt;
 
     private LocalDate operateEndAt;
