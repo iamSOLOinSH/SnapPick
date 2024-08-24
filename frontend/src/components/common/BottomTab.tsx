@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { BiHomeAlt } from "react-icons/bi";
 import { FaRegUser } from "react-icons/fa";
@@ -12,7 +11,10 @@ const NAV_ITEMS = [
 
 export const BottomTab = () => {
   return (
-    <nav className="fixed bottom-0 z-30 flex h-16 w-full max-w-md items-center justify-around bg-white px-8 py-3 shadow-xl">
+    <nav
+      className="fixed bottom-0 z-30 flex h-16 w-full max-w-md items-center justify-around bg-white px-8 py-3 shadow-xl"
+      style={{ boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.1)" }}
+    >
       {NAV_ITEMS.map((item) => (
         <NavLink
           key={item.path}
@@ -23,7 +25,10 @@ export const BottomTab = () => {
         >
           {item.path === "/add" ? (
             <div className="relative -mt-10 flex items-center justify-center">
-              <div className="relative z-40 flex h-16 w-16 -translate-y-2 transform items-center justify-center rounded-full bg-primary shadow-lg">
+              <div
+                className="relative z-40 flex h-16 w-16 -translate-y-2 transform items-center justify-center rounded-full bg-primary shadow-lg"
+                style={{ boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.1)" }}
+              >
                 <item.icon size={28} color="white" />
               </div>
             </div>
