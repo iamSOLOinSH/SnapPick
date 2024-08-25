@@ -162,6 +162,34 @@ public class ProductService {
         return productMapper.toDetailDto(updatedProduct);
     }
 
+
+    @Transactional
+    public boolean deleteProduct(
+            Integer productId
+    ) throws Exception{
+
+        Product productToDelete = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundExcpetion());
+
+        //이미지 삭제
+        for (ProductImage image: productToDelete.getImages()){
+            minioUtil.deleteImage(image.getOriginImageUrl());
+            minioUtil.deleteImage(image.getThumbnailImageUrl());
+        }
+        productImageRepository.deleteAll(productToDelete.getImages());
+
+        //옵션 삭제
+        productOptionRepository.deleteAll(productToDelete.getOptions());
+
+        try {
+            productRepository.delete(productToDelete);
+            return true;
+        } catch(Exception  e){
+            return false;
+        }
+
+    }
+
     private List<ProductImage> uploadImagesToMinio(
             MultipartFile[] images,
             Product product
