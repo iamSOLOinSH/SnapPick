@@ -15,7 +15,7 @@ public interface StoreRunningTimeMapper {
         List<StoreRunningTimeDto> runningTimeDtos,
         Store store
     ) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         if (runningTimeDtos == null || store == null) {
             return List.of(); // 빈 리스트를 반환하여 NPE 를 방지
