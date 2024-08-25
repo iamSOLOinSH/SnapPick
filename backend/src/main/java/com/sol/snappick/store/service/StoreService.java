@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreRes;
 import com.sol.snappick.store.dto.StoreSearchReq;
+import com.sol.snappick.store.dto.StoreUpdateReq;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIRes;
 import com.sol.snappick.store.entity.Store;
@@ -232,10 +233,46 @@ public class StoreService {
 				return Sort.by(Sort.Direction.DESC,
 							   "createdAt");
 			case CLOSING_SOON:
-				return Sort.by(Sort.Direction.DESC,
-							   "createdAt");
+				return Sort.by(Sort.Direction.ASC,
+							   "operateEndAt");
 			default:
 				return Sort.unsorted();
 		}
+	}
+
+	// TODO : 수정 시 하위테이블 처리 어떻게 할지 고민!
+	@Transactional
+	public StoreRes updateStore (
+		Integer storeId,
+		StoreUpdateReq storeUpdateReq,
+		MultipartFile[] images
+	) throws Exception {
+		// 스토어 조회
+		Store store = findStoreWithException(storeId);
+
+		if ( images != null && images.length > 0 )
+			storeImageRepository.deleteAllByStore(store);
+		storeTagRepository.deleteAllByStore(store);
+		storeRunningRepository.deleteAllByStore(store);
+
+		// Dto -> entity
+		storeMapper.updateEntityFromDto(storeUpdateReq,
+										store);
+
+		// 수정된 스토어를 먼저 저장
+		Store updatedStore = storeRepository.save(store);
+
+		// 이미지 처리 및 저장
+		if ( images != null && images.length > 0 ) {
+			List<StoreImage> storeImages = uploadImagesToMinio(images,
+															   store);
+			storeImageRepository.saveAll(storeImages);
+			// 스토어에 이미지 설정 후 다시 저장
+			updatedStore.setImages(storeImages);
+			storeRepository.save(updatedStore);  // 이미지가 반영된 스토어 저장
+		}
+
+		// 반환
+		return storeMapper.toDto(updatedStore);
 	}
 }
