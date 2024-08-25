@@ -6,12 +6,14 @@ import com.sol.snappick.product.dto.ProductSimpleRes;
 import com.sol.snappick.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,18 +27,18 @@ public class ProductController {
             상품을 multipart/form-data 형식으로 등록합니다. \n
              상품 이름(name), 상품 설명(description), 기본 가격(price), 총 수량(totalStock), 일일 판매 수량(dailyLimit), 1인 구매 가능 개수(personalLimit), \n
              상품 옵션 목록(선택사항)에는 옵션 별 이름(name), 추가 금액(plusPrice), 재고(stock)를 담아서 보내주세요. \n
-             이미지 파일 목록(선택사항)을 보내주세요
+             이미지 파일 목록(선택사항)을 보내주세요.
             """)
-    public ResponseEntity<Void> createProduct(
+    public ResponseEntity<ProductDetailRes> createProduct(
             @RequestParam(name = "store_id") Integer storeId,
             @RequestPart("productCreateReq") ProductCreateReq productCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
-    ) {
+    ) throws Exception{
         // TODO memberId 추출
 
-        // TODO 상품 생성 로직 구현
-
-        return ResponseEntity.created(null).build();
+        // 상품 생성 로직
+        ProductDetailRes response = productService.createProduct(storeId, productCreateReq, images);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
@@ -44,32 +46,39 @@ public class ProductController {
     @Operation(summary = "상품 수정", description = """
             기존에 등록한 상품을 수정합니다. \n
             """)
-    public ResponseEntity<Void> updateProduct(
+    public ResponseEntity<ProductDetailRes> updateProduct(
             @PathVariable(name = "product_id") Integer productId,
             @RequestPart("productCreateReq") ProductCreateReq productCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
-    ) {
+    ) throws Exception {
         // TODO 유효성 검사
+        // 1) 처리할 상품이 있는지 확인한다.
+//        if (!productService.isProductExist(productId)){
+//            return ResponseEntity.notFound().build();
+//        }
 
-        // TODO 상품 수정 로직 구현
-
-        return ResponseEntity.ok().build();
+        // 상품 수정 로직
+        ProductDetailRes response = productService.updateProduct(productId, productCreateReq, images);
+        return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping(value = "/{product_id}")
     @Operation(summary = "상품 삭제", description = """
             기존에 등록한 상품을 삭제합니다. \n
-            판매된 내역이 없는 상품만 삭제가 됩니다 \n
             """)
-    public ResponseEntity<Void> deleteProduct(
+    public ResponseEntity<Boolean> deleteProduct(
             @PathVariable(name = "product_id") Integer productId
-    ) {
+    ) throws Exception {
         // TODO 유효성 검사
+        // 1) 처리할 상품이 있는지 확인한다.
+//        if (!productService.isProductExist(productId)){
+//            return ResponseEntity.notFound().build();
+//        }
 
-        // TODO 상품 삭제 로직 구현
-
-        return ResponseEntity.ok().build();
+        // 상품 삭제 로직
+        boolean isDeleted = productService.deleteProduct(productId);
+        return ResponseEntity.ok(isDeleted);
     }
 
 
@@ -77,12 +86,18 @@ public class ProductController {
     @Operation(summary = "상품 목록 조회", description = """
             스토어의 모든 상품을 조회합니다. \n
             """)
-    public ResponseEntity<ArrayList<ProductSimpleRes>> getProducts(
+    public ResponseEntity<List<ProductSimpleRes>> getProducts(
             @RequestParam(name = "store_id") Integer storeId
-    ) {
-        // TODO 상품 조회 로직 구현
+    ) throws Exception {
+        // TODO 유효성 검사
+        // 1) 처리할 팝업스토어가 있는지 확인한다.
+//        if (!storeService.isStoreExist(storeId)){
+//            return ResponseEntity.notFound().build();
+//        }
 
-        return ResponseEntity.ok().build();
+        // 상품 조회 로직
+        List<ProductSimpleRes> response = productService.readStoreProducts(storeId);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -90,12 +105,18 @@ public class ProductController {
     @Operation(summary = "상품 상세 조회", description = """
             단일 상품의 상세 정보를 조회합니다. \n
             """)
-    public ResponseEntity<ArrayList<ProductDetailRes>> getProduct(
+    public ResponseEntity<ProductDetailRes> getProduct(
             @PathVariable(name = "product_id") Integer productId
-    ) {
-        // TODO 상품 조회 로직 구현
+    ) throws Exception {
+        // TODO 유효성 검사
+        // 1) 처리할 상품이 있는지 확인한다.
+//        if (!productService.isProductExist(productId)){
+//            return ResponseEntity.notFound().build();
+//        }
 
-        return ResponseEntity.ok().build();
+        // TODO 상품 조회 로직
+        ProductDetailRes response = productService.readProduct(productId);
+        return ResponseEntity.ok(response);
     }
 
 }
