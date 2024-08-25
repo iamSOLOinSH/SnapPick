@@ -2,6 +2,7 @@ package com.sol.snappick.store.repository;
 
 import static com.sol.snappick.store.entity.QStore.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.query.sqm.PathElementException;
@@ -54,20 +55,42 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
 				// 필드 유효성 검사
 				if ( condition.getField() != null && condition.getValues() != null && !condition.getValues()
 																								.isEmpty() ) {
-
-					// IN 쿼리
-					BooleanExpression inExpression = entityPath.getString(condition.getField())
-															   .in(condition.getValues());
-					predicate.and(inExpression);
-
+					switch (condition.getField()) {
+						case "name":
+							// name 인 경우 like 연산 적용
+							for (String value : condition.getValues()) { // 아마 value 는 한 개 들어올 거라 예상
+								predicate.and(store.name.like("%" + value + "%"));
+							}
+							break;
+						case "tag":
+							// tag일 경우 stores.tags에서 검색
+							for (String value : condition.getValues()) {
+								predicate.and(store.tags.any().tag.eq(value));
+							}
+							break;
+						default:
+							// IN 쿼리
+							BooleanExpression inExpression = entityPath.getString(condition.getField())
+																	   .in(condition.getValues());
+							predicate.and(inExpression);
+							break;
+					}
 				}
 			} catch (InvalidDataAccessApiUsageException | PathElementException ex) {
 				throw new InvalidAttributeException("잘못된 속성 이름이 사용되었습니다 : " + condition.getField());
 			}
 		}
+
+		// 만약 closing_soon 조건일 경우 마감일이 현재 날짜 이후여야함
+		if ( dto.getSortType() == StoreSearchReq.SortType.CLOSING_SOON ) {
+			predicate.and(store.operateEndAt.after(LocalDate.now()));
+		}
+
+		// TODO : Orderby 해결하기
+
 		return queryFactory.selectFrom(store)
 						   .where(predicate)
-						   .offset(pageable.getPageNumber())
+						   .offset(pageable.getOffset())
 						   .limit(pageable.getPageSize())
 						   .fetch();
 	}
