@@ -2,6 +2,7 @@ package com.sol.snappick.product.service;
 
 import com.sol.snappick.product.dto.ProductCreateReq;
 import com.sol.snappick.product.dto.ProductDetailRes;
+import com.sol.snappick.product.dto.ProductSimpleRes;
 import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.entity.ProductImage;
 import com.sol.snappick.product.entity.ProductOption;
@@ -50,9 +51,8 @@ public class ProductService {
 
         // 유효성 검증
         // 1) 팝업스토어
-        if (!storeRepository.existsById(storeId)){
-            throw new StoreNotFoundExcpetion();
-        }
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException());
 
         // 2) 이미지
         if (images!=null && images.length>10){
@@ -64,8 +64,7 @@ public class ProductService {
         productToCreate = productRepository.save(productToCreate);
 
         //Store
-        Optional<Store> storeResponse = storeRepository.findById(storeId);
-        productToCreate.setStore(storeResponse.get());
+        productToCreate.setStore(store);
 
         //이미지 처리 및 저장
         if (images!=null){
@@ -89,14 +88,23 @@ public class ProductService {
     public ProductDetailRes readProduct(
             Integer productId
     ) throws Exception{
-        // 유효성 검증
-        // 1) 상품
-        if (!productRepository.existsById(productId)){
-            throw new ProductNotFoundExcpetion();
-        }
 
-        Optional<Product> productToRead = productRepository.findById(productId);
-        return productMapper.toDetailDto(productToRead.get());
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundExcpetion());
+
+        return productMapper.toDetailDto(product);
+    }
+
+    @Transactional
+    public List<ProductSimpleRes> readStoreProducts(Integer storeId)
+            throws Exception{
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException());
+
+        return productRepository.findByStore(store).stream()
+                .map(productMapper::toSimpleDto)
+                .toList();
     }
 
     private List<ProductImage> uploadImagesToMinio(
