@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +19,7 @@ import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreImageDto;
 import com.sol.snappick.store.dto.StoreRes;
 import com.sol.snappick.store.dto.StoreRunningTimeDto;
+import com.sol.snappick.store.dto.StoreUpdateReq;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIImageDto;
 import com.sol.snappick.store.entity.Store;
@@ -176,4 +178,13 @@ public interface StoreMapper {
 	default int mapVisitCount (List<StoreVisit> visits) {
 		return visits != null ? visits.size() : 0;
 	}
+
+	@Mapping (target = "id", ignore = true)
+	@Mapping (target = "images", ignore = true)
+	@Mapping (target = "tags", ignore = true)
+	@Mapping (target = "runningTimes", ignore = true)
+	void updateEntityFromDto (
+		StoreUpdateReq storeUpdateReq,
+		@MappingTarget Store store
+	);
 }
