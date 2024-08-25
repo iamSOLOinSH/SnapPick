@@ -107,6 +107,61 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional
+    public ProductDetailRes updateProduct(
+            Integer productId,
+            ProductCreateReq productCreateReq,
+            MultipartFile[] images
+    ) throws Exception{
+
+        Product productToUpdate = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundExcpetion());
+
+        productToUpdate.updateDetails(
+                productCreateReq.getName(),
+                productCreateReq.getDescription(),
+                productCreateReq.getPrice(),
+                productCreateReq.getDailyLimit(),
+                productCreateReq.getPersonalLimit()
+        );
+
+        //이미지 변경 내역이 있다면
+        if (images!=null && images.length>0){
+
+            //기존 이미지 삭제
+            for (ProductImage image: productToUpdate.getImages()){
+                minioUtil.deleteImage(image.getOriginImageUrl());
+                minioUtil.deleteImage(image.getThumbnailImageUrl());
+            }
+            productImageRepository.deleteAll(productToUpdate.getImages());
+            productToUpdate.getImages().clear();
+
+            //이미지 저장
+            List<ProductImage> productImages = uploadImagesToMinio(images, productToUpdate);
+            productImageRepository.saveAll(productImages);
+            productToUpdate.setImages(productImages);
+        }
+
+        //옵션 변경 내역이 있다면
+        if (productCreateReq.getOptions()!=null) {
+
+            //기존 옵션 삭제
+            productOptionRepository.deleteAll(productToUpdate.getOptions());
+            productToUpdate.getOptions().clear();
+
+            //옵션 저장
+            List<ProductOption> productOptions = productOptionMapper.toEntityList(
+                    productCreateReq.getOptions(), productToUpdate
+            );
+            productOptionRepository.saveAll(productOptions);
+            productToUpdate.setOptions(productOptions);
+
+        }
+
+        Product updatedProduct = productRepository.save(productToUpdate);
+        return productMapper.toDetailDto(updatedProduct);
+    }
+
     private List<ProductImage> uploadImagesToMinio(
             MultipartFile[] images,
             Product product
