@@ -24,6 +24,7 @@ public interface ProductOptionMapper {
                                             .name(req.getName())
                         .plusPrice(req.getPlusPrice())
                         .stock(req.getStock())
+                        .product(product)
                         .build())
                 .toList();
     }
