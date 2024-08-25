@@ -7,7 +7,7 @@ import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.entity.ProductImage;
 import com.sol.snappick.product.entity.ProductOption;
 import com.sol.snappick.product.exception.ProductImageLimitExceedException;
-import com.sol.snappick.product.exception.ProductNotFoundExcpetion;
+import com.sol.snappick.product.exception.ProductNotFoundException;
 import com.sol.snappick.store.exception.StoreNotFoundException ;
 import com.sol.snappick.product.mapper.ProductImageMapper;
 import com.sol.snappick.product.mapper.ProductMapper;
@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,7 +89,7 @@ public class ProductService {
     ) throws Exception{
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundExcpetion());
+                .orElseThrow(() -> new ProductNotFoundException());
 
         return productMapper.toDetailDto(product);
     }
@@ -115,7 +114,7 @@ public class ProductService {
     ) throws Exception{
 
         Product productToUpdate = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundExcpetion());
+                .orElseThrow(() -> new ProductNotFoundException());
 
         productToUpdate.updateDetails(
                 productCreateReq.getName(),
@@ -169,7 +168,7 @@ public class ProductService {
     ) throws Exception{
 
         Product productToDelete = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundExcpetion());
+                .orElseThrow(() -> new ProductNotFoundException());
 
         //이미지 삭제
         for (ProductImage image: productToDelete.getImages()){
