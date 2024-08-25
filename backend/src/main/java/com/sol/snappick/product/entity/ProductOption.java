@@ -8,10 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductOption {
 
     @Id
@@ -31,10 +35,16 @@ public class ProductOption {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
-
-    protected ProductOption() {
+    @Builder
+    public ProductOption(
+            String name,
+            Integer plusPrice,
+            Integer stock,
+            Product product
+    ) {
+        this.name=name;
+        this.plusPrice=plusPrice;
+        this.stock=stock;
+        this.product=product;
     }
 }
