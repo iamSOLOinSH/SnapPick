@@ -96,9 +96,9 @@ public class StoreController {
 		스토어 검색 요청을 처리합니다.
 		\n
 		\n
-		<b>Input</b>:
+		## Input:
 		\n
-		<b>StoreSearchReq</b>
+		### StoreSearchReq
 		| Name | Type  | Description |
 		|------|-------|-------------|
 		| conditions | list(StoreSearchConditionDto) | 검색 조건 리스트 |
@@ -107,11 +107,13 @@ public class StoreController {
 		| sortType | SortType(enum) | 정렬 타입 (조회순: VIEWS, 최근 등록: RECENT, 운영 마감 임박: CLOSING_SOON) |
 		\n
 		\n
-		<b>StoreSearchConditionDto</b>
+		### StoreSearchConditionDto
 		| Name | Type  | Description |
 		|------|-------|-------------|
-		| field | string | 검색할 컬럼 이름 (예: 'name', 'location') |
+		| field | string | 검색할 컬럼 이름 (예: 'name', 'tag', '등등', '컬럼에 없는거 검색 필요하시면 추가할게요!') |
 		| values | list(String) | 검색할 값 리스트 (예: ['로스트아크', '다른 값']) |
+		\n
+		### 주의 사항 : 현재 name은 like 연산, tag는 스토어 tag 들에 대해 any + 동등비교해서 해당하는게 있으면 찾는 것으로 되어있습니다!
 		\n
 		<b>SortType Enum Values</b>:
 		\n
@@ -178,12 +180,16 @@ public class StoreController {
 		|-----|-----|-------|
 		|  |  |  |
 		""")
-	public ResponseEntity<Object> putStore (
+	public ResponseEntity<StoreRes> putStore (
 		@PathVariable ("store_id") Integer storeId,
 		@RequestPart ("storeUpdateReq") StoreUpdateReq storeUpdateReq,
 		@RequestPart (value = "images", required = false) MultipartFile[] images
-	) {
-		return null;
+	) throws Exception {
+		StoreRes response = storeService.updateStore(storeId,
+													 storeUpdateReq,
+													 images);
+		return ResponseEntity.ok()
+							 .body(response);
 	}
 
 	@PostMapping ("/init")
