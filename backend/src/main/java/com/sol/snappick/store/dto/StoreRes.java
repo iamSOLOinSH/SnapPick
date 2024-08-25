@@ -2,6 +2,7 @@ package com.sol.snappick.store.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,27 +12,31 @@ import lombok.Getter;
 @AllArgsConstructor
 public class StoreRes {
 
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    private String description;
+	private String description;
 
-    private String location;
+	private String location;
 
-    private Double latitude;
+	private Double latitude;
 
-    private Double longitude;
+	private Double longitude;
 
-    private LocalDate operateStartAt;
+	private LocalDate operateStartAt;
 
-    private LocalDate operateEndAt;
+	private LocalDate operateEndAt;
 
-    private Integer sellerId;
+	private int viewCount;
 
-    private List<String> tags;
+	private int visitCount;
 
-    private List<StoreImageDto> images;
+	private Integer sellerId;
 
-    private List<StoreRunningTimeDto> runningTimes;
+	private List<String> tags;
+
+	private List<StoreImageDto> images;
+
+	private List<StoreRunningTimeDto> runningTimes;
 }
