@@ -6,6 +6,7 @@ import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.entity.ProductImage;
 import com.sol.snappick.product.entity.ProductOption;
 import com.sol.snappick.product.exception.ProductImageLimitExceedException;
+import com.sol.snappick.product.exception.ProductNotFoundExcpetion;
 import com.sol.snappick.store.exception.StoreNotFoundException ;
 import com.sol.snappick.product.mapper.ProductImageMapper;
 import com.sol.snappick.product.mapper.ProductMapper;
@@ -82,6 +83,20 @@ public class ProductService {
 
         //최종 DTO로 젼환하여 반환
         return productMapper.toDetailDto(productToCreate);
+    }
+
+    @Transactional
+    public ProductDetailRes readProduct(
+            Integer productId
+    ) throws Exception{
+        // 유효성 검증
+        // 1) 상품
+        if (!productRepository.existsById(productId)){
+            throw new ProductNotFoundExcpetion();
+        }
+
+        Optional<Product> productToRead = productRepository.findById(productId);
+        return productMapper.toDetailDto(productToRead.get());
     }
 
     private List<ProductImage> uploadImagesToMinio(
