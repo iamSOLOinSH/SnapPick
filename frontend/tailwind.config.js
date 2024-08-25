@@ -146,6 +146,11 @@ export default {
           "0%": { transform: "scale(0.95)", opacity: "0.5" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(2px)" },
+        },
       },
       animation: {
         explode: "explode 0.8s forwards cubic-bezier(0.25, 0.1, 0.25, 1)",
@@ -157,6 +162,7 @@ export default {
         popIn: "popIn 0.5s ease-out forwards",
         fadeInSlideUp: "fadeInSlideUp 0.5s ease-out forwards",
         buttonActivate: "buttonActivate 0.3s ease-out forwards",
+        shake: "shake 0.3s ease-in-out",
       },
     },
   },

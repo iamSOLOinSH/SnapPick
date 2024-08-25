@@ -1,9 +1,10 @@
 import clsx from "clsx";
 const BUTTON_VARIANTS = {
   primary:
-    "h-14 w-full rounded-lg bg-primary text-white shadow-md hover:bg-secondary hover:text-black disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:hover:text-gray-200",
+    "h-14 w-full rounded-lg bg-primary text-white shadow-md hover:bg-secondary hover:ring-1 hover:ring-black hover:text-black disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:hover:text-gray-200",
   secondary:
     "h-14 w-full rounded-lg text-black shadow-md hover:bg-base disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-400",
+  text: "h-8 bg-none text-xs hover:underline ",
 } as const;
 
 type ButtonProps = {

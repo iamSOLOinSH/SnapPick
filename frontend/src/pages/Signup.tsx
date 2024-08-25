@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router";
+
 import { Layout } from "../components/common/Layout";
 import { InputLabel } from "../components/common/InputLabel";
 import { Input } from "../components/common/Input";
@@ -6,6 +8,8 @@ import { Button } from "../components/common/Button";
 import { Blob_1 } from "../components/common/Background/Blob_1";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [userType, setUserType] = useState<"buyer" | "seller" | "">("");
   const [account, setAccount] = useState("");
   const [businessNumber, setBusinessNumber] = useState("");
@@ -201,9 +205,17 @@ const Signup = () => {
             )}
           </div>
         </div>
-        <div>
-          <Button content="가입" disabled={!isFormComplete} />
-          <Button variant="secondary" content="취소" />
+        <div className="mx-4 flex flex-col gap-2">
+          <Button
+            content="가입"
+            disabled={!isFormComplete}
+            onClick={() => navigate("/signup/success")}
+          />
+          <Button
+            variant="secondary"
+            content="취소"
+            onClick={() => navigate("/")}
+          />
         </div>
       </div>
     </Layout>

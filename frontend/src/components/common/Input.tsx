@@ -9,7 +9,7 @@ const INPUT_VARIANTS = {
   third:
     "h-14 w-1/4 rounded-full bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   quarter:
-    "h-14 w-1/5 rounded-full bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
+    "h-14 w-1/5 rounded-md bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   check:
     "h-4 w-4 rounded-full bg-base shadow-md outline-none checked:bg-primary",
 } as const;
