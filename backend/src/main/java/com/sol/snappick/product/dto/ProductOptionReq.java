@@ -1,16 +1,21 @@
 package com.sol.snappick.product.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @Getter
-@Builder
+@NoArgsConstructor
 public class ProductOptionReq {
 
     private String name;
     private Integer plusPrice;
     private Integer stock;
+
+    @Builder
+    public ProductOptionReq(String name, Integer plusPrice, Integer stock) {
+        this.name = name;
+        this.plusPrice = plusPrice;
+        this.stock = stock;
+    }
 
 }
