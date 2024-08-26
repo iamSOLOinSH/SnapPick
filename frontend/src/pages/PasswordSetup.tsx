@@ -87,6 +87,7 @@ const PasswordSetup: React.FC = () => {
               ref={inputRefs[index]}
               maxLength={1}
               className="text-center text-2xl"
+              autoComplete="off"
             />
           ))}
         </div>

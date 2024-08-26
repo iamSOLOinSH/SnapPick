@@ -198,6 +198,7 @@ const Signup = () => {
                     setBusinessNumber(e.target.value.replace(/\D/g, ""))
                   }
                   maxLength={12}
+                  autoComplete="off"
                 />
               </div>
             ) : (

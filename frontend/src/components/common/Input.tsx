@@ -23,6 +23,7 @@ type InputProps = {
   value?: string;
   checked?: boolean;
   maxLength?: number;
+  autoComplete?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
@@ -38,6 +39,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       value,
       onChange,
       checked,
+      autoComplete = "on",
       maxLength,
       onKeyDown,
     },
@@ -54,6 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         onKeyDown={onKeyDown}
         checked={checked}
         maxLength={maxLength}
+        autoComplete={autoComplete}
         ref={ref}
       />
     );
