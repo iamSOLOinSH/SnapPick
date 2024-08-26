@@ -13,13 +13,22 @@ import java.util.List;
 @ToString
 public class ProductCreateReq {
 
+    @Schema(description = "상품 이름")
     private String name;
+
+    @Schema(description = "상품 설명")
     private String description;
+
+    @Schema(description = "상품 가격")
     private Integer price;
-    private Integer totalStock;
+
+    @Schema(description = "상품 일일 물량 제한")
     private Integer dailyLimit;
+
+    @Schema(description = "상품 1인 구매 제한")
     private Integer personalLimit;
 
+    @Schema(description = "상품 옵션 목록")
     @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
     private List<ProductOptionReq> options;
 }
