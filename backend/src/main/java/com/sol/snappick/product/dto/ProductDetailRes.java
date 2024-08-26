@@ -21,8 +21,8 @@ public class ProductDetailRes {
     private Integer dailyLimit;
     private Integer personalLimit;
 
-    @ArraySchema(schema = @Schema(implementation = ProductOptionRes.class))
-    private List<ProductOptionRes> options;
+    @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
+    private List<ProductOptionReq> options;
 
     private List<String> originImageUrls;
 }
