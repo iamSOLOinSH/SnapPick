@@ -70,6 +70,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
 }
+//querydsl 추가 시작
+def querydslDir = "/generated/querydsl"
 
 tasks.named('test') {
     useJUnitPlatform()
