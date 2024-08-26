@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> kakao_account =
-                ((Map<String, Object>) (((Map<String, Object>) oAuth2User.getAttributes()).get("kakao_account")));
+                ((Map<String, Object>) (oAuth2User.getAttributes()).get("kakao_account"));
         String email = (String) kakao_account.get("email");
 
 
@@ -48,15 +48,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String accessToken = tokenService.generateToken(member, ACCESS_TOKEN_DURATION);
 
+        CookieUtils.addCookie(response, "token", accessToken,
+                (int) ACCESS_TOKEN_DURATION.toSeconds());
+
         if (member.getAccountNumber() == null) { // 회원가입이라면
             memberRepository.save(member);
-            response.sendRedirect(frontendUrl +
-                    "/signup"
-                    + "&token=" + accessToken);
+//            getRedirectStrategy().sendRedirect(request, response, "http://localhost:8081/signup-success.html");
+            getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/signup");
         } else {
-            response.sendRedirect(frontendUrl +
-                    "/home"
-                    + "&token=" + accessToken);
+//            getRedirectStrategy().sendRedirect(request, response, "http://localhost:8081/login-success.html");
+            getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/home");
         }
     }
 }
