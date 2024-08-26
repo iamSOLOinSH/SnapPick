@@ -19,13 +19,11 @@ public interface ProductMapper {
     @Mapping(target = "images", ignore = true)
     Product toEntity(ProductCreateReq productCreateReq);
 
-    @Mapping(target = "storeId", source = "store.id")
     @Mapping(target = "totalStock", source = "options", qualifiedByName = "calcTotalStock")
     @Mapping(target = "options", source = "options", qualifiedByName = "toOptionReqList")
     @Mapping(target = "originImageUrls", source = "images", qualifiedByName = "toOriginImageUrls")
     ProductDetailRes toDetailDto(Product product);
 
-    @Mapping(target = "storeId", source = "store.id")
     @Mapping(target = "totalStock", source = "options", qualifiedByName = "calcTotalStock")
     @Mapping(target = "thumbnailImageUrls", source = "images", qualifiedByName = "toThumbnailUrls")
     ProductSimpleRes toSimpleDto(Product product);

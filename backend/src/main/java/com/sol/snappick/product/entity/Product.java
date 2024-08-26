@@ -12,11 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
 import java.util.List;
-import lombok.Getter;
+
+import lombok.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 
     @Id
@@ -40,16 +43,51 @@ public class Product extends BaseEntity {
 
     // 상품 이미지
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @Setter
     private List<ProductImage> images;
 
     // 상품 옵션
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @Setter
     private List<ProductOption> options;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
+    @Setter
     private Store store;
 
-    protected Product() {
+    @Builder
+    public Product(
+            String name,
+            String description,
+            Integer price,
+            Integer dailyLimit,
+            Integer personalLimit,
+            List<ProductImage> images,
+            List<ProductOption> options,
+            Store store) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.dailyLimit = dailyLimit;
+        this.personalLimit = personalLimit;
+        this.images = images;
+        this.options = options;
+        this.store = store;
     }
+
+    public void updateDetails(
+            String name,
+            String description,
+            Integer price,
+            Integer dailyLimit,
+            Integer personalLimit
+            ) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.dailyLimit = dailyLimit;
+        this.personalLimit = personalLimit;
+    }
+
 }

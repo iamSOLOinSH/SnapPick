@@ -7,10 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductImage {
 
     @Id
@@ -27,6 +31,15 @@ public class ProductImage {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    protected ProductImage() {
+    @Builder
+    public ProductImage(
+            Integer id,
+            String originImageUrl,
+            String thumbnailImageUrl,
+            Product product) {
+        this.id = id;
+        this.originImageUrl = originImageUrl;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+        this.product = product;
     }
 }
