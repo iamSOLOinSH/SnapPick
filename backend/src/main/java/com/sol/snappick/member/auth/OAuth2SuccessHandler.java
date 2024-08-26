@@ -6,14 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static com.sol.snappick.member.auth.JwtConfig.ACCESS_TOKEN_DURATION;
 
@@ -28,38 +28,35 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final MemberRepository memberRepository;
     private final TokenService tokenService;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getName();
+        Map<String, Object> kakao_account =
+                ((Map<String, Object>) (((Map<String, Object>) oAuth2User.getAttributes()).get("kakao_account")));
+        String email = (String) kakao_account.get("email");
 
-        log.info("authentication : {}", authentication);
-        log.info("authentication principal: {}", authentication.getPrincipal());
 
-        Member member = memberRepository.findByEmail((String) oAuth2User.getAttribute("email"))
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Unexpected user"));
+                        () -> new IllegalArgumentException());
 
         String accessToken = tokenService.generateToken(member, ACCESS_TOKEN_DURATION);
 
-        if (member.getCreatedAt() == null) { // 회원가입이라면
+        if (member.getAccountNumber() == null) { // 회원가입이라면
             memberRepository.save(member);
-
-            response.sendRedirect(
-                    "http://localhost:8081/signup-success.html?name="
-                            + URLEncoder.encode(
-                            member.getName(),
-                            StandardCharsets.UTF_8.toString())
-                            + "&token=" + accessToken);
+            response.sendRedirect(frontendUrl +
+                    "/signup"
+                    + "&token=" + accessToken);
         } else {
-            response.sendRedirect(
-                    "http://localhost:8081/login-success.html?name="
-                            + URLEncoder.encode(
-                            member.getName(),
-                            StandardCharsets.UTF_8.toString())
-                            + "&token=" + accessToken);
+            response.sendRedirect(frontendUrl +
+                    "/home"
+                    + "&token=" + accessToken);
         }
     }
 }

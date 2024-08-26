@@ -28,16 +28,10 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
 
     // 회원가입
     private Member registerMember(OAuth2User oAuth2User) {
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        System.out.println("====================================");
-        for (String key : attributes.keySet()) {
-            System.out.println(key + ": " + attributes.get(key));
-        }
-        System.out.println("====================================");
-
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
+        Map<String, Object> kakao_account =
+                ((Map<String, Object>) (((Map<String, Object>) oAuth2User.getAttributes()).get("kakao_account")));
+        String email = (String) kakao_account.get("email");
+        String name = (String) ((Map<String, Object>) kakao_account.get("profile")).get("nickname");
 
         Optional<Member> member = memberRepository.findByEmail(email);
 
