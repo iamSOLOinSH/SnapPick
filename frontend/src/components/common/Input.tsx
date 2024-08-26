@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import clsx from "clsx";
 
 const INPUT_VARIANTS = {
@@ -8,9 +9,9 @@ const INPUT_VARIANTS = {
   third:
     "h-14 w-1/4 rounded-full bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   quarter:
-    "h-14 w-1/5 rounded-full bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
+    "h-14 w-1/5 rounded-md bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   check:
-    "h-6 w-6 rounded-full bg-base shadow-md outline-none checked:bg-primary",
+    "h-4 w-4 rounded-full bg-base shadow-md outline-none checked:bg-primary",
 } as const;
 
 type InputProps = {
@@ -19,23 +20,47 @@ type InputProps = {
   variant?: keyof typeof INPUT_VARIANTS;
   type?: string;
   placeholder?: string;
+  value?: string;
+  checked?: boolean;
+  maxLength?: number;
+  autoComplete?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
-export const Input = ({
-  name,
-  className,
-  variant = "full",
-  type = "text",
-  placeholder = "",
-}: InputProps) => {
-  return (
-    <>
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      name,
+      className,
+      variant = "full",
+      type = "text",
+      placeholder = "",
+      value,
+      onChange,
+      checked,
+      autoComplete = "on",
+      maxLength,
+      onKeyDown,
+    },
+    ref,
+  ) => {
+    return (
       <input
         name={name}
         className={clsx(className, INPUT_VARIANTS[variant])}
         type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        checked={checked}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
+        ref={ref}
       />
-    </>
-  );
-};
+    );
+  },
+);
+
+Input.displayName = "Input";

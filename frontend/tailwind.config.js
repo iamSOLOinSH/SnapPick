@@ -22,6 +22,9 @@ export default {
         lg: "12px",
         // 추가 간격 값 정의 가능
       },
+      fontFamily: {
+        title: ["Lobster", "sans-serif"],
+      },
       fontSize: {
         xs: ["12px", "16px"],
         sm: ["14px", "20px"],
@@ -94,11 +97,72 @@ export default {
             transform: "scale(1)",
           },
         },
+        moveBlob1: {
+          "0%, 100%": { transform: "translate(0, 0) rotate(0deg) scale(1)" },
+          "25%": {
+            transform: "translate(20px, -10px) rotate(5deg) scale(1.05)",
+          },
+          "50%": {
+            transform: "translate(-15px, 15px) rotate(-3deg) scale(0.95)",
+          },
+          "75%": {
+            transform: "translate(10px, -10px) rotate(2deg) scale(1.02)",
+          },
+        },
+        moveBlob2: {
+          "0%, 100%": { transform: "translate(0, 0) rotate(0deg) scale(1)" },
+          "25%": {
+            transform: "translate(-25px, 15px) rotate(-6deg) scale(1.03)",
+          },
+          "50%": {
+            transform: "translate(30px, -10px) rotate(4deg) scale(0.97)",
+          },
+          "75%": {
+            transform: "translate(-20px, 20px) rotate(-5deg) scale(1.04)",
+          },
+        },
+        moveBlob3: {
+          "0%, 100%": { transform: "translate(0, 0) rotate(0deg) scale(1)" },
+          "25%": {
+            transform: "translate(15px, 20px) rotate(-4deg) scale(0.96)",
+          },
+          "50%": {
+            transform: "translate(-20px, -15px) rotate(3deg) scale(1.02)",
+          },
+          "75%": {
+            transform: "translate(25px, -25px) rotate(-2deg) scale(1.05)",
+          },
+        },
+        popIn: {
+          "0%": { transform: "scale(0.5)", opacity: "0" },
+          "80%": { transform: "scale(1.2)", opacity: "1" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        fadeInSlideUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        buttonActivate: {
+          "0%": { transform: "scale(0.95)", opacity: "0.5" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(2px)" },
+        },
       },
       animation: {
         explode: "explode 0.8s forwards cubic-bezier(0.25, 0.1, 0.25, 1)",
         octagonAppear:
           "octagonAppear 0.8s forwards cubic-bezier(0.25, 0.1, 0.25, 1)",
+        moveBlob1: "moveBlob1 12s ease-in-out infinite",
+        moveBlob2: "moveBlob2 10s ease-in-out infinite",
+        moveBlob3: "moveBlob3 13s ease-in-out infinite",
+        popIn: "popIn 0.5s ease-out forwards",
+        fadeInSlideUp: "fadeInSlideUp 0.5s ease-out forwards",
+        buttonActivate: "buttonActivate 0.3s ease-out forwards",
+        shake: "shake 0.3s ease-in-out",
       },
     },
   },

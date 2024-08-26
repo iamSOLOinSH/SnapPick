@@ -1,203 +1,45 @@
-import { useState } from "react";
-
 import { Layout } from "../components/common/Layout";
-import { Button } from "../components/common/Button";
-import { Input } from "../components/common/Input";
-import { Card } from "../components/common/Card";
-import { NumberSelector } from "../components/common/NumberSelector";
-import { ProgressSteps } from "../components/common/ProgressSteps";
-import { TicketCard } from "../components/common/TicketCard";
-import { Success } from "../components/common/Success";
 
-import { BsQuestionCircle } from "react-icons/bs";
-
-import { useBoundStore } from "../store/store";
-import { InputLabel } from "../components/common/InputLabel";
-import Spinner from "../components/common/Spinner";
-import { Tag } from "../components/common/Tag";
-import { PhotoUploader } from "../components/common/PhotoUploader";
+import { Blob_1 } from "../components/common/Background/Blob_1";
+import { Blob_2 } from "../components/common/Background/Blob_2";
+import { Blob_3 } from "../components/common/Background/Blob_3";
 
 const Main = () => {
-  const { stores } = useBoundStore((state) => ({
-    stores: state.stores,
-    // getAllStores: state.getAllStores,
-    // user: state.user,
-    // login: state.login,
-  }));
-
-  const [quantity, setQuantity] = useState(3);
-
-  const handleIncrease = () => setQuantity(quantity + 1);
-  const handleDecrease = () => setQuantity(quantity - 1);
-
-  const [selectedPhotos, setSelectedPhotos] = useState<File[]>([]);
-
-  const handlePhotosChange = (photos: File[]) => {
-    setSelectedPhotos(photos);
-
-    console.log(photos);
-  };
   return (
     <Layout>
-      <div className="mt-36" />
-      <Success />
-      <div className="mb-36" />
-      <Button variant="primary" content="다음" />
-      <div className="my-2" />
-      <Button
-        variant="secondary"
-        content="취소"
-        onClick={() => {
-          console.log("연결했어용");
-        }}
-      />
-      <div className="my-2" />
-      <InputLabel name="스토어 이름" />
-      <Input
-        variant="full"
-        name="스토어 이름"
-        placeholder="스토어 이름(최대 50자)"
-      />
-      <div className="my-2" />
-      <div>
-        <InputLabel name="수량" />
-        <Input name="수량" variant="half" placeholder="수량" /> <span> </span>
-        <Input name="수량" variant="half" placeholder="수량" />
+      {/* 배경 박스들 */}
+      <div className="relative">
+        <div className="absolute left-[-46px] top-[-122px] animate-moveBlob1">
+          <Blob_2 />
+        </div>
+        <div className="absolute right-[-122px] top-[-112px] animate-moveBlob2">
+          <Blob_1 />
+        </div>
+        <div className="absolute left-[-267px] top-[329px] animate-moveBlob3">
+          <Blob_3 />
+        </div>
       </div>
-      <div className="my-2" />
-      <InputLabel name="전화번호" />
-      <div>
-        <Input name="전화번호" variant="third" placeholder="010" />{" "}
-        <span> - </span>
-        <Input name="전화번호" variant="third" placeholder="010" />{" "}
-        <span> - </span>
-        <Input name="전화번호" variant="third" placeholder="010" />
+      {/* 로고 */}
+      <div className="relative z-10 my-56 flex animate-popIn flex-col items-center justify-center">
+        <img src="shc_symbol_ci.png" className="h-44 w-44" />
+        <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
-      <div className="my-2" />
-      <div>
-        <InputLabel name="영업 시간" />
-        <span className="mx-4">월 </span>
-        <Input
-          name="영업 시간"
-          variant="twoThirds"
-          placeholder="09:00 - 18:00"
-        />
-      </div>
-      <div className="my-2" />
-      <div className="align-center flex">
-        <Input name="요일 선택" variant="check" type="checkbox" />
-        <span className="ml-2">해당 없음</span>
-      </div>
-      <div className="my-2" />
-      <Card
-        variant="status"
-        title="상태"
-        content={
-          <div className="flex items-center gap-4">
-            <div className="bg-red-500 h-3 w-3 rounded-full"></div>
-            <span>품절</span>
-            <BsQuestionCircle />
-          </div>
-        }
-      />
-      <Card variant="status" title="옵션" content={<div>상품 옵션 1</div>} />
-      <Card
-        variant="store"
-        title="팝업 스토어 1"
-        subtitle="팝업스토어 소개"
-        description="운영시간 10:30-20:00"
-        imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-      />
-      <Card
-        variant="product"
-        title="스토어 상품 1"
-        price={16000}
-        totalPrice={quantity * 16000}
-        imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        toggle={
-          <NumberSelector
-            quantity={quantity}
-            onIncrease={handleIncrease}
-            onDecrease={handleDecrease}
-          />
-        }
-      />
-      <Card
-        variant="simple"
-        title="팝업 스토어 1"
-        date="2024년 8월 17일"
-        time="15:02"
-        imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-        spend={156000}
-      />
-      <Card
-        variant="simple"
-        title="팝업 스토어 1"
-        date="2024년 8월 17일"
-        time="15:02"
-        imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-      />
-      <div className="my-2" />
-      <ProgressSteps currentStep={1} steps={3} />
-      <div className="my-2" />
-      <ProgressSteps currentStep={2} steps={3} />
-      <div className="my-2" />
-      <ProgressSteps currentStep={3} steps={3} />
-      <div className="my-2" />
-      <TicketCard
-        title="팝업스토어 1"
-        date="오늘"
-        location="팝업스토어 위치"
-        seller="판매자"
-        buttonText="상세보기"
-        isActive={true}
-      />
-      <div className="my-2" />
-      <TicketCard
-        title="팝업스토어 2"
-        date="2024년 7월 30일"
-        location="팝업스토어 위치"
-        seller="판매자"
-        buttonText="상세보기"
-        isActive={false}
-      />
-      {/* <Spinner /> */}
-      <div className="my-3">
-        <Tag content="#태그 1" />
-        <Tag content="#태그 2" variant="green" />
-        <Tag content="#태그 3" variant="red" />
-      </div>
-
-      <PhotoUploader onPhotosChange={handlePhotosChange} />
-      <div>{stores[0].name}</div>
-      <div className="my-2" />
-      <div className="max-w-md gap-1 overflow-auto whitespace-nowrap">
-        <Card
-          variant="mini"
-          title="인기 팝업 스토어"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        />
-        <Card
-          variant="mini"
-          title="인기 팝업 스토어"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        />
-        <Card
-          variant="mini"
-          title="인기 팝업 스토어"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        />
-        <Card
-          variant="mini"
-          title="인기 팝업 스토어"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        />
-        <Card
-          variant="mini"
-          title="인기 팝업 스토어"
-          imageSrc="https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300"
-        />
-      </div>
+      <button className="mb-4 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:opacity-50">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="mb-2 mr-2 h-8 w-8"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M15 7C10.029 7 6 10.129 6 13.989C6 16.389 7.559 18.505 9.932 19.764L8.933 23.431C8.845 23.754 9.213 24.013 9.497 23.826L13.874 20.921C14.243 20.958 14.618 20.978 15 20.978C19.971 20.978 24 17.849 24 13.989C24 10.129 19.971 7 15 7Z"
+            fill="black"
+            fill-rule="evenodd"
+          ></path>
+        </svg>
+        카카오로 로그인하기
+      </button>
     </Layout>
   );
 };
