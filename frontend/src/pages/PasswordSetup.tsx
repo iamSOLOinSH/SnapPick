@@ -4,9 +4,14 @@ import { Input } from "../components/common/Input";
 import { Button } from "../components/common/Button";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 
+import { IoChevronBack } from "react-icons/io5";
+
+import { useNavigate } from "react-router";
+
 type InputRef = HTMLInputElement | null;
 
 const PasswordSetup: React.FC = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState<string[]>(["", "", "", ""]);
   const [isSequential, setIsSequential] = useState<boolean>(false);
   const inputRefs = [
@@ -56,7 +61,15 @@ const PasswordSetup: React.FC = () => {
           <Blob_2 />
         </div>
       </div>
-      <div className="mt-48 flex min-h-[48vh] flex-col items-center">
+      <div className="mt-32 flex min-h-[56vh] flex-col items-center">
+        <div className="mb-8 mr-8 flex w-full flex-row justify-end">
+          <button
+            className="rounded border-2 p-2 hover:bg-base"
+            onClick={() => navigate("/signup/success")}
+          >
+            <IoChevronBack />
+          </button>
+        </div>
         <h2 className="mb-8 text-2xl font-bold">간편 비밀번호를 입력하세요.</h2>
         <div className="mx-4 flex justify-center gap-4">
           {password.map((char, index) => (
@@ -85,16 +98,16 @@ const PasswordSetup: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="mx-4 flex flex-col gap-2" style={{ marginTop: "16px" }}>
+      <div className="mx-4 mt-2 flex flex-col gap-2">
         <Button
           content="확인"
           disabled={!isFormComplete}
-          onClick={() => alert("비밀번호가 설정되었습니다.")}
+          onClick={() => console.log(password.join(""))}
         />
         <Button
           variant="secondary"
           content="취소"
-          onClick={() => alert("취소되었습니다.")}
+          onClick={() => navigate("/signup/success")}
         />
       </div>
     </Layout>
