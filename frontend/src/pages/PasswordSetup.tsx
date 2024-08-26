@@ -3,8 +3,7 @@ import { Layout } from "../components/common/Layout";
 import { Input } from "../components/common/Input";
 import { Button } from "../components/common/Button";
 import { Blob_2 } from "../components/common/Background/Blob_2";
-
-import { IoChevronBack } from "react-icons/io5";
+import { BackButton } from "../components/common/BackButton";
 
 import { useNavigate } from "react-router";
 
@@ -63,12 +62,7 @@ const PasswordSetup: React.FC = () => {
       </div>
       <div className="mt-32 flex min-h-[56vh] flex-col items-center">
         <div className="mb-8 mr-8 flex w-full flex-row justify-end">
-          <button
-            className="rounded border-2 p-2 hover:bg-base"
-            onClick={() => navigate("/signup/success")}
-          >
-            <IoChevronBack />
-          </button>
+          <BackButton />
         </div>
         <h2 className="mb-8 text-2xl font-bold">간편 비밀번호를 입력하세요.</h2>
         <div className="mx-4 flex justify-center gap-4">
