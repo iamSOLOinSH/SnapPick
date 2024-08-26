@@ -5,6 +5,7 @@ import Signup from "../pages/Signup";
 import SignupSuccess from "../pages/SignupSuccess";
 import PasswordSetup from "../pages/PasswordSetup";
 import VisitHistory from "../pages/VisitHistory";
+import PaymentSuccess from "../pages/PaymentSuccess";
 
 const Router = () => {
   return (
@@ -14,6 +15,7 @@ const Router = () => {
       <Route path="/signup/success" element={<SignupSuccess />} />
       <Route path="/signup/password" element={<PasswordSetup />} />
       <Route path="/history" element={<VisitHistory />} />
+      <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/health-check" element={<HealthCheck />} />
     </Routes>
   );
