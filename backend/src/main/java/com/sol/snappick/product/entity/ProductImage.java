@@ -21,11 +21,11 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
-    private String originImageUrl;
+	@Column (columnDefinition = "TEXT")
+	private String originImageUrl;
 
-    @Column
-    private String thumbnailImageUrl;
+	@Column (columnDefinition = "TEXT")
+	private String thumbnailImageUrl;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
