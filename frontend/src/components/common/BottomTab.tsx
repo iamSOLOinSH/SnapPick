@@ -4,7 +4,7 @@ import { FaRegUser } from "react-icons/fa";
 import { IoMdQrScanner } from "react-icons/io";
 
 const NAV_ITEMS = [
-  { path: "/", icon: BiHomeAlt },
+  { path: "/home", icon: BiHomeAlt },
   { path: "/add", icon: IoMdQrScanner },
   { path: "/profile", icon: FaRegUser },
 ] as const;
