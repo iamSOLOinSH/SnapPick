@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.*;
@@ -42,14 +43,12 @@ public class Product extends BaseEntity {
     private Integer personalLimit;
 
     // 상품 이미지
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-    @Setter
-    private List<ProductImage> images;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
 
     // 상품 옵션
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-    @Setter
-    private List<ProductOption> options;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOption> options = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
@@ -88,6 +87,36 @@ public class Product extends BaseEntity {
         this.price = price;
         this.dailyLimit = dailyLimit;
         this.personalLimit = personalLimit;
+    }
+
+    // 이미지 관련 메서드
+    public void setImages(List<ProductImage> newImages) {
+        this.images.clear();
+        if (newImages != null) {
+            for (ProductImage image : newImages) {
+                addImage(image);
+            }
+        }
+    }
+
+    private void addImage(ProductImage image) {
+        this.images.add(image);
+        image.setProduct(this);
+    }
+
+    // 옵션 관련 메서드
+    public void setOptions(List<ProductOption> newOptions) {
+        this.options.clear();
+        if (newOptions != null) {
+            for (ProductOption option : newOptions) {
+                addOption(option);
+            }
+        }
+    }
+
+    private void addOption(ProductOption option) {
+        this.options.add(option);
+        option.setProduct(this);
     }
 
 }
