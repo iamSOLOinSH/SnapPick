@@ -17,7 +17,7 @@ public class Member extends BaseEntity {
     @Column
     private String email;
 
-    @Column(length = 10)
+    @Column
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -66,11 +66,18 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void setName(String name) {
+    public void updateProfile(String name, String profileImageUrl) {
         this.name = name;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
+    public void init(int role, String userKey, String pinCode, String phoneNumber, String accountNumber, String businessNumber) {
+        this.role = Role.values()[role];
+        this.userKey = userKey;
+        this.pinCode = pinCode;
+        this.phoneNumber = phoneNumber;
+        this.accountNumber = accountNumber;
+        this.businessNumber = businessNumber;
+    }
+
 }

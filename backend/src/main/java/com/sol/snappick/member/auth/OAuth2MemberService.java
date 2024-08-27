@@ -44,8 +44,7 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
         if (oMember.isPresent()) {
             // 로그인
             Member member = oMember.get();
-            member.setName(name);
-            member.setProfileImageUrl(profileImageUrl);
+            member.updateProfile(name, profileImageUrl);
             memberRepository.save(member);
         } else {
             // 회원가입
