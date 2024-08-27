@@ -2,6 +2,7 @@ package com.sol.snappick.cart.service;
 
 import com.sol.snappick.cart.dto.CartItemReq;
 import com.sol.snappick.cart.dto.CartItemRes;
+import com.sol.snappick.cart.exception.CartItemNotFoundException;
 import com.sol.snappick.cart.exception.CartNotFoundException;
 import com.sol.snappick.product.entity.Cart;
 import com.sol.snappick.product.entity.CartItem;
@@ -46,6 +47,31 @@ public class CartService {
                 .cartId(cartItemToCreate.getCart().getId())
                 .productOptionId(cartItemToCreate.getProductOption().getId())
                 .quantity(cartItemToCreate.getQuantity())
+                .build();
+    }
+
+    public CartItemRes updateCartItem(Integer cartId, Integer itemId, CartItemReq cartItemReq) {
+
+        //cart
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CartNotFoundException());
+
+        //cartItem
+        CartItem cartItemToUpdate = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new CartItemNotFoundException());
+
+        //ProductOption
+        ProductOption productOption = productOptionRepository.findById(cartItemReq.getProductOptionId())
+                .orElseThrow(()->new ProductOptionNotFoundException());
+
+        cartItemToUpdate.updateDetails(productOption, cartItemReq.getQuantity());
+        cartItemToUpdate = cartItemRepository.save(cartItemToUpdate);
+
+        return CartItemRes.builder()
+                .id(cartItemToUpdate.getId())
+                .cartId(cartItemToUpdate.getCart().getId())
+                .productOptionId(cartItemToUpdate.getProductOption().getId())
+                .quantity(cartItemToUpdate.getQuantity())
                 .build();
     }
 }

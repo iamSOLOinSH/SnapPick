@@ -39,4 +39,9 @@ public class CartItem {
         this.productOption = productOption;
         this.quantity = quantity;
     }
+
+    public void updateDetails(ProductOption productOption, Integer quantity) {
+        this.productOption = productOption;
+        this.quantity = quantity;
+    }
 }
