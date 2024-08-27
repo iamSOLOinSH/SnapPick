@@ -41,7 +41,7 @@ public class StoreCreateReq {
     private int viewCount;
 
     @Schema(description = "태그 목록")
-    private List<String> tags;
+    private List<@Size(max = 20, message = "각 태그는 최대 20글자 이내여야 합니다.") String> tags;
 
     @Schema(description = "스토어 이미지 목록. 비워서 주세요")
     private List<StoreImageDto> images;
