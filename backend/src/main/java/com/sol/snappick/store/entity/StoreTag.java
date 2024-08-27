@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,8 @@ public class StoreTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(length = 10) // 최대 길이 10글자
+    @Size(max = 10)
     private String tag;
 
     @ManyToOne
@@ -33,8 +35,8 @@ public class StoreTag {
 
     @Builder
     public StoreTag(
-        String tag,
-        Store store
+            String tag,
+            Store store
     ) {
         this.tag = tag;
         this.store = store;

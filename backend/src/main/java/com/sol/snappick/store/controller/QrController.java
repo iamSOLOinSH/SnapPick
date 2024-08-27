@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,11 +27,11 @@ public class QrController {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    @GetMapping("/{store_uuid}")
+    @PostMapping("/{store_uuid}")
     public ResponseEntity<byte[]> qr(
             @PathVariable("store_uuid") String uuid,
             // 기본 3분
-            @RequestParam(defaultValue = "180_000", required = false) long duration
+            @RequestParam(defaultValue = "180000", required = false, value = "duration") long duration
     ) {
         try {
             String token = jwtUtil.generateToken(uuid, duration); // 토큰 생성
@@ -56,7 +57,9 @@ public class QrController {
 
     // QR 코드 검증 엔드포인트
     @GetMapping("/validate")
-    public ResponseEntity<String> validateQr(@RequestParam String token) {
+    public ResponseEntity<String> validateQr(
+            @RequestParam("token") String token
+    ) {
         if (jwtUtil.validateToken(token)) {
             String storeId = jwtUtil.getStoreIdFromToken(token);
 

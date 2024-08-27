@@ -24,10 +24,10 @@ public class StoreImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String originImageUrl;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String thumbnailImageUrl;
 
     @ManyToOne
@@ -37,9 +37,9 @@ public class StoreImage {
 
     @Builder
     public StoreImage(
-        String originImageUrl,
-        String thumbnailImageUrl,
-        Store store
+            String originImageUrl,
+            String thumbnailImageUrl,
+            Store store
     ) {
         this.originImageUrl = originImageUrl;
         this.thumbnailImageUrl = thumbnailImageUrl;

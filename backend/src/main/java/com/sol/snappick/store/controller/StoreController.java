@@ -7,6 +7,7 @@ import com.sol.snappick.store.dto.StoreUpdateReq;
 import com.sol.snappick.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,7 +73,7 @@ public class StoreController {
             |  |  |  |
             """)
     public ResponseEntity<StoreRes> createPopupStore(
-            @RequestPart("storeCreateReq") StoreCreateReq storeCreateReq,
+            @Valid @RequestPart("storeCreateReq") StoreCreateReq storeCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
     ) throws Exception {
         StoreRes response = storeService.createPopupStore(storeCreateReq,
