@@ -8,15 +8,14 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QrUtil {
 
-    public static byte[] generateQrCode(String text, int width, int height) throws IOException {
+    public byte[] generateQrCode(String text, int width, int height) throws IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
