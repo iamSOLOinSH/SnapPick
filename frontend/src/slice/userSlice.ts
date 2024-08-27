@@ -8,6 +8,11 @@ interface StoreState {
     price: number;
     visitedAt: string;
   }[];
+  payment: {
+    name: string;
+    quantity: number;
+    price: number;
+  }[];
   login: () => Promise<void>;
 }
 
@@ -38,6 +43,10 @@ export const createUserSlice: StateCreator<StoreState> = (set) => ({
       price: 12000,
       visitedAt: "2024-07-12T12:00:00Z",
     },
+  ],
+  payment: [
+    { name: "스토어 상품 1", quantity: 2, price: 32000 },
+    { name: "스토어 상품 2", quantity: 3, price: 21000 },
   ],
   login: async () => {
     // const result = await API 요청

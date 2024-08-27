@@ -1,59 +1,51 @@
+import React, { useState } from "react";
+import { useBoundStore } from "../store/store";
+
 import { Layout } from "../components/common/Layout";
-import { Card } from "../components/common/Card";
 import { Button } from "../components/common/Button";
-
 import { Ribbons } from "../components/common/Background/Ribbons";
-import { FaCheck } from "react-icons/fa6";
+import { PaymentSuccess } from "../components/Receipt/PaymentSuccess";
+import { PaymentDetail } from "../components/Receipt/PaymentDetail";
 
-const PaymentSuccess = () => {
+const Receipt = () => {
+  const { payment } = useBoundStore((state) => ({
+    payment: state.payment,
+  }));
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+
+  const totalPrice = payment.reduce((acc, cur) => acc + cur.price, 0);
+
   return (
     <Layout className="bg-primary">
       <header className="relative">
         <div className="absolute left-[32px] top-[-63px] z-0 animate-octagonAppear">
           <Ribbons />
         </div>
-        <div className="mt-12 flex justify-center">
+        <div className="scrollbar-hide mt-8 flex justify-center">
           <h1 className="z-10 inline-block rounded-full bg-primary p-2 text-center text-2xl text-white">
             모바일 영수증
           </h1>
         </div>
       </header>
-      <main className="relative mt-4 h-64 min-h-[74vh] rounded-lg bg-white">
-        <section className="flex flex-col items-center justify-center">
-          <div
-            className="mt-8 flex h-24 w-24 items-center justify-center bg-primary text-white"
-            style={{
-              clipPath:
-                "polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%)",
-            }}
-          >
-            <FaCheck className="h-12 w-12" />
-          </div>
-          <h2 className="my-4 text-2xl font-bold">결제 성공</h2>
-          <p>팝업스토어 1에</p>
-          <p>성공적으로 결제되었습니다.</p>
-          <p className="mt-4 text-gray-500">총 금액</p>
-          <p className="text-3xl font-semibold">61,000원</p>
-        </section>
-        <hr className="mt-2 w-full border-2 border-dashed" />
-        <section>
-          <p className="my-4 ml-8 font-semibold text-gray-600">팝업 스토어</p>
-          <Card
-            variant="simple"
-            title="팝업 스토어 1"
-            imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-            date="2024년 8월 17일 15:02"
-          />
-        </section>
-        <div className="relative z-20 mx-4">
-          <Button content="다음" onClick={() => console.log("ㅋㅋ")} />
+      <main className="relative mx-4 mt-4 h-64 min-h-[76vh] rounded-lg bg-white">
+        {showDetail ? (
+          <PaymentDetail payment={payment} />
+        ) : (
+          <PaymentSuccess totalPrice={totalPrice} />
+        )}
+        <div className="absolute bottom-4 left-0 right-0 z-20 mx-4">
+          {showDetail ? (
+            <Button content="확인" onClick={() => console.log("ㅋㅋ")} />
+          ) : (
+            <Button content="다음" onClick={() => setShowDetail(true)} />
+          )}
         </div>
         {/* 왼쪽 반원 */}
-        <div className="absolute left-[-1px] top-[309px] z-10 -translate-y-1/2 transform rounded-full">
+        <div className="absolute left-[-1px] top-[300px] z-10 -translate-y-1/2 transform rounded-full">
           <div className="absolute left-0 top-0 h-8 w-4 rounded-r-full bg-primary" />
         </div>
         {/* 오른쪽 반원 */}
-        <div className="absolute right-[-1px] top-[309px] z-10 -translate-y-1/2 transform rounded-full">
+        <div className="absolute right-[-1px] top-[300px] z-10 -translate-y-1/2 transform rounded-full">
           <div className="absolute right-0 top-0 h-8 w-4 rounded-l-full bg-primary" />
         </div>
         {/* 아래 물결 */}
@@ -100,4 +92,4 @@ const PaymentSuccess = () => {
   );
 };
 
-export default PaymentSuccess;
+export default Receipt;
