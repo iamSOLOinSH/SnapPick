@@ -7,10 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
 
     @Id
@@ -28,6 +32,11 @@ public class CartItem {
     @Column
     private Integer quantity;
 
-    protected CartItem() {
+    @Builder
+    public CartItem(Integer id, Cart cart, ProductOption productOption, Integer quantity) {
+        this.id = id;
+        this.cart = cart;
+        this.productOption = productOption;
+        this.quantity = quantity;
     }
 }
