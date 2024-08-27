@@ -8,6 +8,7 @@ const TAG_VARIANTS = {
   red: "bg-red text-white",
   gray: "bg-darkBase text-white",
   select: "cursor-pointer hover:opacity-80",
+  delete: "relative w-full",
 } as const;
 
 type TagProps = {
@@ -18,6 +19,8 @@ type TagProps = {
   isSelectable?: boolean; // 선택 가능한지
   isSelected?: boolean;
   onClick?: (value: string) => void;
+  isDelete?: boolean; // 삭제 가능한지
+  onDelete?: () => void;
 };
 
 export const Tag: React.FC<TagProps> = ({
@@ -28,6 +31,8 @@ export const Tag: React.FC<TagProps> = ({
   isSelectable = false,
   isSelected = false,
   onClick,
+  onDelete,
+  isDelete,
 }) => {
   const tagClassName = clsx(
     TAG_VARIANTS.default,
@@ -49,6 +54,14 @@ export const Tag: React.FC<TagProps> = ({
   return (
     <span className={tagClassName} onClick={handleClick}>
       {content}
+      {isDelete && (
+        <button
+          onClick={onDelete}
+          className="absolute inset-y-0 right-4 flex cursor-pointer items-center bg-transparent"
+        >
+          ✕
+        </button>
+      )}
     </span>
   );
 };

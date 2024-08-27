@@ -59,13 +59,12 @@ const ProductCreate = () => {
 
   return (
     <Layout>
-      {/* 배경 박스들 */}
+      {/* 배경 박스 */}
       <div className="relative">
         <div className="absolute right-[-160px] top-[-122px]">
           <Blob_2 />
         </div>
       </div>
-
       <div className="relative z-20 flex min-h-screen flex-col p-2">
         <div>
           <BackButton />
@@ -73,7 +72,7 @@ const ProductCreate = () => {
         <h1 className="mb-4 mt-4 text-2xl font-bold">
           상품 정보를 입력해주세요.
         </h1>
-        <div className="">
+        <div>
           <div className="mb-4">
             <InputLabel name="상품 이름" />
             <Input
