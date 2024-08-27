@@ -18,13 +18,14 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+!**/src/main/generated/
 
 ### NetBeans ###
 /nbproject/private/
@@ -39,3 +40,7 @@ out/
 ###############
 application.properties
 *.xml
+
+# Ignore QueryDSL generated Q files
+build/generated/
+src/main/generated/

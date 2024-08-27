@@ -1,51 +1,81 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.4.5'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
 }
 
 group = 'com.sol'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// swagger
-	implementation("io.springfox:springfox-swagger2:3.0.0")
-	implementation("io.springfox:springfox-swagger-ui:3.0.0")
-	implementation("io.springfox:springfox-data-rest:3.0.0")
-	implementation("io.springfox:springfox-bean-validators:3.0.0")
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
+    //Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
-	// DB
-	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.4.1'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // DB
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.4.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Boot DevTools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    //QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // MapStruct
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+    //minIO
+    implementation 'io.minio:minio:8.5.3'
+
+    // OkHttp 3.x 버전 추가
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // thumbnail generator
+    implementation 'net.coobird:thumbnailator:0.4.14'
+
+    //Spring Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // OAuth
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
 }
+//querydsl 추가 시작
+def querydslDir = "/generated/querydsl"
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
