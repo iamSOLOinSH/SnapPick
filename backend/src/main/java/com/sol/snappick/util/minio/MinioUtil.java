@@ -1,6 +1,11 @@
-package com.sol.snappick.util;
+package com.sol.snappick.util.minio;
 
-import io.minio.*;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
+import io.minio.SetBucketPolicyArgs;
 import io.minio.errors.MinioException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +45,25 @@ public class MinioUtil {
         return uuid + extension;
     }
 
+    // 퍼블릭 버킷 정책 생성
+    private static String getPublicBucketPolicy(String bucketName) {
+        return "{\n" +
+                "    \"Version\": \"2012-10-17\",\n" +
+                "    \"Statement\": [\n" +
+                "        {\n" +
+                "            \"Effect\": \"Allow\",\n" +
+                "            \"Principal\": \"*\",\n" +
+                "            \"Action\": [\n" +
+                "                \"s3:GetObject\"\n" +
+                "            ],\n" +
+                "            \"Resource\": [\n" +
+                "                \"arn:aws:s3:::" + bucketName + "/*\"\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+    }
+
     public boolean deleteImage(String imageUrl) throws Exception {
         try {
             URL url = new URL(imageUrl);
@@ -58,37 +82,21 @@ public class MinioUtil {
         }
     }
 
-    private boolean deleteFromMinio(String bucketName, String fileName) throws Exception {
+    private boolean deleteFromMinio(
+            String bucketName,
+            String fileName
+    ) throws Exception {
         try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .build()
+                                    .bucket(bucketName)
+                                    .object(fileName)
+                                    .build()
             );
             return true;
         } catch (MinioException e) {
             throw new MinioException("Error deleting file from MinIO: " + e.getMessage());
         }
-    }
-
-    // 퍼블릭 버킷 정책 생성
-    private static String getPublicBucketPolicy(String bucketName) {
-        return "{\n" +
-                "    \"Version\": \"2012-10-17\",\n" +
-                "    \"Statement\": [\n" +
-                "        {\n" +
-                "            \"Effect\": \"Allow\",\n" +
-                "            \"Principal\": \"*\",\n" +
-                "            \"Action\": [\n" +
-                "                \"s3:GetObject\"\n" +
-                "            ],\n" +
-                "            \"Resource\": [\n" +
-                "                \"arn:aws:s3:::" + bucketName + "/*\"\n" +
-                "            ]\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
     }
 
     public ImageUploadRes uploadImageWithThumbnail(
