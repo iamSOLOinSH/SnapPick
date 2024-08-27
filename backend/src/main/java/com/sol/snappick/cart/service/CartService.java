@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -45,7 +48,7 @@ public class CartService {
         return CartItemRes.builder()
                 .id(cartItemToCreate.getId())
                 .cartId(cartItemToCreate.getCart().getId())
-                .productOptionId(cartItemToCreate.getProductOption().getId())
+                .productOption(cartItemToCreate.getProductOption())
                 .quantity(cartItemToCreate.getQuantity())
                 .build();
     }
@@ -70,8 +73,24 @@ public class CartService {
         return CartItemRes.builder()
                 .id(cartItemToUpdate.getId())
                 .cartId(cartItemToUpdate.getCart().getId())
-                .productOptionId(cartItemToUpdate.getProductOption().getId())
+                .productOption(cartItemToUpdate.getProductOption())
                 .quantity(cartItemToUpdate.getQuantity())
                 .build();
+    }
+
+    public List<CartItemRes> readCartItem(Integer cartId) {
+        //cart
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CartNotFoundException());
+
+        List<CartItem> items = cartItemRepository.findByCart(cart);
+        return items.stream().map(item -> (
+                CartItemRes.builder()
+                        .id(item.getId())
+                        .cartId(cart.getId())
+                        .productOption(item.getProductOption())
+                        .quantity(item.getQuantity())
+                        .build()
+                )).collect(Collectors.toList());
     }
 }
