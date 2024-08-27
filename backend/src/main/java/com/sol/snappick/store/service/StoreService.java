@@ -18,9 +18,9 @@ import com.sol.snappick.store.repository.StoreImageRepository;
 import com.sol.snappick.store.repository.StoreRepository;
 import com.sol.snappick.store.repository.StoreRunningTimeRepository;
 import com.sol.snappick.store.repository.StoreTagRepository;
-import com.sol.snappick.util.ImageUploadRes;
-import com.sol.snappick.util.MinioUtil;
-import com.sol.snappick.util.PopplyHandler;
+import com.sol.snappick.util.StoreAPIHandler;
+import com.sol.snappick.util.minio.ImageUploadRes;
+import com.sol.snappick.util.minio.MinioUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class StoreService {
     public final StoreRunningTimeMapper storeRunningTimeMapper;
     public final StoreImageMapper storeImageMapper;
 
-    public final PopplyHandler popplyHandler;
+    public final StoreAPIHandler storeAPIHandler;
 
     // MINIO 버킷 이름
     private final String BUCKET_NAME = "snappick-store";
@@ -126,7 +126,7 @@ public class StoreService {
     @Transactional
     public void postInitData() throws IOException, InterruptedException {
         // API 로 받은 데이터
-        StoreAPIRes storeAPIData = popplyHandler.searchStore();
+        StoreAPIRes storeAPIData = storeAPIHandler.searchStore();
         List<Store> toCreateStores = new ArrayList<>();
         // 생성 데이터
         for (StoreAPIDataDto data : storeAPIData.getData()) {
@@ -239,9 +239,9 @@ public class StoreService {
         // 스토어 조회
         Store store = findStoreWithException(storeId);
 
-		if (images != null && images.length > 0) {
-			storeImageRepository.deleteAllByStore(store);
-		}
+        if (images != null && images.length > 0) {
+            storeImageRepository.deleteAllByStore(store);
+        }
         storeTagRepository.deleteAllByStore(store);
         storeRunningRepository.deleteAllByStore(store);
 
