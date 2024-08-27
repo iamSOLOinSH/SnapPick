@@ -42,6 +42,7 @@ export default {
         sm: "2px",
         md: "6px",
         lg: "8px",
+        xl: "48px",
         full: "9999px",
       },
       borderWidth: {

@@ -12,6 +12,7 @@ const INPUT_VARIANTS = {
     "h-14 w-1/5 rounded-md bg-base px-4 text-black shadow-md outline-none focus:ring-2 focus:ring-primary",
   check:
     "h-4 w-4 rounded-full bg-base shadow-md outline-none checked:bg-primary",
+  disabled: "bg-gray-300",
 } as const;
 
 type InputProps = {
@@ -24,6 +25,9 @@ type InputProps = {
   checked?: boolean;
   maxLength?: number;
   autoComplete?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
@@ -42,13 +46,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       autoComplete = "on",
       maxLength,
       onKeyDown,
+      readOnly,
+      disabled,
+      onClick,
     },
     ref,
   ) => {
     return (
       <input
         name={name}
-        className={clsx(className, INPUT_VARIANTS[variant])}
+        className={clsx(
+          className,
+          INPUT_VARIANTS[variant],
+          disabled && INPUT_VARIANTS["disabled"],
+        )}
         type={type}
         placeholder={placeholder}
         value={value}
@@ -57,6 +68,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         checked={checked}
         maxLength={maxLength}
         autoComplete={autoComplete}
+        readOnly={readOnly}
+        disabled={disabled}
+        onClick={onClick}
         ref={ref}
       />
     );
