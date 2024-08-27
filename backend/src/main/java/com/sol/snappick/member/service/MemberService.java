@@ -15,16 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final TransactionService transactionService;
 
     public SimpleMemberInfoRes register(Integer memberId,
                                         MemberRegisterReq memberRegisterReq) {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberNotFoundException("Not Found Member : MemberId is " + memberId)
         );
-        
-        //TODO 금융API 회원가입, 계좌생성, user-key저장
 
-        member.init(memberRegisterReq.getRole(), null,
+
+        // 계정 생성 후, userKey 저장 (이미 존재하면 에러)
+        String userKey = transactionService.postMember(member.getEmail());
+
+        //TODO 계좌생성
+        member.init(memberRegisterReq.getRole(), userKey,
                 memberRegisterReq.getPinCode(), memberRegisterReq.getPhoneNumber(), null,
                 memberRegisterReq.getBusinessNumber());
 
