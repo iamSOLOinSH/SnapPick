@@ -70,6 +70,7 @@ public class StoreService {
         }
 
         Store storeToCreate = createStoreWithDetails(storeCreateReq);
+        storeToCreate = storeRepository.save(storeToCreate); // Store 먼저 저장
 
         // 이미지 처리 및 저장
         if (images != null) {
