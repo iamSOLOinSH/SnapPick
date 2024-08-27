@@ -48,6 +48,11 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
     image: "h-32 w-32 rounded-lg",
     title: "mt-1 pl-0.5 text-sm",
   },
+  big: {
+    container: "mr-1 inline-block w-full truncate",
+    image: "h-full w-full rounded-lg",
+    title: "mt-1 pl-0.5 text-sm",
+  },
 } as const;
 
 type CardProps = {

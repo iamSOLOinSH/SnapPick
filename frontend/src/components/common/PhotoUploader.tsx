@@ -83,7 +83,10 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             </span>
           </button>
           {photos.map((photo, i) => (
-            <div key={photo.preview} className="relative mr-2 flex-shrink-0">
+            <div
+              key={photo.preview}
+              className="relative mr-2 flex-shrink-0 scrollbar-hide"
+            >
               <div className="relative h-20 w-20">
                 <img
                   src={photo.preview}
@@ -91,7 +94,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
                   className="absolute inset-0 h-full w-full rounded-lg object-cover"
                 />
                 <button
-                  className="absolute -right-2 -top-2 rounded-full border border-darkBase bg-white p-2 text-darkBase"
+                  className="absolute -right-2 -top-2 rounded-full border border-darkBase bg-white p-1 text-darkBase"
                   onClick={() => handleDeletePhoto(i)}
                 >
                   <IoClose className="text-darkBase" />
