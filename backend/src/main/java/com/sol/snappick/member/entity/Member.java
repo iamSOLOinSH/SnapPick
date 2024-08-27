@@ -24,6 +24,9 @@ public class Member extends BaseEntity {
     @Column
     private Role role;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
     @Column(length = 4)
     private String pinCode;
 
@@ -57,9 +60,17 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String email, String name) {
+    public Member(String email, String name, String profileImageUrl) {
         this.email = email;
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
 }
