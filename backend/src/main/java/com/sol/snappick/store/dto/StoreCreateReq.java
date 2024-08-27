@@ -37,6 +37,8 @@ public class StoreCreateReq {
     @Schema(description = "판매자 ID")
     private Integer sellerId;
 
+    private int viewCount;
+
     @Schema(description = "태그 목록")
     private List<String> tags;
 
