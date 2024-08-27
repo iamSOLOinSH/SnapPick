@@ -50,7 +50,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
-    //minIO
+    // MinIO
     implementation 'io.minio:minio:8.5.3'
 
     // OkHttp 3.x 버전 추가
@@ -59,8 +59,12 @@ dependencies {
     // thumbnail generator
     implementation 'net.coobird:thumbnailator:0.4.14'
 
-    //Spring Validation
+    // Spring Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // QR
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.google.zxing:javase:3.5.3'
 
     // OAuth
     implementation 'org.springframework.boot:spring-boot-starter-security'
