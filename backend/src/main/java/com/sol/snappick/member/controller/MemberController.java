@@ -40,7 +40,7 @@ public class MemberController {
             | Name | Type | Description |
             |-----|-----|-------|
             | name | string | 이름 |
-            | profileImageUrl | string | 프로필 이미지 링크 |
+            | imageUrl | string | 프로필 이미지 링크 |
             """)
     public ResponseEntity<SimpleMemberInfoRes> signup(
             Authentication authentication,
@@ -59,7 +59,7 @@ public class MemberController {
             | Name | Type | Description |
             |-----|-----|-------|
             | name | string | 이름 |
-            | profileImageUrl | string | 프로필 이미지 링크 |
+            | imageUrl | string | 프로필 이미지 링크 |
             """)
     public ResponseEntity<SimpleMemberInfoRes> getSimpleInfo(
             Authentication authentication
