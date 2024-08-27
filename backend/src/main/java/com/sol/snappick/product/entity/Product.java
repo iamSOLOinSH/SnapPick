@@ -44,11 +44,11 @@ public class Product extends BaseEntity {
 
     // 상품 이미지
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+    private List<ProductImage> images;
 
     // 상품 옵션
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOption> options = new ArrayList<>();
+    private List<ProductOption> options;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
@@ -70,8 +70,8 @@ public class Product extends BaseEntity {
         this.price = price;
         this.dailyLimit = dailyLimit;
         this.personalLimit = personalLimit;
-        this.images = images;
-        this.options = options;
+        this.images = new ArrayList<>();;
+        this.options = new ArrayList<>();;
         this.store = store;
     }
 
