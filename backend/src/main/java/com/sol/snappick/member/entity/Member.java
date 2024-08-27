@@ -17,12 +17,15 @@ public class Member extends BaseEntity {
     @Column
     private String email;
 
-    @Column(length = 10)
+    @Column
     private String name;
 
     @Enumerated(EnumType.STRING)
     @Column
     private Role role;
+
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
 
     @Column(length = 4)
     private String pinCode;
@@ -57,9 +60,24 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String email, String name) {
+    public Member(String email, String name, String profileImageUrl) {
         this.email = email;
         this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateProfile(String name, String profileImageUrl) {
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void init(int role, String userKey, String pinCode, String phoneNumber, String accountNumber, String businessNumber) {
+        this.role = Role.values()[role];
+        this.userKey = userKey;
+        this.pinCode = pinCode;
+        this.phoneNumber = phoneNumber;
+        this.accountNumber = accountNumber;
+        this.businessNumber = businessNumber;
     }
 
 }

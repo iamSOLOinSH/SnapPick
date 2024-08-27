@@ -19,11 +19,11 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-	@Column (columnDefinition = "TEXT")
-	private String originImageUrl;
+    @Column
+    private String originImageUrl;
 
-	@Column (columnDefinition = "TEXT")
-	private String thumbnailImageUrl;
+    @Column
+    private String thumbnailImageUrl;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -34,7 +34,8 @@ public class ProductImage {
             Integer id,
             String originImageUrl,
             String thumbnailImageUrl,
-            Product product) {
+            Product product
+    ) {
         this.id = id;
         this.originImageUrl = originImageUrl;
         this.thumbnailImageUrl = thumbnailImageUrl;

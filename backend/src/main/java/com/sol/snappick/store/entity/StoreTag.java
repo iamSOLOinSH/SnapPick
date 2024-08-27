@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,8 +34,8 @@ public class StoreTag {
 
     @Builder
     public StoreTag(
-        String tag,
-        Store store
+            String tag,
+            Store store
     ) {
         this.tag = tag;
         this.store = store;

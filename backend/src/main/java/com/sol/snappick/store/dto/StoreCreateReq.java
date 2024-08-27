@@ -1,6 +1,7 @@
 package com.sol.snappick.store.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,8 @@ public class StoreCreateReq {
 
     @Schema(description = "판매자 ID")
     private Integer sellerId;
+
+    private int viewCount;
 
     @Schema(description = "태그 목록")
     private List<String> tags;
