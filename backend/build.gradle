@@ -73,6 +73,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
+    // Json
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+
 }
 //querydsl 추가 시작
 def querydslDir = "/generated/querydsl"
