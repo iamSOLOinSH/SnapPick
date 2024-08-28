@@ -29,7 +29,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
     description: "mt-12 text-sm text-gray-500",
   },
   product: {
-    container: "mb-2 flex justify-between rounded-sm bg-white p-4",
+    container: "mb-2 flex justify-between rounded-lg bg-white p-4 w-full",
     image: "mr-4 h-32 w-32 rounded-lg",
     title: "text-medium text-lg ",
     price: "text-sm",
@@ -58,7 +58,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
 type CardProps = {
   variant: keyof typeof CARD_VARIANTS;
   imageSrc?: string;
-  title: string;
+  title?: string;
   subtitle?: string;
   description?: string;
   price?: number;

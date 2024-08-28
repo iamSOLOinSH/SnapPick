@@ -9,6 +9,8 @@ import Receipt from "../pages/Receipt";
 import Home from "../pages/Home";
 import StoreSearch from "../pages/StoreSearch";
 import StoreDetail from "../pages/StoreDetail";
+import Order from "../pages/Order";
+import Cart from "../pages/Cart";
 
 const Router = () => {
   return (
@@ -21,6 +23,8 @@ const Router = () => {
       <Route path="/signup/success" element={<SignupSuccess />} />
       <Route path="/signup/password" element={<PasswordSetup />} />
       <Route path="/history" element={<VisitHistory />} />
+      <Route path="/order" element={<Order />} />
+      <Route path="/cart" element={<Cart />} />
       <Route path="/receipt" element={<Receipt />} />
       <Route path="/health-check" element={<HealthCheck />} />
     </Routes>

@@ -4,6 +4,7 @@ import { Layout } from "../components/common/Layout";
 import { BackButton } from "../components/common/BackButton";
 import { SearchBar } from "../components/common/SearchBar";
 import { TicketCard } from "../components/common/TicketCard";
+import { isToday, formatDate } from "../utils/Date";
 
 interface VisitHistoryItem {
   name: string;
@@ -25,24 +26,6 @@ const VisitHistory = () => {
       setFilteredHistory(visitHistory);
     }
   }, [searchQuery, visitHistory]);
-
-  const isToday = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const today = new Date();
-    return (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate()
-    );
-  };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return isToday(dateStr) ? "오늘" : `${year}년 ${month}월 ${day}일`;
-  };
 
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
@@ -79,7 +62,7 @@ const VisitHistory = () => {
             >
               <TicketCard
                 title={item.name}
-                date={formatDate(item.visitedAt)}
+                date={formatDate(item.visitedAt, true)}
                 location={item.location}
                 price={item.price}
                 buttonText="상세 보기"

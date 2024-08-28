@@ -1,9 +1,14 @@
 import { IoChevronBack } from "react-icons/io5";
+import clsx from "clsx";
 
-export const BackButton = () => {
+type BackButtonProps = {
+  className?: string;
+};
+
+export const BackButton = ({ className }: BackButtonProps) => {
   return (
     <button
-      className="rounded border-2 p-2 hover:bg-base"
+      className={clsx("rounded border-2 p-2 hover:bg-base", className)}
       onClick={() => window.history.back()}
     >
       <IoChevronBack />
