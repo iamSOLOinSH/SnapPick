@@ -8,6 +8,7 @@ import com.sol.snappick.product.entity.Cart;
 import com.sol.snappick.product.entity.CartItem;
 import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.exception.ProductNotFoundException;
+import com.sol.snappick.product.exception.QuantityOverProductStockException;
 import com.sol.snappick.product.repository.CartItemRepository;
 import com.sol.snappick.product.repository.CartRepository;
 import com.sol.snappick.product.repository.ProductRepository;
@@ -32,13 +33,18 @@ public class CartService {
     @Transactional
     public CartItemRes createCartItem(Integer cartId, CartItemReq cartItemReq) {
 
-        //cart
+        //cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException());
 
-        //product
+        //product가 존재하는지 확인한다.
         Product product = productRepository.findById(cartItemReq.getProductId())
                 .orElseThrow(()->new ProductNotFoundException());
+
+        //주문 수량이 재고의 개수를 넘지 않는지 확인한다.
+        if (cartItemReq.getQuantity()>product.getStock()){
+            throw new QuantityOverProductStockException();
+        }
 
         //cart에 cartItem을 추가한다.
         CartItem cartItemToCreate = CartItem.builder()
@@ -50,7 +56,6 @@ public class CartService {
 
         return CartItemRes.builder()
                 .id(cartItemToCreate.getId())
-                //.cartId(cartId)
                 .product(productMapper.toSimpleDto(product))
                 .quantity(cartItemToCreate.getQuantity())
                 .build();
@@ -59,18 +64,17 @@ public class CartService {
     @Transactional
     public CartItemRes updateCartItem(Integer cartId, Integer itemId, CartItemReq cartItemReq) {
 
-        //cart
+        //cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException());
 
-        //cartItem
+        //cartItem가 존재하는지 확인한다.
         CartItem cartItemToUpdate = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new CartItemNotFoundException());
 
-        //quantity
+        //quantity를 갱신한다.
         cartItemToUpdate.updateDetails(cartItemReq.getQuantity());
         cartItemToUpdate = cartItemRepository.save(cartItemToUpdate);
-
         return CartItemRes.builder()
                 .id(cartItemToUpdate.getId())
                 .product(productMapper.toSimpleDto(cartItemToUpdate.getProduct()))
@@ -80,10 +84,12 @@ public class CartService {
 
     @Transactional
     public List<CartItemRes> readCartItem(Integer cartId) {
-        //cart
+
+        //cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException());
 
+        //cart에 속하는 cartItem을 조회한다.
         List<CartItem> items = cartItemRepository.findByCart(cart);
         return items.stream().map(item -> (
                 CartItemRes.builder()
@@ -96,14 +102,15 @@ public class CartService {
 
     @Transactional
     public Boolean deleteCartItem(Integer cartId, Integer itemId) {
-        //cart
+        //cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException());
 
-        //cartItem
+        //cartItem이 존재하는지 확인한다.
         CartItem cartItemToDelete = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new CartItemNotFoundException());
 
+        //cartItem 삭제 시도한다.
         try {
             cartItemRepository.delete(cartItemToDelete);
             return true;
