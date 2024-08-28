@@ -171,6 +171,15 @@ public class MinioUtil {
 		try {
 			// 1. 이미지 URL에서 이미지 스트림 다운로드
 			InputStream imageStream = downloadImageFromUrl(imageUrl);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = imageStream.read(buffer)) != -1) {
+				baos.write(buffer, 0, length);
+			}
+
+			ByteArrayInputStream originalImageStream = new ByteArrayInputStream(baos.toByteArray());
+			ByteArrayInputStream thumbnailImageStream = new ByteArrayInputStream(baos.toByteArray());
 
 			// 2. 파일명 생성
 			String fileName = generateUniqueFileName(new URL(imageUrl).getPath());
@@ -179,19 +188,15 @@ public class MinioUtil {
 			boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
 																	 .bucket(bucketName)
 																	 .build());
-			if ( !found ) {
+			if (!found) {
 				synchronized (bucketLock) {
-					// 이중 체크: 다른 스레드가 이미 버킷을 생성했는지 다시 확인
 					found = minioClient.bucketExists(BucketExistsArgs.builder()
 																	 .bucket(bucketName)
 																	 .build());
-					if ( !found ) {
-						// 버킷이 존재하지 않으면 생성
+					if (!found) {
 						minioClient.makeBucket(MakeBucketArgs.builder()
 															 .bucket(bucketName)
 															 .build());
-
-						// 버킷을 퍼블릭으로 설정
 						minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
 																	   .bucket(bucketName)
 																	   .config(getPublicBucketPolicy(bucketName))
@@ -202,25 +207,15 @@ public class MinioUtil {
 
 			// 4. 썸네일 생성
 			ByteArrayOutputStream thumbnailOutputStream = new ByteArrayOutputStream();
-			try {
-				BufferedImage bufferedImage = ImageIO.read(imageStream);
-				if ( bufferedImage == null ) {
-					throw new IOException("Failed to read the image from the provided URL");
-				}
-
-				Thumbnails.of(bufferedImage)
-						  .size(THUMBNAIL_WIDTH,
-								THUMBNAIL_HEIGHT)
-						  .outputFormat("jpg")
-						  .toOutputStream(thumbnailOutputStream);
-
-				// 원본 이미지와 썸네일 이미지 업로드 로직 추가
-			} catch (IOException e) {
-				e.printStackTrace();
+			BufferedImage bufferedImage = ImageIO.read(thumbnailImageStream);
+			if (bufferedImage == null) {
+				throw new IOException("Failed to read the image from the provided URL");
 			}
 
-			// 원본 이미지 스트림 다시 생성
-			InputStream originalImageStream = downloadImageFromUrl(imageUrl);
+			Thumbnails.of(bufferedImage)
+					  .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+					  .outputFormat("jpg")
+					  .toOutputStream(thumbnailOutputStream);
 
 			// 5. 원본 이미지 MinIO에 업로드
 			String originImageUrl = uploadToMinio(bucketName,
@@ -242,8 +237,7 @@ public class MinioUtil {
 								 .build();
 
 		} catch (Exception e) {
-			throw new Exception("Failed to upload image from URL with thumbnail",
-								e);
+			throw new Exception("Failed to upload image from URL with thumbnail", e);
 		}
 	}
 
