@@ -2,11 +2,12 @@ package com.sol.snappick.store.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @Getter
@@ -42,4 +43,7 @@ public class StoreRes {
 	private List<StoreImageDto> images;
 
 	private List<StoreRunningTimeDto> runningTimes;
+
+	@Setter
+	private boolean fromQr;
 }
