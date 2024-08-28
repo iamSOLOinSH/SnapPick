@@ -20,7 +20,7 @@ public interface ProductMapper {
     Product toEntity(ProductCreateReq productCreateReq);
 
     @Mapping(target = "totalStock", source = "options", qualifiedByName = "calcTotalStock")
-    @Mapping(target = "options", source = "options", qualifiedByName = "toOptionReqList")
+    @Mapping(target = "options", source = "options", qualifiedByName = "toOptionResList")
     @Mapping(target = "originImageUrls", source = "images", qualifiedByName = "toOriginImageUrls")
     ProductDetailRes toDetailDto(Product product);
 
@@ -35,10 +35,11 @@ public interface ProductMapper {
                 .sum();
     }
 
-    @Named("toOptionReqList")
-    default List<ProductOptionReq> toOptionReqList(List<ProductOption> productOptions) {
+    @Named("toOptionResList")
+    default List<ProductOptionRes> toOptionResList(List<ProductOption> productOptions) {
         return productOptions.stream()
-                .map(option->ProductOptionReq.builder()
+                .map(option->ProductOptionRes.builder()
+                        .id(option.getId())
                         .name(option.getName())
                         .plusPrice(option.getPlusPrice())
                         .stock(option.getStock())

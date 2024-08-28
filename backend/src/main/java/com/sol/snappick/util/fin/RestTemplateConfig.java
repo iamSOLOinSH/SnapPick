@@ -1,4 +1,4 @@
-package com.sol.snappick.global;
+package com.sol.snappick.util.fin;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -22,7 +22,7 @@ public class ProductDetailRes {
     private Integer personalLimit;
 
     @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
-    private List<ProductOptionReq> options;
+    private List<ProductOptionRes> options;
 
     private List<String> originImageUrls;
 }

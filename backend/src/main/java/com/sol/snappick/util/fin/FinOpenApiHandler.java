@@ -1,16 +1,17 @@
-package com.sol.snappick.util;
+package com.sol.snappick.util.fin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-@Service
+@Component
+//@Service
 public class FinOpenApiHandler {
 
     private final RestTemplate restTemplate;

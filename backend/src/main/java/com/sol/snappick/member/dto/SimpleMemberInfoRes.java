@@ -10,9 +10,10 @@ public class SimpleMemberInfoRes {
 
     private String name;
     private String imagerUrl;
+    private String role;
 
     public static SimpleMemberInfoRes fromEntity(Member member) {
         return new SimpleMemberInfoRes(
-                member.getName(), member.getProfileImageUrl());
+                member.getName(), member.getProfileImageUrl(), member.getRole().name());
     }
 }

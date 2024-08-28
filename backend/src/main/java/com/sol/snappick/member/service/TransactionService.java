@@ -1,7 +1,7 @@
 package com.sol.snappick.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sol.snappick.util.FinOpenApiHandler;
+import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
