@@ -27,8 +27,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface StoreMapper {
 
     @Mapping(target = "images", ignore = true)
@@ -183,6 +184,14 @@ public interface StoreMapper {
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "tags", ignore = true)
     @Mapping(target = "runningTimes", ignore = true)
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "location", source = "location")
+    @Mapping(target = "latitude", source = "latitude")
+    @Mapping(target = "longitude", source = "longitude")
+    @Mapping(target = "operateStartAt", source = "operateStartAt")
+    @Mapping(target = "operateEndAt", source = "operateEndAt")
+    @Mapping(target = "status", source = "status")
     void updateEntityFromDto(
             StoreUpdateReq storeUpdateReq,
             @MappingTarget Store store
