@@ -30,6 +30,7 @@ public class AccountController {
             Authentication authentication
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
         return ResponseEntity.ok().body(null);
     }
 
@@ -40,6 +41,7 @@ public class AccountController {
             Authentication authentication
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
         return ResponseEntity.ok().body(null);
     }
 
@@ -52,6 +54,7 @@ public class AccountController {
             @RequestBody AccountSingleReq accountSingleReq
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
         return ResponseEntity.ok().body(null);
     }
 
@@ -63,6 +66,31 @@ public class AccountController {
             @RequestBody AccountTransferReq accountTransferReq
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
+        return ResponseEntity.ok().body(null);
+    }
+
+
+    @PostMapping("/identity")
+    @Operation(summary = "1원 송금 보내기",
+            description = "타행으로 1원 송금을 하여 본인 인증을 시도합니다")
+    public ResponseEntity<Void> beforeIdentification(
+            Authentication authentication,
+            AccountSingleReq accountSingleReq) {
+        Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/identity")
+    @Operation(summary = "1원 송금 확인하기",
+            description = "1원 송금 내역을 확인하고 본인 인증을 완료합니다")
+    public ResponseEntity<Void> AfterIdentification(
+            Authentication authentication,
+            @RequestParam(name = "auth_code") String authCode
+    ) {
+        Integer memberId = Integer.valueOf(authentication.getName());
+        // TODO
         return ResponseEntity.ok().body(null);
     }
 

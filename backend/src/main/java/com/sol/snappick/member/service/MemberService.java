@@ -36,6 +36,11 @@ public class MemberService {
         // 계정 생성 후, userKey 저장 (이미 존재하면 에러)
         String userKey = transactionService.postMember(member.getEmail());
 
+        if (memberRegisterReq.getRole() == 1) {
+            // 판매자면 싸피은행의 계좌 개설
+            transactionService.createAccount(userKey);
+        }
+
         //TODO 계좌생성
         member.init(memberRegisterReq.getRole(),
                 userKey,
