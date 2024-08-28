@@ -74,10 +74,10 @@ public class StoreController {
             """)
     public ResponseEntity<StoreRes> createPopupStore(
             @Valid @RequestPart("storeCreateReq") StoreCreateReq storeCreateReq,
-            @RequestPart(value = "images", required = false) MultipartFile[] images
+            @RequestPart(value = "imageFiles", required = false) MultipartFile[] imageFiles
     ) throws Exception {
         StoreRes response = storeService.createPopupStore(storeCreateReq,
-                                                          images);
+                                                          imageFiles);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(response);
     }
