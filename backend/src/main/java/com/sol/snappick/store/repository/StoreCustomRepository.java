@@ -15,4 +15,6 @@ public interface StoreCustomRepository {
 		StoreSearchReq searchReq,
 		Pageable pageable
 	);
+
+	List<Store> findWithoutClosed();
 }

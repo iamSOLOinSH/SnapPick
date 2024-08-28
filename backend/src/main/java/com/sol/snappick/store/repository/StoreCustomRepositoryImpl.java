@@ -3,22 +3,31 @@ package com.sol.snappick.store.repository;
 import static com.sol.snappick.store.entity.QStore.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sol.snappick.store.dto.StoreSearchConditionDto;
 import com.sol.snappick.store.dto.StoreSearchReq;
 import com.sol.snappick.store.entity.Store;
+import com.sol.snappick.store.entity.StoreStatus;
 import com.sol.snappick.store.exception.InvalidAttributeException;
 
+import io.jsonwebtoken.lang.Arrays;
 import lombok.AllArgsConstructor;
 
 @Repository
@@ -83,15 +92,48 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
 
 		// 만약 closing_soon 조건일 경우 마감일이 현재 날짜 이후여야함
 		if ( dto.getSortType() == StoreSearchReq.SortType.CLOSING_SOON ) {
+			// 임시 종료, 종료인 스토어는 제외
+			List<StoreStatus> excludedStatuses = new ArrayList<>();
+			excludedStatuses.add(StoreStatus.TEMPORARILY_CLOSED);
+			excludedStatuses.add(StoreStatus.CLOSED);
+
+			predicate.and(store.status.notIn(excludedStatuses));
 			predicate.and(store.operateEndAt.after(LocalDate.now()));
 		}
 
-		// TODO : Orderby 해결하기
+		// OrderBy 뺀 쿼리
+		JPQLQuery<Store> query = queryFactory.selectFrom(store)
+											 .where(predicate);
 
-		return queryFactory.selectFrom(store)
-						   .where(predicate)
-						   .offset(pageable.getOffset())
-						   .limit(pageable.getPageSize())
-						   .fetch();
+		if(dto.getSortType() == StoreSearchReq.SortType.CLOSING_SOON) { // 종료일 임박 순
+			query.orderBy(store.operateEndAt.asc());
+		} else if(dto.getSortType() == StoreSearchReq.SortType.RECENT) { // 최신 순
+			query.orderBy(store.createdAt.desc());
+		} else if(dto.getSortType() == StoreSearchReq.SortType.VIEWS) { // 조회수 순
+			query.orderBy(store.viewCount.desc());
+		} else { // 기본 정렬 기준 : 최근 순
+			query.orderBy(store.createdAt.asc());
+		}
+
+		return query.offset(pageable.getOffset())
+					.limit(pageable.getPageSize())
+					.fetch();
+	}
+
+	/**
+	 * 종료 상태인 스토어는 제외
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<Store> findWithoutClosed() {
+		BooleanBuilder predicate = new BooleanBuilder();
+
+		List<StoreStatus> excludedStatuses = new ArrayList<>();
+		excludedStatuses.add(StoreStatus.TEMPORARILY_CLOSED);
+		excludedStatuses.add(StoreStatus.CLOSED);
+		predicate.and(store.status.notIn(excludedStatuses).or(store.status.isNull()));
+
+		return queryFactory.selectFrom(store).where(predicate).fetch();
 	}
 }
