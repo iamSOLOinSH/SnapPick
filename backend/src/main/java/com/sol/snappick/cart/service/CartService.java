@@ -72,6 +72,12 @@ public class CartService {
         CartItem cartItemToUpdate = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new CartItemNotFoundException());
 
+        //주문 수량이 재고의 개수를 넘지 않는지 확인한다.
+        Product product = cartItemToUpdate.getProduct();
+        if (cartItemReq.getQuantity()>product.getStock()){
+            throw new QuantityOverProductStockException();
+        }
+
         //quantity를 갱신한다.
         cartItemToUpdate.updateDetails(cartItemReq.getQuantity());
         cartItemToUpdate = cartItemRepository.save(cartItemToUpdate);
