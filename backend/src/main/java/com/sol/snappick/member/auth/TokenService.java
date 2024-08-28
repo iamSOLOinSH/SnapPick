@@ -38,8 +38,6 @@ public class TokenService {
                 .issuedAt(now)
                 .expiration(expiry) // 만료시간
                 .subject(member.getId().toString())
-                .claim("user-key", member.getUserKey())
-                .claim("role", member.getRole())
                 .signWith(jwtConfig.getSecretKey())
                 .compact();
     }

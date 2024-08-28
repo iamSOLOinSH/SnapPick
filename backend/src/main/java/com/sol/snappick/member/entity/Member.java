@@ -27,7 +27,7 @@ public class Member extends BaseEntity {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
-    @Column(length = 4)
+    @Column(length = 64)
     private String pinCode;
 
     @Column(length = 15)
@@ -80,4 +80,7 @@ public class Member extends BaseEntity {
         this.businessNumber = businessNumber;
     }
 
+    public void changePinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
 }
