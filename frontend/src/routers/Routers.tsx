@@ -4,9 +4,12 @@ import HealthCheck from "../pages/HealthCheck";
 import Signup from "../pages/Signup";
 import SignupSuccess from "../pages/SignupSuccess";
 import PasswordSetup from "../pages/PasswordSetup";
+import VisitHistory from "../pages/VisitHistory";
+import Receipt from "../pages/Receipt";
 import Home from "../pages/Home";
 import StoreSearch from "../pages/StoreSearch";
 import StoreDetail from "../pages/StoreDetail";
+
 
 const Router = () => {
   return (
@@ -18,6 +21,8 @@ const Router = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/signup/success" element={<SignupSuccess />} />
       <Route path="/signup/password" element={<PasswordSetup />} />
+      <Route path="/history" element={<VisitHistory />} />
+      <Route path="/receipt" element={<Receipt />} />
       <Route path="/health-check" element={<HealthCheck />} />
     </Routes>
   );

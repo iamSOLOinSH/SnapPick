@@ -18,13 +18,16 @@ const Main = () => {
         <div className="absolute left-[-267px] top-[329px] animate-moveBlob3">
           <Blob_3 />
         </div>
+        <div className="absolute bottom-[-950px] right-[-99px] animate-moveBlob2">
+          <Blob_2 />
+        </div>
       </div>
       {/* 로고 */}
-      <div className="relative z-10 my-56 flex animate-popIn flex-col items-center justify-center">
+      <div className="relative z-10 mb-48 mt-64 flex animate-popIn flex-col items-center justify-center">
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
-      <button className="mb-4 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:opacity-50">
+      <button className="relative z-20 mb-4 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1">
         <svg
           viewBox="0 0 24 24"
           fill="none"
