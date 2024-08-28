@@ -20,7 +20,7 @@ public class CartController {
 
     @PostMapping("/{cart_id}/items")
     @Operation(summary = "카트 상품 추가", description = """
-            productOptionId, quantity를 담아서 보내주세요.
+            productId, quantity를 담아서 보내주세요.
             """)
     public ResponseEntity<CartItemRes> createCartItem(
             @PathVariable("cart_id") Integer cartId,

@@ -15,8 +15,8 @@ public class CartItemReq {
 
 //    @Schema(description = "카트 id")
 //    private Integer cartId;
-    @Schema(description = "옵션 id")
-    private Integer productOptionId;
+    @Schema(description = "상품 id")
+    private Integer productId;
     @Schema(description = "구매 수량")
     private Integer quantity;
 
