@@ -1,5 +1,6 @@
 package com.sol.snappick.member.controller;
 
+import com.sol.snappick.member.dto.DetailMemberInfoRes;
 import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.service.MemberService;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sol.snappick.global.ApiDescriptions.Headers.des_MemberRegisterReq;
 import static com.sol.snappick.global.ApiDescriptions.Headers.des_header_token;
@@ -41,5 +45,27 @@ public class MemberController {
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
         return ResponseEntity.ok().body(memberService.getSimpleMemberInfo(memberId));
+    }
+
+
+    @GetMapping("/dev/info")
+    @Operation(summary = "(개발용) 회원정보 확인",
+            description = "액세스 토큰, 또는 이메일, 또는 id를 통해 회원정보를 확인합니다")
+    public ResponseEntity<List<DetailMemberInfoRes>> getAllInfo(
+            @RequestParam(value = "token", required = false) String token,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "memberId", required = false) String memberId) {
+
+        List<DetailMemberInfoRes> responseData = new ArrayList<>();
+        if (token != null) {
+            responseData = memberService.getMemberInfo(token, "token");
+        } else if (email != null) {
+            responseData = memberService.getMemberInfo(email, "email");
+        } else if (memberId != null) {
+            responseData = memberService.getMemberInfo(memberId, "id");
+        } else {
+            responseData = memberService.getMemberInfo(null, "all");
+        }
+        return ResponseEntity.ok().body(responseData);
     }
 }
