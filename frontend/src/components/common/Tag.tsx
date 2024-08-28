@@ -2,13 +2,14 @@ import React from "react";
 import clsx from "clsx";
 
 const TAG_VARIANTS = {
-  default: "px-3 py-2 rounded-full text-sm font-medium select-none",
+  default:
+    "px-3 py-2 rounded-full text-sm font-medium select-none inline-flex items-center",
   primary: "bg-primary text-white",
   green: "bg-green text-white",
   red: "bg-red text-white",
   gray: "bg-darkBase text-white",
   select: "cursor-pointer hover:opacity-80",
-  delete: "relative w-full",
+  delete: "ml-2 flex items-center justify-center text-white text-xs",
 } as const;
 
 type TagProps = {
@@ -55,10 +56,7 @@ export const Tag: React.FC<TagProps> = ({
     <span className={tagClassName} onClick={handleClick}>
       {content}
       {isDelete && (
-        <button
-          onClick={onDelete}
-          className="absolute inset-y-0 right-4 flex cursor-pointer items-center bg-transparent"
-        >
+        <button onClick={onDelete} className={TAG_VARIANTS.delete}>
           ✕
         </button>
       )}

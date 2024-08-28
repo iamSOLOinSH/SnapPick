@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { MdCameraAlt } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 
@@ -8,18 +8,34 @@ interface Photo {
 }
 
 interface PhotoUploaderProps {
+  initialPhotos: File[];
   maxPhotos?: number;
   maxFileSize?: number;
   onPhotosChange: (photos: File[]) => void;
 }
 
 export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
+  initialPhotos,
   maxPhotos = 10,
   maxFileSize = 5, // 5MB
   onPhotosChange,
 }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const initialPhotoObjects = initialPhotos.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setPhotos(initialPhotoObjects);
+
+    return () => {
+      initialPhotoObjects.forEach((photo) =>
+        URL.revokeObjectURL(photo.preview),
+      );
+    };
+  }, [initialPhotos]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFiles = e.target.files as FileList;
