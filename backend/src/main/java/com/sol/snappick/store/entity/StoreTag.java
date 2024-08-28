@@ -24,7 +24,8 @@ public class StoreTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(length = 20)
+    @Size(max = 20, message = "태그는 최대 20자까지 가능합니다.")
     private String tag;
 
     @ManyToOne

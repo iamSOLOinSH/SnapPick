@@ -1,6 +1,8 @@
 package com.sol.snappick.store.handler;
 
 import com.sol.snappick.store.exception.InvalidAttributeException;
+import com.sol.snappick.store.exception.QrGenerateFailException;
+import com.sol.snappick.store.exception.QrInvalidException;
 import com.sol.snappick.store.exception.StoreImageLimitExceedException;
 import com.sol.snappick.store.exception.StoreNotFoundException;
 import java.util.List;
@@ -79,5 +81,29 @@ public class StoreExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(errorMessageJson);
+    }
+
+    /**
+     * 큐알이 invalid 함
+     *
+     * @param e QrInvalidException
+     * @return 에러코드 + 에러설명
+     */
+    @ExceptionHandler(QrInvalidException.class)
+    public ResponseEntity<String> handleQrInvalidException(QrInvalidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(e.getMessage());
+    }
+
+    /**
+     * 큐알을 만드는데 실패
+     *
+     * @param e QrInvalidException
+     * @return 에러코드 + 에러설명
+     */
+    @ExceptionHandler(QrGenerateFailException.class)
+    public ResponseEntity<String> handleQrGenerateFailException(QrGenerateFailException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(e.getMessage());
     }
 }

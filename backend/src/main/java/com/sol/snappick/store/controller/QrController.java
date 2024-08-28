@@ -1,15 +1,13 @@
 package com.sol.snappick.store.controller;
 
 
+import com.sol.snappick.store.exception.QrInvalidException;
+import com.sol.snappick.store.service.QrService;
 import com.sol.snappick.store.util.JwtUtil;
 import com.sol.snappick.util.QrUtil;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +22,8 @@ public class QrController {
 
     private final JwtUtil jwtUtil;
     private final QrUtil qrUtil;
-    @Value("${app.base-url}")
-    private String baseUrl;
+    private final QrService qrService;
+
 
     @PostMapping("/{store_uuid}")
     public ResponseEntity<byte[]> qr(
@@ -33,41 +31,30 @@ public class QrController {
             // 기본 3분
             @RequestParam(defaultValue = "180000", required = false, value = "duration") long duration
     ) {
-        try {
-            String token = jwtUtil.generateToken(uuid, duration); // 토큰 생성
-            String url = baseUrl + "/store/qr/validate?token=" + token; // QR 코드에 포함될 URL
-
-            int width = 300;
-            int height = 300;
-
-            byte[] qrImage = qrUtil.generateQrCode(url, width, height);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG);
-            headers.setContentLength(qrImage.length);
-
-            return ResponseEntity.ok()
-                                 .headers(headers)
-                                 .body(qrImage);
-        } catch (IOException e) {
-            return ResponseEntity.status(500)
-                                 .build();
-        }
+        byte[] response = qrService.generateQrCode(uuid, duration);
+        return ResponseEntity.ok()
+                             .body(response);
     }
 
     // QR 코드 검증 엔드포인트
     @GetMapping("/validate")
     public ResponseEntity<String> validateQr(
-            @RequestParam("token") String token
+            @RequestParam("token") String token,
+            Authentication authentication
     ) {
-        if (jwtUtil.validateToken(token)) {
-            String storeId = jwtUtil.getStoreIdFromToken(token);
+        // 현재 사용자 ID 식별
+        Integer memberId = Integer.valueOf(authentication.getName());
 
-            // 필요한 로직 수행
-            return ResponseEntity.ok("유효한 QR 코드입니다. Store ID: " + storeId);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body("유효하지 않거나 만료된 QR 코드입니다.");
+        // QR 코드 토큰 검증
+        if (!jwtUtil.validateToken(token)) {
+            throw new QrInvalidException();
         }
+
+        // QR 코드로부터 스토어 ID 받아오기
+        String storeId = jwtUtil.getStoreIdFromToken(token);
+
+        // 필요한 로직 수행
+        return ResponseEntity.ok("유효한 QR 코드입니다. Store ID: " + storeId);
+
     }
 }

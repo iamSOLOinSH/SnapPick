@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class PopplyHandler {
+public class StoreAPIHandler {
 
     private final String BASE_URL = "https://api.popply.co.kr/api/store/";
 

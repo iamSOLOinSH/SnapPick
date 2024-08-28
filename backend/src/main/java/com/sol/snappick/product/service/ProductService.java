@@ -12,8 +12,8 @@ import com.sol.snappick.product.mapper.ProductMapper;
 import com.sol.snappick.product.repository.*;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.repository.StoreRepository;
-import com.sol.snappick.util.ImageUploadRes;
-import com.sol.snappick.util.MinioUtil;
+import com.sol.snappick.util.minio.ImageUploadRes;
+import com.sol.snappick.util.minio.MinioUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class ProductService {
         // 유효성 검증
         // 1) 팝업스토어
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException());
+                                     .orElseThrow(() -> new StoreNotFoundException());
 
         // 2) 이미지
         if (images!=null && images.length>10){
@@ -76,7 +76,7 @@ public class ProductService {
     ) throws Exception{
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException());
+                                           .orElseThrow(() -> new ProductNotFoundException());
 
         return productMapper.toDetailDto(product);
     }
@@ -86,17 +86,17 @@ public class ProductService {
             throws Exception{
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException());
+                                     .orElseThrow(() -> new StoreNotFoundException());
 
         return productRepository.findByStore(store).stream()
-                .map(productMapper::toSimpleDto)
-                .toList();
+                                .map(productMapper::toSimpleDto)
+                                .toList();
     }
 
     @Transactional
     public ProductDetailRes updateProduct(Integer productId, ProductCreateReq productCreateReq, MultipartFile[] images) throws Exception {
         Product productToUpdate = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException());
+                                                   .orElseThrow(() -> new ProductNotFoundException());
 
         productToUpdate.updateDetails(
                 productCreateReq.getName(),
@@ -134,7 +134,7 @@ public class ProductService {
     ) throws Exception{
 
         Product productToDelete = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException());
+                                                   .orElseThrow(() -> new ProductNotFoundException());
 
         //이미지 삭제
         for (ProductImage image: productToDelete.getImages()){
@@ -169,10 +169,10 @@ public class ProductService {
                 continue;
             }
             ProductImage productImage = ProductImage.builder()
-                    .originImageUrl(imageDto.getOriginImageUrl())
-                    .thumbnailImageUrl(imageDto.getThumbnailImageUrl())
-                    .product(product)
-                    .build();
+                                                    .originImageUrl(imageDto.getOriginImageUrl())
+                                                    .thumbnailImageUrl(imageDto.getThumbnailImageUrl())
+                                                    .product(product)
+                                                    .build();
             productImages.add(productImage);
         }
         return productImages;

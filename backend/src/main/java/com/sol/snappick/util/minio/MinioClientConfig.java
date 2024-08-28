@@ -1,4 +1,4 @@
-package com.sol.snappick.util;
+package com.sol.snappick.util.minio;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
