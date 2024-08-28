@@ -54,4 +54,16 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("/{cart_id}/items/{item_id}")
+    @Operation(summary = "카트 상품 삭데", description = """
+            cart_id, item_id를 이용해서 카트에 추가한 상품을 삭제할 수 있습니다.
+            """)
+    public ResponseEntity<Boolean> deleteCartItem(
+            @PathVariable("cart_id") Integer cartId,
+            @PathVariable("item_id") Integer itemId
+    ) throws Exception{
+        Boolean response = cartService.deleteCartItem(cartId, itemId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

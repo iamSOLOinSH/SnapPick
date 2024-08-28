@@ -56,6 +56,7 @@ public class CartService {
                 .build();
     }
 
+    @Transactional
     public CartItemRes updateCartItem(Integer cartId, Integer itemId, CartItemReq cartItemReq) {
 
         //cart
@@ -77,6 +78,7 @@ public class CartService {
                 .build();
     }
 
+    @Transactional
     public List<CartItemRes> readCartItem(Integer cartId) {
         //cart
         Cart cart = cartRepository.findById(cartId)
@@ -90,5 +92,23 @@ public class CartService {
                         .quantity(item.getQuantity())
                         .build()
                 )).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Boolean deleteCartItem(Integer cartId, Integer itemId) {
+        //cart
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CartNotFoundException());
+
+        //cartItem
+        CartItem cartItemToDelete = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new CartItemNotFoundException());
+
+        try {
+            cartItemRepository.delete(cartItemToDelete);
+            return true;
+        } catch(Exception  e){
+            return false;
+        }
     }
 }
