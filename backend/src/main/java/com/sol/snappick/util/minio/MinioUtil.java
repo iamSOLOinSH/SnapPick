@@ -318,17 +318,34 @@ public class MinioUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	private InputStream downloadImageFromUrl (String imageUrl) throws Exception {
-		// 다운로드할 url
-		URL url = new URL(imageUrl);
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		connection.setRequestMethod("GET");
-		connection.connect();
-		// download error
-		if ( connection.getResponseCode() != HttpURLConnection.HTTP_OK ) {
-			throw new RuntimeException("Failed to download image: " + connection.getResponseCode());
-		}
+	private InputStream downloadImageFromUrl(String imageUrl) throws Exception {
+		int retries = 3;
+		int delay = 2000; // 2초
+		int connectTimeout = 10000; // 10초
+		int readTimeout = 10000; // 10초
 
-		return connection.getInputStream();
+		for (int i = 0; i < retries; i++) {
+			try {
+				URL url = new URL(imageUrl);
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setRequestMethod("GET");
+				connection.setConnectTimeout(connectTimeout); // 연결 타임아웃 설정
+				connection.setReadTimeout(readTimeout); // 읽기 타임아웃 설정
+				connection.connect();
+
+				if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					return connection.getInputStream();
+				} else {
+					throw new IOException("Failed to download image, HTTP response code: " + connection.getResponseCode());
+				}
+			} catch (IOException e) {
+				if (i == retries - 1) {
+					throw new IOException("Failed to download image after " + retries + " attempts", e);
+				}
+				Thread.sleep(delay);
+			}
+		}
+		throw new IOException("Failed to download image from URL after retries");
 	}
+
 }
