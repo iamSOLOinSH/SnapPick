@@ -48,10 +48,20 @@ public class StoreController {
             | longitude | double | 스토어 위치의 경도 |
             | operateStartAt | LocalDate | 운영 시작 날짜 |
             | operateEndAt | LocalDate | 운영 종료 날짜 |
+            | status | StoreStatus | 스토어 상태 (비워서 주면 알아서 계산해서 채워넣습니다) |
             | sellerId | integer | 판매자 ID |
             | tags | list(String) | 태그 목록 |
             | images | list(StoreImageDto) | 스토어 이미지 목록. <b>여기는 비워서 주세요!</b> |
             | runningTimes | list(StoreRunningTimeDto) | 운영 시간 목록 |
+            \n
+            \n
+            <b>StoreStatus</b>
+            | Name | Description |
+            |-----|-----|
+            | PREPARING | 준비중 |
+            | OPERATING | 운영중  |
+            | CLOSED | 종료 |
+            | TEMPORARILY_CLOSED | 임시 종료 | 
             \n
             \n
             <b>StoreRunningTimeDto</b>
@@ -138,7 +148,7 @@ public class StoreController {
                              .body(response);
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{store_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "팝업 스토어 수정", description = """
             팝업 스토어 수정
             \n
@@ -155,10 +165,19 @@ public class StoreController {
             | longitude | double | 스토어 위치의 경도 |
             | operateStartAt | LocalDate | 운영 시작 날짜 |
             | operateEndAt | LocalDate | 운영 종료 날짜 |
-            | sellerId | integer | 판매자 ID |
-            | tags | list(String) | 태그 목록 |
+            | status | StoreStatus | 스토어 상태 (닫은 상태/임시 닫은 상태 일 때만 넣어주시면 될 거 같습니다.) |
+            | tags | list(String) | 태그 목록(여기에 값이 들어오면 기존꺼는 삭제합니다 -> 안바뀌면 안주시면됩니다.) |
             | images | list(StoreImageDto) | 스토어 이미지 목록. <b>여기는 비워서 주세요!</b> |
-            | runningTimes | list(StoreRunningTimeDto) | 운영 시간 목록 |
+            | runningTimes | list(StoreRunningTimeDto) | 운영 시간 목록(여기에 값이 들어오면 기존꺼는 삭제합니다 -> 안바뀌면 안주시면됩니다.) |
+            \n
+            \n
+            <b>StoreStatus</b>
+            | Name | Description |
+            |-----|-----|
+            | PREPARING | 준비중 |
+            | OPERATING | 운영중  |
+            | CLOSED | 종료 |
+            | TEMPORARILY_CLOSED | 임시 종료 | 
             \n
             \n
             <b>StoreRunningTimeDto</b>
