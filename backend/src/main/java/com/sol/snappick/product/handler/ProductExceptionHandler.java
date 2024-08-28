@@ -3,7 +3,7 @@ package com.sol.snappick.product.handler;
 import com.sol.snappick.product.exception.ProductBadRequestException;
 import com.sol.snappick.product.exception.ProductImageLimitExceedException;
 import com.sol.snappick.product.exception.ProductNotFoundException;
-import com.sol.snappick.product.exception.QuantityOverProductStockException;
+import com.sol.snappick.product.exception.QuantityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,8 +30,8 @@ public class ProductExceptionHandler {
                              .body(e.getMessage());
     }
 
-    @ExceptionHandler(QuantityOverProductStockException.class)
-    public ResponseEntity<String> handleQuantityOverProductStockException(QuantityOverProductStockException e) {
+    @ExceptionHandler(QuantityException.class)
+    public ResponseEntity<String> handleQuantityException(QuantityException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }

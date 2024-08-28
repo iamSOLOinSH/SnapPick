@@ -8,7 +8,7 @@ import com.sol.snappick.product.entity.Cart;
 import com.sol.snappick.product.entity.CartItem;
 import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.exception.ProductNotFoundException;
-import com.sol.snappick.product.exception.QuantityOverProductStockException;
+import com.sol.snappick.product.exception.QuantityException;
 import com.sol.snappick.product.repository.CartItemRepository;
 import com.sol.snappick.product.repository.CartRepository;
 import com.sol.snappick.product.repository.ProductRepository;
@@ -43,7 +43,11 @@ public class CartService {
 
         //주문 수량이 재고의 개수를 넘지 않는지 확인한다.
         if (cartItemReq.getQuantity()>product.getStock()){
-            throw new QuantityOverProductStockException();
+            throw new QuantityException();
+        }
+        //주문 수량이 인당 개수 제한을 만족하는지 확인한다.
+        if (cartItemReq.getQuantity()>product.getPersonalLimit()){
+            throw new QuantityException("인당 구매 가능 수량을 넘어서는 수량은 구매할 수 없습니다.");
         }
 
         //cart에 cartItem을 추가한다.
@@ -72,10 +76,14 @@ public class CartService {
         CartItem cartItemToUpdate = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new CartItemNotFoundException());
 
-        //주문 수량이 재고의 개수를 넘지 않는지 확인한다.
         Product product = cartItemToUpdate.getProduct();
+        //주문 수량이 재고의 개수를 넘지 않는지 확인한다.
         if (cartItemReq.getQuantity()>product.getStock()){
-            throw new QuantityOverProductStockException();
+            throw new QuantityException();
+        }
+        //주문 수량이 인당 개수 제한을 만족하는지 확인한다.
+        if (cartItemReq.getQuantity()>product.getPersonalLimit()){
+            throw new QuantityException("인당 구매 가능 수량을 넘어서는 수량은 구매할 수 없습니다.");
         }
 
         //quantity를 갱신한다.
