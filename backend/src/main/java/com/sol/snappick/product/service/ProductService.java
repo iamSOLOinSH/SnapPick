@@ -5,13 +5,10 @@ import com.sol.snappick.product.dto.ProductDetailRes;
 import com.sol.snappick.product.dto.ProductSimpleRes;
 import com.sol.snappick.product.entity.Product;
 import com.sol.snappick.product.entity.ProductImage;
-import com.sol.snappick.product.entity.ProductOption;
 import com.sol.snappick.product.exception.ProductImageLimitExceedException;
 import com.sol.snappick.product.exception.ProductNotFoundException;
 import com.sol.snappick.store.exception.StoreNotFoundException ;
-import com.sol.snappick.product.mapper.ProductImageMapper;
 import com.sol.snappick.product.mapper.ProductMapper;
-import com.sol.snappick.product.mapper.ProductOptionMapper;
 import com.sol.snappick.product.repository.*;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.repository.StoreRepository;
@@ -30,13 +27,10 @@ import java.util.List;
 public class ProductService {
 
     private final ProductImageRepository productImageRepository;
-    private final ProductOptionRepository productOptionRepository;
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
 
     private final ProductMapper productMapper;
-    private final ProductImageMapper productImageMapper;
-    private final ProductOptionMapper productOptionMapper;
 
     private final String BUCKET_NAME = "snappick-product";
     private final MinioUtil minioUtil;
@@ -70,13 +64,6 @@ public class ProductService {
             List<ProductImage> productImages = uploadImagesToMinio(images, productToCreate);
             productImageRepository.saveAll(productImages);
             productToCreate.setImages(productImages);
-        }
-
-        //옵션 처리
-        if (productCreateReq.getOptions()!=null){
-            List<ProductOption> productOptions = productOptionMapper.toEntityList(productCreateReq.getOptions(), productToCreate);
-            productOptionRepository.saveAll(productOptions);
-            productToCreate.setOptions(productOptions);
         }
 
         //최종 DTO로 젼환하여 반환
@@ -115,6 +102,7 @@ public class ProductService {
                 productCreateReq.getName(),
                 productCreateReq.getDescription(),
                 productCreateReq.getPrice(),
+                productCreateReq.getStock(),
                 productCreateReq.getDailyLimit(),
                 productCreateReq.getPersonalLimit()
         );
@@ -133,20 +121,6 @@ public class ProductService {
             List<ProductImage> newImages = uploadImagesToMinio(images, productToUpdate);
             productToUpdate.getImages().addAll(newImages);
             productImageRepository.saveAll(newImages);
-        }
-
-        // 옵션 처리
-        if (productCreateReq.getOptions() != null) {
-            // 기존 옵션 삭제
-            for (ProductOption option : new ArrayList<>(productToUpdate.getOptions())) {
-                productToUpdate.getOptions().remove(option);
-                productOptionRepository.delete(option);
-            }
-
-            // 새 옵션 추가
-            List<ProductOption> newOptions = productOptionMapper.toEntityList(productCreateReq.getOptions(), productToUpdate);
-            productToUpdate.getOptions().addAll(newOptions);
-            productOptionRepository.saveAll(newOptions);
         }
 
         Product updatedProduct = productRepository.save(productToUpdate);
@@ -168,9 +142,6 @@ public class ProductService {
             minioUtil.deleteImage(image.getThumbnailImageUrl());
         }
         productImageRepository.deleteAll(productToDelete.getImages());
-
-        //옵션 삭제
-        productOptionRepository.deleteAll(productToDelete.getOptions());
 
         try {
             productRepository.delete(productToDelete);

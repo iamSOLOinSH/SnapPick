@@ -22,13 +22,13 @@ public class ProductCreateReq {
     @Schema(description = "상품 가격")
     private Integer price;
 
+    @Schema(description = "상품 재고")
+    private Integer stock;
+
     @Schema(description = "상품 일일 물량 제한")
     private Integer dailyLimit;
 
     @Schema(description = "상품 1인 구매 제한")
     private Integer personalLimit;
 
-    @Schema(description = "상품 옵션 목록")
-    @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
-    private List<ProductOptionReq> options;
 }
