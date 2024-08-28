@@ -2,16 +2,7 @@ package com.sol.snappick.product.entity;
 
 import com.sol.snappick.global.BaseEntity;
 import com.sol.snappick.store.entity.Store;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +44,11 @@ public class Product extends BaseEntity {
     @Setter
     private Store store;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Setter
+    private ProductStatus status;
+
     @Builder
     public Product(
             String name,
@@ -62,7 +58,8 @@ public class Product extends BaseEntity {
             Integer dailyLimit,
             Integer personalLimit,
             List<ProductImage> images,
-            Store store) {
+            Store store,
+            ProductStatus status) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -71,6 +68,7 @@ public class Product extends BaseEntity {
         this.personalLimit = personalLimit;
         this.images = new ArrayList<>();
         this.store = store;
+        this.status = status;
     }
 
     public void updateDetails(

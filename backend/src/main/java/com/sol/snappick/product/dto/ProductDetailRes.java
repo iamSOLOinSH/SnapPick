@@ -1,5 +1,6 @@
 package com.sol.snappick.product.dto;
 
+import com.sol.snappick.product.entity.ProductStatus;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -20,5 +21,6 @@ public class ProductDetailRes {
     private Integer stock;
     private Integer dailyLimit;
     private Integer personalLimit;
+    private ProductStatus status;
     private List<String> originImageUrls;
 }
