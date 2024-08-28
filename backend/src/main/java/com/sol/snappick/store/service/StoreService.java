@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +26,7 @@ import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIRes;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreImage;
+import com.sol.snappick.store.exception.InvalidUUIDFormatException;
 import com.sol.snappick.store.exception.StoreImageLimitExceedException;
 import com.sol.snappick.store.exception.StoreNotFoundException;
 import com.sol.snappick.store.mapper.StoreImageMapper;
@@ -76,7 +78,7 @@ public class StoreService {
 			StoreCreateReq storeCreateReq,
 			MultipartFile[] images
 	) throws Exception {
-		if ( images != null && images.length > 3 ) {
+		if(images != null && images.length > 3) {
 			throw new StoreImageLimitExceedException();
 		}
 
@@ -84,7 +86,7 @@ public class StoreService {
 		storeToCreate = storeRepository.save(storeToCreate); // Store 먼저 저장
 		storeToCreate.updateStatus(); // status 계산
 		// 이미지 처리 및 저장
-		if ( images != null ) {
+		if(images != null) {
 			List<StoreImage> storeImages = uploadImagesToMinio(images,
 															   storeToCreate);
 			storeImageRepository.saveAll(storeImages);
@@ -108,14 +110,14 @@ public class StoreService {
 	) throws Exception {
 		List<StoreImage> storeImages = new ArrayList<>();
 
-		for (MultipartFile image : images) {
-			if ( image.isEmpty() ) {
+		for(MultipartFile image : images) {
+			if(image.isEmpty()) {
 				continue;
 			}
 			// 실제 이미지 파일 저장 로직은 생략합니다 (예: 파일 시스템, S3, etc.)
 			ImageUploadRes imageDto = minioUtil.uploadImageWithThumbnail(BUCKET_NAME,
 																		 image); // 이미지 저장 메서드 필요
-			if ( imageDto == null ) {
+			if(imageDto == null) {
 				continue;
 			}
 			StoreImage storeImage = StoreImage.builder()
@@ -144,7 +146,7 @@ public class StoreService {
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
 		// 생성 데이터
-		for (StoreAPIDataDto data : storeAPIData.getData()) {
+		for(StoreAPIDataDto data : storeAPIData.getData()) {
 			StoreCreateReq storeCreateReq = storeMapper.apiDataToStoreCreateReq(data);
 
 			// 이미지 처리 및 MinIO에 업로드
@@ -154,7 +156,7 @@ public class StoreService {
 			images = images.subList(0,
 									end);
 
-			if ( images != null && !images.isEmpty() ) {
+			if(images != null && !images.isEmpty()) {
 				// 비동기 처리 시작
 				List<CompletableFuture<StoreImageDto>> futures = images.stream()
 																	   .map(imageDto -> CompletableFuture.supplyAsync(() -> {
@@ -166,7 +168,7 @@ public class StoreService {
 																																				  .originImageUrl(uploadRes.getOriginImageUrl())
 																																				  .thumbnailImageUrl(uploadRes.getThumbnailImageUrl())
 																																				  .build();
-																														  } catch (Exception e) {
+																														  } catch(Exception e) {
 																															  // 이미지 업로드 실패 시 예외 처리 로직 추가 가능
 																															  e.printStackTrace();
 																															  return null;
@@ -274,7 +276,7 @@ public class StoreService {
 	 * @return
 	 */
 	private Sort getStoreSort(StoreSearchReq.SortType sortType) {
-		switch (sortType) {
+		switch(sortType) {
 			case VIEWS:
 				return Sort.by(Sort.Direction.DESC,
 							   "viewCount");
@@ -307,23 +309,23 @@ public class StoreService {
 		Store store = findStoreWithException(storeId);
 
 		// 기존의 이미지, 태그, 운영 시간을 삭제하기 전에 명시적으로 컬렉션을 관리
-		if ( images != null && images.length > 0 ) {
+		if(images != null && images.length > 0) {
 			store.getImages()
 				 .clear();
-			for (StoreImage image : store.getImages()) {
+			for(StoreImage image : store.getImages()) {
 				minioUtil.deleteImage(image.getOriginImageUrl());
 				minioUtil.deleteImage(image.getThumbnailImageUrl());
 			}
 		}
 
-		if ( storeUpdateReq.getTags() != null && !storeUpdateReq.getTags()
-																.isEmpty() ) {
+		if(storeUpdateReq.getTags() != null && !storeUpdateReq.getTags()
+															  .isEmpty()) {
 			store.getTags()
 				 .clear();
 		}
 
-		if ( storeUpdateReq.getRunningTimes() != null && !storeUpdateReq.getRunningTimes()
-																		.isEmpty() ) {
+		if(storeUpdateReq.getRunningTimes() != null && !storeUpdateReq.getRunningTimes()
+																	  .isEmpty()) {
 			store.getRunningTimes()
 				 .clear();
 		}
@@ -341,7 +343,7 @@ public class StoreService {
 														 store));
 
 		// 이미지 처리 및 저장
-		if ( images != null && images.length > 0 ) {
+		if(images != null && images.length > 0) {
 			List<StoreImage> storeImages = uploadImagesToMinio(images,
 															   store);
 			store.getImages()
@@ -360,10 +362,31 @@ public class StoreService {
 	@Transactional
 	public void updateStoreStatuses() {
 		// 모든 스토어에 대해 상태를 업데이트
-		for (Store store : storeRepository.findWithoutClosed()) {
+		for(Store store : storeRepository.findWithoutClosed()) {
 			store.updateStatus();
 			storeRepository.save(store);
 		}
 	}
 
+	/**
+	 * storeUUID 로 storeID 받기
+	 * @param storeUUID
+	 * @return
+	 */
+	public Integer getStoreIdByUUID(String storeUUID) {
+		try {
+			// UUID 변환 시 발생할 수 있는 IllegalArgumentException 처리
+			UUID uuid = UUID.fromString(storeUUID);
+			Integer storeId = storeRepository.findByUUID(uuid);
+
+			if(storeId == null) {
+				throw new StoreNotFoundException();
+			}
+
+			return storeId;
+		} catch(IllegalArgumentException e) {
+			// 잘못된 UUID 형식인 경우 처리
+			throw new InvalidUUIDFormatException();
+		}
+	}
 }
