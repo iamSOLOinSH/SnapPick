@@ -37,18 +37,16 @@ public class Product extends BaseEntity {
     private Integer price;
 
     @Column
+    private Integer stock;
+
+    @Column
     private Integer dailyLimit;
 
     @Column
     private Integer personalLimit;
 
-    // 상품 이미지
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images;
-
-    // 상품 옵션
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOption> options;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
@@ -60,18 +58,18 @@ public class Product extends BaseEntity {
             String name,
             String description,
             Integer price,
+            Integer stock,
             Integer dailyLimit,
             Integer personalLimit,
             List<ProductImage> images,
-            List<ProductOption> options,
             Store store) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.stock=stock;
         this.dailyLimit = dailyLimit;
         this.personalLimit = personalLimit;
-        this.images = new ArrayList<>();;
-        this.options = new ArrayList<>();;
+        this.images = new ArrayList<>();
         this.store = store;
     }
 
@@ -79,12 +77,14 @@ public class Product extends BaseEntity {
             String name,
             String description,
             Integer price,
+            Integer stock,
             Integer dailyLimit,
             Integer personalLimit
             ) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.stock=stock;
         this.dailyLimit = dailyLimit;
         this.personalLimit = personalLimit;
     }
@@ -102,21 +102,6 @@ public class Product extends BaseEntity {
     private void addImage(ProductImage image) {
         this.images.add(image);
         image.setProduct(this);
-    }
-
-    // 옵션 관련 메서드
-    public void setOptions(List<ProductOption> newOptions) {
-        this.options.clear();
-        if (newOptions != null) {
-            for (ProductOption option : newOptions) {
-                addOption(option);
-            }
-        }
-    }
-
-    private void addOption(ProductOption option) {
-        this.options.add(option);
-        option.setProduct(this);
     }
 
 }
