@@ -38,13 +38,37 @@ public class MemberController {
     }
 
     @GetMapping("/info")
-    @Operation(summary = "회원 정보 확인",
+    @Operation(summary = "회원정보 확인",
             description = des_header_token + des_output + des_SimpleMemberInfoRes)
     public ResponseEntity<SimpleMemberInfoRes> getSimpleInfo(
             Authentication authentication
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
         return ResponseEntity.ok().body(memberService.getSimpleMemberInfo(memberId));
+    }
+
+
+    @GetMapping("/pincode")
+    @Operation(summary = "(개발용) 핀코드 일치여부 확인",
+            description = des_header_token)
+    public ResponseEntity<Boolean> isCorrectPin(
+            Authentication authentication,
+            @RequestParam(name = "pin_code") String pinCode
+    ) {
+        Integer memberId = Integer.valueOf(authentication.getName());
+        return ResponseEntity.ok().body(memberService.isCorrectPin(memberId, pinCode));
+    }
+
+    @PostMapping("/pincode")
+    @Operation(summary = "핀코드 재설정",
+            description = "새로운 핀코드를 저장합니다.<br/>" + des_header_token)
+    public ResponseEntity<Void> resetPin(
+            Authentication authentication,
+            @RequestParam(name = "pin_code") String pinCode
+    ) {
+        Integer memberId = Integer.valueOf(authentication.getName());
+        memberService.resetPin(memberId, pinCode);
+        return ResponseEntity.ok().build();
     }
 
 

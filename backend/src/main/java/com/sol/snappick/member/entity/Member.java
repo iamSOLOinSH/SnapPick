@@ -80,4 +80,7 @@ public class Member extends BaseEntity {
         this.businessNumber = businessNumber;
     }
 
+    public void changePinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
 }

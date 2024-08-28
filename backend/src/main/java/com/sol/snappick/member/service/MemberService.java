@@ -28,6 +28,7 @@ public class MemberService {
     private final TransactionService transactionService;
     private final TokenService tokenService;
 
+    // 회원가입
     public SimpleMemberInfoRes register(Integer memberId,
                                         MemberRegisterReq memberRegisterReq) {
         Member member = getMemberById(memberId);
@@ -47,18 +48,34 @@ public class MemberService {
         return SimpleMemberInfoRes.fromEntity(member);
     }
 
+    // 회원정보 확인
     @Transactional(readOnly = true)
     public SimpleMemberInfoRes getSimpleMemberInfo(Integer memberId) {
         Member member = getMemberById(memberId);
         return SimpleMemberInfoRes.fromEntity(member);
     }
 
+    // 핀코드 일치여부 확인
+    @Transactional(readOnly = true)
+    public Boolean isCorrectPin(Integer memberId, String pinCode) {
+        String origin = getMemberById(memberId).getPinCode();
+        return origin.equals(encode(pinCode));
+    }
+
+    // 핀코드 재설정
+    public void resetPin(Integer memberId, String pinCode) {
+        Member member = getMemberById(memberId);
+        // TODO 본인인증 로직 추가
+        member.changePinCode(encode(pinCode));
+        memberRepository.save(member);
+    }
+
+    //////////////////////////////////////////////// 개발용
+
     @Transactional(readOnly = true)
     public List<DetailMemberInfoRes> getMemberInfo(String value, String type) {
 
         List<DetailMemberInfoRes> response = new ArrayList<>();
-
-
         if (type.equals("token")) {
             Integer memberId = Integer.parseInt(tokenService.getClaims(value).getSubject());
             response.add(DetailMemberInfoRes.fromEntity(getMemberById(memberId)));
@@ -76,7 +93,7 @@ public class MemberService {
         return response;
     }
 
-    ////////////////////////////////////////////////
+    //////////////////////////////////////////////// private
 
     private Member getMemberById(Integer memberId) {
         return memberRepository.findById(memberId).orElseThrow(
