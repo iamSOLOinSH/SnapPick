@@ -7,6 +7,10 @@ import PasswordSetup from "../pages/PasswordSetup";
 import Home from "../pages/Home";
 import StoreSearch from "../pages/StoreSearch";
 import StoreDetail from "../pages/StoreDetail";
+import ProductCreate from "../pages/ProductCreate";
+import ProductCreateSuccess from "../pages/ProductCreateSuccess";
+import StoreCreate from "../pages/StoreCreate";
+import StoreCreateSuccess from "../pages/StoreCreateSuccess";
 
 const Router = () => {
   return (
@@ -14,6 +18,13 @@ const Router = () => {
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<Home />} />
       <Route path="/search" element={<StoreSearch />} />
+      <Route path="/store/create" element={<StoreCreate />} />
+      <Route path="/store/create/success" element={<StoreCreateSuccess />} />
+      <Route path="/product/create" element={<ProductCreate />} />
+      <Route
+        path="/product/create/success"
+        element={<ProductCreateSuccess />}
+      />
       <Route path="/store/detail/:storeId" element={<StoreDetail />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/signup/success" element={<SignupSuccess />} />

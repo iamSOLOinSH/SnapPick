@@ -113,14 +113,17 @@ const ProductCreate = () => {
                 placeholder="개"
                 variant="half"
                 value={productTotalStock}
-                onChange={(e) => setProductTotalStock(e.target.value)}
+                onChange={(e) => handleNumberInput(e, setProductTotalStock)}
               />
             </div>
           </div>
           <div className="mb-4">
             <InputLabel name="상품 사진" />
             <div className="ml-4">
-              <PhotoUploader onPhotosChange={handlePhotosChange} />
+              <PhotoUploader
+                onPhotosChange={handlePhotosChange}
+                initialPhotos={productPhotos}
+              />
             </div>
           </div>
           <div className="mb-4 w-full">
