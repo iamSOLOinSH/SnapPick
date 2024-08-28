@@ -9,7 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sol.snappick.global.ApiDescriptions.header_token;
+import static com.sol.snappick.global.ApiDescriptions.Headers.des_MemberRegisterReq;
+import static com.sol.snappick.global.ApiDescriptions.Headers.des_header_token;
+import static com.sol.snappick.global.ApiDescriptions.MemberController.des_SimpleMemberInfoRes;
+import static com.sol.snappick.global.ApiDescriptions.common.des_input;
+import static com.sol.snappick.global.ApiDescriptions.common.des_output;
 
 @RestController
 @RequestMapping("/members")
@@ -19,29 +23,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/register")
-    @Operation(summary = "회원가입 정보 입력", description = header_token + """
-            <b> Input : </b>
-            \n
-            <b>MemberRegisterReq</b>
-            \n
-            | Name | Type  | Description |
-            |-----|-----|-------|
-            | role | int | 구매자(0) 혹은 판매자(1) |
-            | phoneNumber | varchar(15) | 핸드폰 번호 |
-            | businessNumber | varchar(20) |  사업자 등록 번호(선택) |
-            | pinCode | varchar(4) |  간편 비밀번호 |
-                        
-            \n
-            \n
-            <b> Output : </b>
-            \n
-            <b>SimpleMemberInfoRes</b>
-            \n
-            | Name | Type | Description |
-            |-----|-----|-------|
-            | name | string | 이름 |
-            | imageUrl | string | 프로필 이미지 링크 |
-            """)
+    @Operation(summary = "회원가입 정보 입력",
+            description = des_header_token + des_input + des_MemberRegisterReq + des_output + des_SimpleMemberInfoRes)
     public ResponseEntity<SimpleMemberInfoRes> signup(
             Authentication authentication,
             @RequestBody MemberRegisterReq memberRegisterReq
@@ -51,16 +34,8 @@ public class MemberController {
     }
 
     @GetMapping("/info")
-    @Operation(summary = "회원 정보 확인", description = header_token + """
-            <b>Output</b>:
-            \n
-            <b>SimpleMemberInfoRes</b>
-            \n
-            | Name | Type | Description |
-            |-----|-----|-------|
-            | name | string | 이름 |
-            | imageUrl | string | 프로필 이미지 링크 |
-            """)
+    @Operation(summary = "회원 정보 확인",
+            description = des_header_token + des_output + des_SimpleMemberInfoRes)
     public ResponseEntity<SimpleMemberInfoRes> getSimpleInfo(
             Authentication authentication
     ) {
