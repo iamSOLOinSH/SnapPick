@@ -3,6 +3,8 @@ package com.sol.snappick.store.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sol.snappick.store.entity.StoreStatus;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,9 @@ public class StoreCreateReq {
 	private Integer sellerId;
 
 	private int viewCount;
+
+	@Schema(description = "스토어 상태", nullable = true)
+	private StoreStatus status;
 
 	@Schema (description = "태그 목록")
 	private List<@Size (max = 20, message = "각 태그는 최대 20글자 이내여야 합니다.") String> tags;
