@@ -23,7 +23,7 @@ public class DetailMemberInfoRes {
                 .id(member.getId())
                 .email(member.getEmail())
                 .name(member.getName())
-                .role(member.getRole().name())
+                .role(member.getRole() != null ? member.getRole().name() : null)
                 .imagerUrl(member.getProfileImageUrl())
                 .userKey(member.getUserKey())
                 .build();
