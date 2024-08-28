@@ -107,12 +107,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDetailRes updateProduct(
-            Integer productId,
-            ProductCreateReq productCreateReq,
-            MultipartFile[] images
-    ) throws Exception{
-
+    public ProductDetailRes updateProduct(Integer productId, ProductCreateReq productCreateReq, MultipartFile[] images) throws Exception {
         Product productToUpdate = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException());
 
@@ -124,37 +119,34 @@ public class ProductService {
                 productCreateReq.getPersonalLimit()
         );
 
-        //이미지 변경 내역이 있다면
-        if (images!=null && images.length>0){
-
-            //기존 이미지 삭제
-            for (ProductImage image: productToUpdate.getImages()){
+        // 이미지 처리
+        if (images != null && images.length > 0) {
+            // 기존 이미지 삭제
+            for (ProductImage image : new ArrayList<>(productToUpdate.getImages())) {
                 minioUtil.deleteImage(image.getOriginImageUrl());
                 minioUtil.deleteImage(image.getThumbnailImageUrl());
+                productToUpdate.getImages().remove(image);
+                productImageRepository.delete(image);
             }
-            productImageRepository.deleteAll(productToUpdate.getImages());
-            productToUpdate.getImages().clear();
 
-            //이미지 저장
-            List<ProductImage> productImages = uploadImagesToMinio(images, productToUpdate);
-            productImageRepository.saveAll(productImages);
-            productToUpdate.setImages(productImages);
+            // 새 이미지 추가
+            List<ProductImage> newImages = uploadImagesToMinio(images, productToUpdate);
+            productToUpdate.getImages().addAll(newImages);
+            productImageRepository.saveAll(newImages);
         }
 
-        //옵션 변경 내역이 있다면
-        if (productCreateReq.getOptions()!=null) {
+        // 옵션 처리
+        if (productCreateReq.getOptions() != null) {
+            // 기존 옵션 삭제
+            for (ProductOption option : new ArrayList<>(productToUpdate.getOptions())) {
+                productToUpdate.getOptions().remove(option);
+                productOptionRepository.delete(option);
+            }
 
-            //기존 옵션 삭제
-            productOptionRepository.deleteAll(productToUpdate.getOptions());
-            productToUpdate.getOptions().clear();
-
-            //옵션 저장
-            List<ProductOption> productOptions = productOptionMapper.toEntityList(
-                    productCreateReq.getOptions(), productToUpdate
-            );
-            productOptionRepository.saveAll(productOptions);
-            productToUpdate.setOptions(productOptions);
-
+            // 새 옵션 추가
+            List<ProductOption> newOptions = productOptionMapper.toEntityList(productCreateReq.getOptions(), productToUpdate);
+            productToUpdate.getOptions().addAll(newOptions);
+            productOptionRepository.saveAll(newOptions);
         }
 
         Product updatedProduct = productRepository.save(productToUpdate);

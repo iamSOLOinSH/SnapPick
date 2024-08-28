@@ -24,8 +24,7 @@ public class StoreTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 10) // 최대 길이 10글자
-    @Size(max = 10)
+    @Column
     private String tag;
 
     @ManyToOne

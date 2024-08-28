@@ -1,14 +1,12 @@
 package com.sol.snappick.util;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.SetBucketPolicyArgs;
+import io.minio.*;
 import io.minio.errors.MinioException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -42,8 +40,36 @@ public class MinioUtil {
         return uuid + extension;
     }
 
-    public static void deleteImage(Object a) {
+    public boolean deleteImage(String imageUrl) throws Exception {
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath();
+            // path는 일반적으로 "/bucketName/fileName" 형식입니다.
+            String[] parts = path.split("/", 3);
+            if (parts.length < 3) {
+                throw new IllegalArgumentException("Invalid image URL format");
+            }
+            String bucketName = parts[1];
+            String fileName = parts[2];
 
+            return deleteFromMinio(bucketName, fileName);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Invalid image URL", e);
+        }
+    }
+
+    private boolean deleteFromMinio(String bucketName, String fileName) throws Exception {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .build()
+            );
+            return true;
+        } catch (MinioException e) {
+            throw new MinioException("Error deleting file from MinIO: " + e.getMessage());
+        }
     }
 
     // 퍼블릭 버킷 정책 생성
