@@ -29,16 +29,6 @@ public class PaymentController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @PostMapping()
-    public ResponseEntity<Boolean> attemptPayment(
-            @RequestBody Integer cartId
-    ){
-        //memberId
-
-        Boolean response = paymentService.attemptPayment(cartId);
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/status")
     @Operation(summary = "수령 대기 고객 조회", description = "해당 store의 수령 대기 고객 정보를 조회할 수 있습니다.")
     public ResponseEntity<List<ReceiptRes>> getPendingCustomers(

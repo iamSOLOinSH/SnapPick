@@ -1,11 +1,16 @@
 package com.sol.snappick.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sol.snappick.cart.exception.CartNotFoundException;
 import com.sol.snappick.member.dto.AccountSingleReq;
 import com.sol.snappick.member.dto.AccountStateRes;
 import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.exception.BasicBadRequestException;
+import com.sol.snappick.member.exception.BasicNotFoundException;
 import com.sol.snappick.member.repository.MemberRepository;
+import com.sol.snappick.product.entity.Cart;
+import com.sol.snappick.product.entity.CartItem;
+import com.sol.snappick.product.repository.CartRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,6 +32,7 @@ public class TransactionService {
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
     private final MemberRepository memberRepository;
+    private final CartRepository cartRepository;
 
     @Value("${finopenapi.snappickAccount}")
     private String accountTypeUniqueNo;
@@ -148,5 +154,31 @@ public class TransactionService {
         }
 
         throw new BasicBadRequestException("내 계좌 목록에서 해당 계좌를 찾을 수 없습니다");
+    }
+
+    public String attemptPayment(Integer memberId, Integer cartId) {
+
+        //구매자 ID
+        Integer customerId = memberId;
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CartNotFoundException());
+
+        //판매자 ID
+        Integer sellerId = cart.getStore().getMember().getId();
+        Member seller = memberRepository.findById(sellerId)
+                .orElseThrow(() -> new BasicNotFoundException());
+
+        //판매자 계좌번호
+        String sellerAccountNumber = seller.getAccountNumber();
+
+        //총 결제 금액
+        Integer sumPrice = 0;
+        for (CartItem item: cart.getItems()){
+            sumPrice += item.getQuantity() * item.getProduct().getPrice();
+        }
+
+
+
     }
 }
