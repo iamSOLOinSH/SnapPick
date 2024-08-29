@@ -1,7 +1,9 @@
 package com.sol.snappick.util.fin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,7 +19,6 @@ public class FinOpenApiHandler {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-
     @Value("${finopenapi.url}")
     private String BASE_URL;
     @Value("${finopenapi.apikey}")
@@ -28,15 +29,47 @@ public class FinOpenApiHandler {
         this.objectMapper = objectMapper;
     }
 
-    public JsonNode apiRequest(String url, HttpMethod httpMethod, Map<String, String> requestBody) {
+    // 공통 헤더 필요없는 경우(사용자 계정 생성)
+    public JsonNode apiRequest(String url, HttpMethod httpMethod, Map<String, Object> requestBody) {
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // HTTP 바디에 apiKey 추가
+        // HTTP 바디에 공통 apiKey 추가
         requestBody.put("apiKey", apiKey);
 
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+        // 요청보내고 응답받아오기
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(BASE_URL + url, httpMethod, requestEntity, String.class);
+
+        return parseJsonResponse(responseEntity);
+    }
+
+    public JsonNode apiRequest(String url, String apiName, HttpMethod httpMethod, Map<String, Object> requestBody, String userKey) {
+        // HTTP 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // HTTP 바디에 공통 Header 추가
+        String headerJson = null;
+        JsonNode headerNode = null;
+        try {
+            headerJson = objectMapper.writeValueAsString(FinCommonHeader.createHeader(apiName));
+            headerNode = objectMapper.readTree(headerJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        // UserKey가 필요한 api라면
+        if (userKey != null) {
+            ((ObjectNode) headerNode).put("userKey", userKey);
+        }
+
+        requestBody.put("Header", headerNode);
+
+
+        // 요청보내고 응답받아오기
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(BASE_URL + url, httpMethod, requestEntity, String.class);
 
         return parseJsonResponse(responseEntity);
@@ -47,6 +80,7 @@ public class FinOpenApiHandler {
     // ResponseEntity<String> response -> JsonNode
     @SneakyThrows
     public JsonNode parseJsonResponse(ResponseEntity<String> response) {
+        // 응답이 200번대가 아니면 에러
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new IllegalArgumentException();
         }

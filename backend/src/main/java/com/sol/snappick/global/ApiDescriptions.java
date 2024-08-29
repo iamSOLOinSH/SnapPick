@@ -18,6 +18,43 @@ public class ApiDescriptions {
 
     }
 
+    public static class AccountController {
+        public static final String des_AccountSingleReq = """
+                \n
+                <b>AccountSingleReq</b>
+                \n
+                | Name | Type | Description |
+                |-----|-----|-------|
+                | accountNumber | string | 계좌번호 |
+                \n
+                """;
+
+        public static final String des_AccountStateRes = """
+                \n
+                <b>AccountStateRes</b>
+                \n
+                | Name | Type | Description |
+                |-----|-----|-------|
+                | bankName | string | 은행명 |
+                | accountNumber | string | 계좌번호 |
+                | theBalance | long | 현재 잔액 |
+                \n
+                """;
+
+        public static final String des_AccountTransferReq = """
+                \n
+                <b>AccountTransferReq</b>
+                \n
+                | Name | Type | Description |
+                |-----|-----|-------|
+                | accountNumber | string | 계좌번호 |
+                | balance | long | 이체 금액 |
+                \n
+                """;
+
+
+    }
+
     public static class common {
         public static final String des_input = """
                 \n            

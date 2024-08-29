@@ -17,12 +17,8 @@ public class ProductDetailRes {
     private String name;
     private String description;
     private Integer price;
-    private Integer totalStock;
+    private Integer stock;
     private Integer dailyLimit;
     private Integer personalLimit;
-
-    @ArraySchema(schema = @Schema(implementation = ProductOptionReq.class))
-    private List<ProductOptionRes> options;
-
     private List<String> originImageUrls;
 }
