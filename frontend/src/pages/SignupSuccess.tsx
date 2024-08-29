@@ -14,7 +14,7 @@ const SignupSuccess = () => {
           <Blob_1 />
         </div>
       </div>
-      <div className="mt-20 flex min-h-[62vh] flex-col">
+      <div className="min-h-100 mt-20 flex flex-col">
         <h1 className="mb-28 ml-8 mt-8 text-3xl font-bold">회원가입</h1>
         <Success />
         <div className="mt-24 text-center">

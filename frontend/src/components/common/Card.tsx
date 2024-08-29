@@ -37,7 +37,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
     toggle: "mt-1",
   },
   simple: {
-    container: "mb-2 flex items-center rounded-lg p-4",
+    container: "mb-2 flex items-center rounded-lg p-4 bg-base mx-4",
     image: "mr-4 h-12 w-12 rounded-lg",
     title: "text-lg font-medium text-black",
     date: "text-sm text-gray-500",

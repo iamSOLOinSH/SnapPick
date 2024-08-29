@@ -1,30 +1,32 @@
 import React from "react";
 import clsx from "clsx";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { FaBagShopping } from "react-icons/fa6";
 
 type TicketCardProps = {
   title: string;
   date: string;
   location: string;
-  seller: string;
+  price: number;
   buttonText: string;
-  isActive: boolean; // 활성 상태를 나타내는 플래그
+  isActive: boolean;
+  className?: string;
 };
 
 export const TicketCard: React.FC<TicketCardProps> = ({
   title,
   date,
   location,
-  seller,
+  price,
   buttonText,
   isActive,
+  className,
 }) => {
   return (
     <div
       className={clsx(
         "relative z-0 flex flex-col space-y-2 rounded-lg border px-6 py-4",
         isActive ? "border-primary text-primary" : "border-darkBase text-black",
+        className,
       )}
     >
       {/* 왼쪽 반원 */}
@@ -73,15 +75,14 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       </div>
       <div className="mt-4 flex justify-between">
         <div className="flex items-center space-x-2">
-          <FaBagShopping />
-          <p className="font-semibold">{seller}</p>
+          ￦{price.toLocaleString()}
         </div>
         <button
           className={clsx(
             "rounded-lg px-3 py-1 text-sm",
             isActive
               ? "bg-primary text-white hover:bg-secondary hover:text-black"
-              : "bg-gray-300 text-gray-600",
+              : "text-grey-600 bg-gray-300 hover:bg-gray-600 hover:text-white",
           )}
         >
           {buttonText}

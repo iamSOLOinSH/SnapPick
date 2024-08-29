@@ -152,6 +152,15 @@ export default {
           "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
           "20%, 40%, 60%, 80%": { transform: "translateX(2px)" },
         },
+        appear: {
+          "0%": {
+            opacity: 0,
+          },
+          "100%": {
+            opacity: 1,
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
         explode: "explode 0.8s forwards cubic-bezier(0.25, 0.1, 0.25, 1)",
@@ -164,6 +173,7 @@ export default {
         fadeInSlideUp: "fadeInSlideUp 0.5s ease-out forwards",
         buttonActivate: "buttonActivate 0.3s ease-out forwards",
         shake: "shake 0.3s ease-in-out",
+        appear: "appear 1s ease-in-out",
       },
     },
   },
