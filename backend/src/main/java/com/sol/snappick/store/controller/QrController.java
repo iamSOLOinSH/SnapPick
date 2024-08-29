@@ -6,6 +6,7 @@ import com.sol.snappick.store.service.QrService;
 import com.sol.snappick.store.service.StoreService;
 import com.sol.snappick.store.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "QR", description = "QR : QR 생성 및 검증 API")
 @RequestMapping("/stores")
 public class QrController {
 
