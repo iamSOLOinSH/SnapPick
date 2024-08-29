@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 const TAG_VARIANTS = {
   default:
-    "px-3 py-2 rounded-full text-sm font-medium select-none inline-flex items-center",
+    "px-3 py-2 rounded-full text-sm font-medium select-none inline-flex items-center whitespace-nowrap",
   primary: "bg-primary text-white",
   green: "bg-green text-white",
   red: "bg-red text-white",
