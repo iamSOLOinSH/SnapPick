@@ -62,10 +62,10 @@ public class FinOpenApiHandler {
             throw new RuntimeException(e);
         }
 
-        // for debug TODO 나중에 삭제
-        System.out.println("======header of request message=======");
-        printJson(headerNode);
-        System.out.println("======================================");
+        // for 서버 debug
+//        System.out.println("======header of request message=======");
+//        printJson(headerNode);
+//        System.out.println("======================================");
 
         // UserKey가 필요한 api라면
         if (userKey != null) {
