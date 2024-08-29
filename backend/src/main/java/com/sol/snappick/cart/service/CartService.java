@@ -96,24 +96,34 @@ public class CartService {
         Product product = productRepository.findById(cartItemReq.getProductId())
                 .orElseThrow(()->new ProductNotFoundException());
 
-        //4) 주문 수량이 재고의 개수보다 작은지 확인한다.
-        if (cartItemReq.getQuantity()>product.getStock()){
+        //4) 장바구니에 동일 상품이 있는지 확인한다.
+        CartItem cartItemToCreate = cartItemRepository.findByIdAndproductId(cartId, product.getId());
+        //없으면 새로 생성한다.
+        if (cartItemToCreate==null){
+            cartItemToCreate = CartItem.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(cartItemReq.getQuantity())
+                    .build();
+        }
+        //이미 존재한다면 quantity만 수정한다.
+        else {
+            cartItemToCreate.setQuantity(cartItemReq.getQuantity()+cartItemToCreate.getQuantity());
+        }
+
+        //5) 주문 수량이 재고의 개수보다 작은지 확인한다.
+        if (cartItemToCreate.getQuantity()>product.getStock()){
             throw new QuantityException();
         }
 
-        //5) 주문 수량이 인당 개수 제한을 만족하는지 확인한다.
-        if (cartItemReq.getQuantity()>product.getPersonalLimit()){
+        //6) 주문 수량이 인당 개수 제한을 만족하는지 확인한다.
+        if (cartItemToCreate.getQuantity()>product.getPersonalLimit()){
             throw new QuantityException("인당 구매 가능 수량을 넘어서는 수량은 구매할 수 없습니다.");
         }
 
-        //TODO 6) 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
+        //TODO 7) 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
 
         //cart에 cartItem을 추가한다.
-        CartItem cartItemToCreate = CartItem.builder()
-                .cart(cart)
-                .product(product)
-                .quantity(cartItemReq.getQuantity())
-                .build();
         cartItemToCreate = cartItemRepository.save(cartItemToCreate);
 
         //CartItem: id, cart, product, quantity
