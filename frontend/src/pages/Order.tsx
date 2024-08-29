@@ -41,7 +41,7 @@ const Order: React.FC = () => {
         <div className="absolute -bottom-8 right-10 h-12 w-12 rounded-br-md border-b-4 border-r-4 border-white"></div>
       </div>
       {result && (
-        <div className="absolute bottom-0 left-0 w-full animate-fadeInSlideUp rounded-tl-xl rounded-tr-xl bg-white">
+        <div className="absolute bottom-0 left-0 w-full animate-fadeInSlideUp rounded-tl-md rounded-tr-md bg-white">
           <div className="ml-4 pt-4">
             <p className="text-xl font-semibold">이 스토어에 방문하셨나요?</p>
           </div>

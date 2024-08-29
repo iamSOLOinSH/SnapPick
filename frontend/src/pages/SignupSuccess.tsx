@@ -15,9 +15,9 @@ const SignupSuccess = () => {
         </div>
       </div>
       <div className="min-h-100 mt-20 flex flex-col">
-        <h1 className="mb-28 ml-8 mt-8 text-3xl font-bold">회원가입</h1>
+        <h1 className="mb-24 ml-8 mt-8 text-3xl font-bold">회원가입</h1>
         <Success />
-        <div className="mt-24 text-center">
+        <div className="mb-4 mt-24 text-center">
           <h2 className="mb-2 text-2xl font-bold text-gray-600">가입 성공</h2>
           <p>
             로그인하여
@@ -26,16 +26,8 @@ const SignupSuccess = () => {
           </p>
         </div>
       </div>
-      <div className="mx-4 text-end">
-        <Button
-          variant="text"
-          content="간편 비밀번호 설정"
-          onClick={() => navigate("/signup/password")}
-        />
-      </div>
-      <div className="mx-4 flex flex-col gap-2">
-        <Button content="확인" />
-        <Button variant="secondary" content="취소" />
+      <div className="mx-4 mb-4 mt-8 flex flex-col gap-2">
+        <Button content="확인" onClick={() => navigate("/home")} />
       </div>
     </Layout>
   );

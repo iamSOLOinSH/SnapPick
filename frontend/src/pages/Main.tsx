@@ -27,7 +27,10 @@ const Main = () => {
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
-      <button className="relative z-20 mb-8 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1">
+      <a
+        className="relative z-20 mb-8 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1"
+        href={import.meta.env.VITE_KAKAO_LOGIN_ADDRESS}
+      >
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -42,7 +45,7 @@ const Main = () => {
           ></path>
         </svg>
         카카오로 로그인하기
-      </button>
+      </a>
     </Layout>
   );
 };

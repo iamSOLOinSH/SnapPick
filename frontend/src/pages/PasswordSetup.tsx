@@ -5,12 +5,16 @@ import { Button } from "../components/common/Button";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 import { BackButton } from "../components/common/BackButton";
 
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+
+import { membersRegister } from "../utils/api/memeber";
 
 type InputRef = HTMLInputElement | null;
 
 const PasswordSetup: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevInfo = location.state;
   const [password, setPassword] = useState<string[]>(["", "", "", ""]);
   const [isSequential, setIsSequential] = useState<boolean>(false);
   const inputRefs = [
@@ -52,6 +56,13 @@ const PasswordSetup: React.FC = () => {
   };
 
   const isFormComplete = password.every((char) => char !== "");
+
+  const handleRegister = async () => {
+    console.log({ ...prevInfo, pinCode: password.join("") });
+    membersRegister({ ...prevInfo, pinCode: password.join("") })
+      .then(() => navigate("/signup/success", { replace: true }))
+      .catch((err) => console.log(err.response.data));
+  };
 
   return (
     <Layout>
@@ -97,12 +108,12 @@ const PasswordSetup: React.FC = () => {
         <Button
           content="확인"
           disabled={!isFormComplete}
-          onClick={() => console.log(password.join(""))}
+          onClick={handleRegister}
         />
         <Button
           variant="secondary"
           content="취소"
-          onClick={() => navigate("/signup/success")}
+          onClick={() => navigate("/signup")}
         />
       </div>
     </Layout>
