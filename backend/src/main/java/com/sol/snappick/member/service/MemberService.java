@@ -35,18 +35,18 @@ public class MemberService {
 
         // 계정 생성 후, userKey 저장 (이미 존재하면 에러)
         String userKey = transactionService.postMember(member.getEmail());
-
+        String newAccountNo = null;
+        // newAccountNo 저장(판매자만 계좌 개설)
         if (memberRegisterReq.getRole() == 1) {
             // 판매자면 싸피은행의 계좌 개설
-            transactionService.createAccount(userKey);
+            newAccountNo = transactionService.createAccount(userKey);
         }
 
-        //TODO 계좌생성
         member.init(memberRegisterReq.getRole(),
                 userKey,
                 encode(memberRegisterReq.getPinCode()),
                 memberRegisterReq.getPhoneNumber(),
-                null,
+                newAccountNo,
                 memberRegisterReq.getBusinessNumber());
 
         memberRepository.save(member);

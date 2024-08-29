@@ -18,6 +18,7 @@ import java.util.Map;
 public class TransactionService {
 
     private final FinOpenApiHandler finOpenApiHandler;
+    private final BasicMemberService basicMemberService;
 
     @Value("${finopenapi.snappickAccount}")
     private String accountTypeUniqueNo;
@@ -31,7 +32,7 @@ public class TransactionService {
         requestBody.put("userId", email);
 
         // 2. api 요청
-        JsonNode jsonNode = finOpenApiHandler.apiRequest("/member", null, HttpMethod.POST, requestBody, null);
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/member", HttpMethod.POST, requestBody);
 
         finOpenApiHandler.printJson(jsonNode);
 
@@ -44,10 +45,11 @@ public class TransactionService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("accountTypeUniqueNo", accountTypeUniqueNo);
         // 2. api 요청
-        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireDemandDepositAccountList", "inquireDemandDepositAccountList", HttpMethod.POST, requestBody, userKey);
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/createDemandDepositAccount", "createDemandDepositAccount", HttpMethod.POST, requestBody, userKey);
         finOpenApiHandler.printJson(jsonNode);
-//       getValueByKey테스트해보기
-        return finOpenApiHandler.getValueByKey(jsonNode, "accountNo");
+        // 3. 응답값 받아서 반환
+        String newAccountNo = jsonNode.get("REC").get("accountNo").textValue();
+        return newAccountNo;
     }
 
 

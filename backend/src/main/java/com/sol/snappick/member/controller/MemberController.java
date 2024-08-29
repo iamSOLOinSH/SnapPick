@@ -30,7 +30,7 @@ public class MemberController {
 
     @PostMapping("/register")
     @Operation(summary = "회원가입 정보 입력",
-            description = des_header_token + des_input + des_MemberRegisterReq + des_output + des_SimpleMemberInfoRes)
+            description = "이미 정보 입력한 적이 있다면 되면 에러가 뜹니다.<br/>" + des_header_token + des_input + des_MemberRegisterReq + des_output + des_SimpleMemberInfoRes)
     public ResponseEntity<SimpleMemberInfoRes> signup(
             Authentication authentication,
             @RequestBody MemberRegisterReq memberRegisterReq
