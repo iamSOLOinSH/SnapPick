@@ -1,12 +1,19 @@
 package com.sol.snappick.store.repository;
 
 import static com.sol.snappick.store.entity.QStore.store;
+import static com.sol.snappick.store.entity.QStoreVisit.storeVisit;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sol.snappick.product.dto.CartPurchasedDto;
+import com.sol.snappick.product.entity.CartStatus;
 import com.sol.snappick.store.dto.StoreSearchReq;
+import com.sol.snappick.store.dto.StoreVisitDto;
+import com.sol.snappick.store.dto.VisitedStoreDetailDto;
+import com.sol.snappick.store.dto.VisitedStoreRes;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreStatus;
 import java.time.LocalDate;
@@ -101,6 +108,29 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
 
         return queryFactory.selectFrom(store)
                            .where(predicate)
+                           .fetch();
+    }
+
+    @Override
+    public List<VisitedStoreRes> findVisitedStoresByMember(Integer memberId) {
+        return queryFactory.select(Projections.constructor(VisitedStoreRes.class,
+                                                           Projections.constructor(
+                                                               VisitedStoreDetailDto.class,
+                                                               store.id, store.name, store.location
+                                                           ), Projections.constructor(
+                                   StoreVisitDto.class, storeVisit.id, storeVisit.cart.id, storeVisit.visitedAt),
+                                                           Projections.constructor(
+                                                               CartPurchasedDto.class,
+                                                               storeVisit.cart.id,
+                                                               storeVisit.cart.transaction.id,
+                                                               storeVisit.cart.transaction.variation
+                                                           )
+                           ))
+                           .from(storeVisit)
+                           .join(storeVisit.store, store)
+                           .where(storeVisit.customer.id.eq(memberId)
+                                                        .and(storeVisit.cart.status.eq(
+                                                            CartStatus.수령완료)))
                            .fetch();
     }
 }
