@@ -1,22 +1,7 @@
 package com.sol.snappick.store.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.service.BasicMemberService;
 import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreImageDto;
 import com.sol.snappick.store.dto.StoreRes;
@@ -26,7 +11,6 @@ import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
 import com.sol.snappick.store.dto.storeAPI.StoreAPIRes;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreImage;
-import com.sol.snappick.store.exception.InvalidUUIDFormatException;
 import com.sol.snappick.store.exception.StoreImageLimitExceedException;
 import com.sol.snappick.store.exception.StoreNotFoundException;
 import com.sol.snappick.store.mapper.StoreImageMapper;
@@ -40,9 +24,22 @@ import com.sol.snappick.store.repository.StoreTagRepository;
 import com.sol.snappick.util.StoreAPIHandler;
 import com.sol.snappick.util.minio.ImageUploadRes;
 import com.sol.snappick.util.minio.MinioUtil;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -64,6 +61,7 @@ public class StoreService {
     // MINIO 버킷 이름
     private final String BUCKET_NAME = "snappick-store";
     private final MinioUtil minioUtil;
+    private final BasicMemberService basicMemberService;
 
     /**
      * pop up store create 서비스 로직
@@ -75,8 +73,8 @@ public class StoreService {
      */
     @Transactional
     public StoreRes createPopupStore(
-            StoreCreateReq storeCreateReq,
-            MultipartFile[] images
+        StoreCreateReq storeCreateReq,
+        MultipartFile[] images
     ) throws Exception {
         if (images != null && images.length > 3) {
             throw new StoreImageLimitExceedException();
@@ -87,8 +85,7 @@ public class StoreService {
         storeToCreate.updateStatus(); // status 계산
         // 이미지 처리 및 저장
         if (images != null) {
-            List<StoreImage> storeImages = uploadImagesToMinio(images,
-                    storeToCreate);
+            List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
             storeImageRepository.saveAll(storeImages);
             storeToCreate.setImages(storeImages);
         }
@@ -105,8 +102,8 @@ public class StoreService {
      * @throws Exception minio Exception
      */
     private List<StoreImage> uploadImagesToMinio(
-            MultipartFile[] images,
-            Store store
+        MultipartFile[] images,
+        Store store
     ) throws Exception {
         List<StoreImage> storeImages = new ArrayList<>();
 
@@ -116,15 +113,16 @@ public class StoreService {
             }
             // 실제 이미지 파일 저장 로직은 생략합니다 (예: 파일 시스템, S3, etc.)
             ImageUploadRes imageDto = minioUtil.uploadImageWithThumbnail(BUCKET_NAME,
-                    image); // 이미지 저장 메서드 필요
+                                                                         image
+            ); // 이미지 저장 메서드 필요
             if (imageDto == null) {
                 continue;
             }
             StoreImage storeImage = StoreImage.builder()
-                    .originImageUrl(imageDto.getOriginImageUrl())
-                    .thumbnailImageUrl(imageDto.getThumbnailImageUrl())
-                    .store(store)
-                    .build();
+                                              .originImageUrl(imageDto.getOriginImageUrl())
+                                              .thumbnailImageUrl(imageDto.getThumbnailImageUrl())
+                                              .store(store)
+                                              .build();
             storeImages.add(storeImage);
         }
         return storeImages;
@@ -151,37 +149,41 @@ public class StoreService {
 
             // 이미지 처리 및 MinIO에 업로드
             List<StoreImageDto> images = storeCreateReq.getImages();
-            int end = Math.min(images.size(),
-                    10);  // 10개 이하로 가져오기
-            images = images.subList(0,
-                    end);
+            int end = Math.min(images.size(), 10);  // 10개 이하로 가져오기
+            images = images.subList(0, end);
 
             if (images != null && !images.isEmpty()) {
                 // 비동기 처리 시작
                 List<CompletableFuture<StoreImageDto>> futures = images.stream()
-                        .map(imageDto -> CompletableFuture.supplyAsync(() -> {
-                                    try {
-                                        ImageUploadRes uploadRes = minioUtil.uploadImageFromUrlWithThumbnail(BUCKET_NAME,
-                                                imageDto.getOriginImageUrl());
+                                                                       .map(
+                                                                           imageDto -> CompletableFuture.supplyAsync(
+                                                                               () -> {
+                                                                                   try {
+                                                                                       ImageUploadRes uploadRes = minioUtil.uploadImageFromUrlWithThumbnail(
+                                                                                           BUCKET_NAME,
+                                                                                           imageDto.getOriginImageUrl()
+                                                                                       );
 
-                                        return StoreImageDto.builder()
-                                                .originImageUrl(uploadRes.getOriginImageUrl())
-                                                .thumbnailImageUrl(uploadRes.getThumbnailImageUrl())
-                                                .build();
-                                    } catch (Exception e) {
-                                        // 이미지 업로드 실패 시 예외 처리 로직 추가 가능
-                                        e.printStackTrace();
-                                        return null;
-                                    }
-                                },
-                                executorService))
-                        .toList();
+                                                                                       return StoreImageDto.builder()
+                                                                                                           .originImageUrl(
+                                                                                                               uploadRes.getOriginImageUrl())
+                                                                                                           .thumbnailImageUrl(
+                                                                                                               uploadRes.getThumbnailImageUrl())
+                                                                                                           .build();
+                                                                                   } catch (
+                                                                                       Exception e) {
+                                                                                       // 이미지 업로드 실패 시 예외 처리 로직 추가 가능
+                                                                                       e.printStackTrace();
+                                                                                       return null;
+                                                                                   }
+                                                                               }, executorService))
+                                                                       .toList();
 
                 // CompletableFuture 결과 모으기
                 List<StoreImageDto> storeImages = futures.stream()
-                        .map(CompletableFuture::join)
-                        .filter(Objects::nonNull)
-                        .toList();
+                                                         .map(CompletableFuture::join)
+                                                         .filter(Objects::nonNull)
+                                                         .toList();
 
                 // Store 엔티티에 업로드된 이미지 설정
                 storeCreateReq.setImages(storeImages);
@@ -203,12 +205,11 @@ public class StoreService {
     private Store createStoreWithDetails(StoreCreateReq storeCreateReq) {
         // Store 엔티티 생성 및 태그, 이미지, 운영 시간 설정
         Store storeToCreate = storeMapper.toEntity(storeCreateReq);
-        storeToCreate.setTags(storeTagMapper.toEntityList(storeCreateReq.getTags(),
-                storeToCreate));
-        storeToCreate.setImages(storeImageMapper.toEntityList(storeCreateReq.getImages(),
-                storeToCreate));
-        storeToCreate.setRunningTimes(storeRunningTimeMapper.toEntityList(storeCreateReq.getRunningTimes(),
-                storeToCreate));
+        storeToCreate.setTags(storeTagMapper.toEntityList(storeCreateReq.getTags(), storeToCreate));
+        storeToCreate.setImages(
+            storeImageMapper.toEntityList(storeCreateReq.getImages(), storeToCreate));
+        storeToCreate.setRunningTimes(
+            storeRunningTimeMapper.toEntityList(storeCreateReq.getRunningTimes(), storeToCreate));
 
         return storeToCreate;
     }
@@ -250,23 +251,22 @@ public class StoreService {
     @Transactional(readOnly = true)
     public Store findStoreWithException(Integer storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException());
+                                     .orElseThrow(() -> new StoreNotFoundException());
         return store;
     }
 
     /**
      * 스토어 검색
      *
-     * @param searchReq 검색DTO
+     * @param searchReq 검색 DTO
      * @return
      */
     @Transactional(readOnly = true)
     public List<StoreRes> searchStores(StoreSearchReq searchReq) {
-        Pageable pageable = PageRequest.of(searchReq.getPage(),
-                searchReq.getSize(),
-                getStoreSort(searchReq.getSortType()));
-        List<Store> stores = storeRepository.findByConditions(searchReq,
-                pageable);
+        Pageable pageable = PageRequest.of(searchReq.getPage(), searchReq.getSize(),
+                                           getStoreSort(searchReq.getSortType())
+        );
+        List<Store> stores = storeRepository.findByConditions(searchReq, pageable);
         return storeMapper.toDtoList(stores);
     }
 
@@ -279,14 +279,11 @@ public class StoreService {
     private Sort getStoreSort(StoreSearchReq.SortType sortType) {
         switch (sortType) {
             case VIEWS:
-                return Sort.by(Sort.Direction.DESC,
-                        "viewCount");
+                return Sort.by(Sort.Direction.DESC, "viewCount");
             case RECENT:
-                return Sort.by(Sort.Direction.DESC,
-                        "createdAt");
+                return Sort.by(Sort.Direction.DESC, "createdAt");
             case CLOSING_SOON:
-                return Sort.by(Sort.Direction.ASC,
-                        "operateEndAt");
+                return Sort.by(Sort.Direction.ASC, "operateEndAt");
             default:
                 return Sort.unsorted();
         }
@@ -303,9 +300,9 @@ public class StoreService {
      */
     @Transactional
     public StoreRes updateStore(
-            Integer storeId,
-            StoreUpdateReq storeUpdateReq,
-            MultipartFile[] images
+        Integer storeId,
+        StoreUpdateReq storeUpdateReq,
+        MultipartFile[] images
     ) throws Exception {
         // 스토어 조회
         Store store = findStoreWithException(storeId);
@@ -313,7 +310,7 @@ public class StoreService {
         // 기존의 이미지, 태그, 운영 시간을 삭제하기 전에 명시적으로 컬렉션을 관리
         if (images != null && images.length > 0) {
             store.getImages()
-                    .clear();
+                 .clear();
             for (StoreImage image : store.getImages()) {
                 minioUtil.deleteImage(image.getOriginImageUrl());
                 minioUtil.deleteImage(image.getThumbnailImageUrl());
@@ -321,35 +318,31 @@ public class StoreService {
         }
 
         if (storeUpdateReq.getTags() != null && !storeUpdateReq.getTags()
-                .isEmpty()) {
+                                                               .isEmpty()) {
             store.getTags()
-                    .clear();
+                 .clear();
         }
 
         if (storeUpdateReq.getRunningTimes() != null && !storeUpdateReq.getRunningTimes()
-                .isEmpty()) {
+                                                                       .isEmpty()) {
             store.getRunningTimes()
-                    .clear();
+                 .clear();
         }
 
         // Dto -> entity 업데이트
-        storeMapper.updateEntityFromDto(storeUpdateReq,
-                store);
+        storeMapper.updateEntityFromDto(storeUpdateReq, store);
 
         // 새로운 태그, 이미지, 운영 시간 설정
         store.getTags()
-                .addAll(storeTagMapper.toEntityList(storeUpdateReq.getTags(),
-                        store));
+             .addAll(storeTagMapper.toEntityList(storeUpdateReq.getTags(), store));
         store.getRunningTimes()
-                .addAll(storeRunningTimeMapper.toEntityList(storeUpdateReq.getRunningTimes(),
-                        store));
+             .addAll(storeRunningTimeMapper.toEntityList(storeUpdateReq.getRunningTimes(), store));
 
         // 이미지 처리 및 저장
         if (images != null && images.length > 0) {
-            List<StoreImage> storeImages = uploadImagesToMinio(images,
-                    store);
+            List<StoreImage> storeImages = uploadImagesToMinio(images, store);
             store.getImages()
-                    .addAll(storeImages);
+                 .addAll(storeImages);
         }
 
         // 수정된 스토어 저장
@@ -371,25 +364,26 @@ public class StoreService {
     }
 
     /**
-     * storeUUID 로 storeID 받기
+     * 나에 대한 스토어 검색
      *
-     * @param storeUUID
-     * @return
+     * @param memberId 사용자 ID
+     * @param isVisit  방문 / 소유
+     * @return list(storeRes)
      */
-    public Integer getStoreIdByUUID(String storeUUID) {
-        try {
-            // UUID 변환 시 발생할 수 있는 IllegalArgumentException 처리
-            UUID uuid = UUID.fromString(storeUUID);
-            Integer storeId = storeRepository.findByUUID(uuid);
+    @Transactional(readOnly = true)
+    public List<?> getStoreAboutMe(
+        Integer memberId,
+        Boolean isVisit
+    ) {
+        // 멤버 찾기
+        Member member = basicMemberService.getMemberById(memberId);
 
-            if (storeId == null) {
-                throw new StoreNotFoundException();
-            }
-
-            return storeId;
-        } catch (IllegalArgumentException e) {
-            // 잘못된 UUID 형식인 경우 처리
-            throw new InvalidUUIDFormatException();
+        // 방문한 스토어라면
+        if (isVisit) {
+            return storeRepository.findVisitedStoresByMember(memberId);
+        } else { // 소유한 스토어라면
+            List<Store> stores = storeRepository.findBySellerId(memberId);
+            return storeMapper.toDtoList(stores);
         }
     }
 }

@@ -13,10 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,9 +29,6 @@ public class Store extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(unique = true, nullable = false)
-    private UUID uuid;
 
     @Column
     @Setter
@@ -95,19 +90,19 @@ public class Store extends BaseEntity {
 
     @Builder
     public Store(
-            String name,
-            String description,
-            String location,
-            Double latitude,
-            Double longitude,
-            LocalDate operateStartAt,
-            LocalDate operateEndAt,
-            Member member,
-            Integer viewCount,
-            List<StoreTag> tags,
-            List<StoreImage> images,
-            List<StoreRunningTime> runningTimes,
-            List<StoreVisit> visits
+        String name,
+        String description,
+        String location,
+        Double latitude,
+        Double longitude,
+        LocalDate operateStartAt,
+        LocalDate operateEndAt,
+        Member member,
+        Integer viewCount,
+        List<StoreTag> tags,
+        List<StoreImage> images,
+        List<StoreRunningTime> runningTimes,
+        List<StoreVisit> visits
     ) {
         this.name = name;
         this.description = description;
@@ -150,13 +145,6 @@ public class Store extends BaseEntity {
             } else {
                 this.status = StoreStatus.OPERATING; // 운영중
             }
-        }
-    }
-
-    @PrePersist
-    protected void onCreate() { // uuid 생성
-        if (uuid == null) {
-            uuid = UUID.randomUUID();
         }
     }
 }
