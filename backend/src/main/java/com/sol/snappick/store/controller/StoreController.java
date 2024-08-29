@@ -10,6 +10,7 @@ import com.sol.snappick.store.service.StoreVisitService;
 import com.sol.snappick.store.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "store", description = "스토어 : 팝업 스토어 CRUD API")
 @RequestMapping("/stores")
 public class StoreController {
 
@@ -94,14 +96,6 @@ public class StoreController {
     ) throws Exception {
         StoreRes response = storeService.createPopupStore(storeCreateReq, imageFiles);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(response);
-    }
-
-    @GetMapping("/me")
-    @Operation(summary = "내 스토어 조회", description = "내 스토어를 조회하는 API")
-    public ResponseEntity<List<StoreRes>> getMyStores(@RequestParam("member_id") Integer memberId) {
-        List<StoreRes> response = storeService.getMyStore(memberId);
-        return ResponseEntity.ok()
                              .body(response);
     }
 
@@ -230,6 +224,20 @@ public class StoreController {
 
         return ResponseEntity.status(HttpStatus.OK)
                              .build();
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "내가 가진/방문한 스토어 반환", description = "")
+    public ResponseEntity<List<?>> getStoreAboutMe(
+        @RequestParam("isVisit") Boolean isVisit,
+        Authentication authentication
+    ) {
+        // 현재 사용자 ID 식별
+        Integer memberId = Integer.valueOf(authentication.getName());
+
+        List<?> response = storeService.getStoreAboutMe(memberId, isVisit);
+        return ResponseEntity.ok()
+                             .body(response);
     }
 
     @Hidden
