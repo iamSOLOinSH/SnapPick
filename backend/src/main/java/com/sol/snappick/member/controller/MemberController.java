@@ -97,7 +97,7 @@ public class MemberController {
 
 
     @GetMapping("/dev/token")
-    @Operation(summary = "(개발용) 액세스 토큰 발급")
+    @Operation(summary = "(개발용) 액세스 토큰 발급", description = "토큰 유효시간은 10분입니다!")
     public ResponseEntity<String> getToken(
             @RequestParam(name = "member_id") Integer memberId
     ) {

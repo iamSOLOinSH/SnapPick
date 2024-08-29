@@ -36,8 +36,7 @@ public class MemberService {
                                         MemberRegisterReq memberRegisterReq) {
         Member member = basicMemberService.getMemberById(memberId);
 
-        // 이미 회원가입한 사람이라면
-        if (member.getUserKey() != null || member.getAccountNumber() != null) {
+        if (member.getUserKey() != null) {
             throw new BasicBadRequestException("이미 정보를 입력한 회원입니다");
         }
 
