@@ -1,22 +1,33 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 import { useBoundStore } from "../store/store";
+import { useNavigate } from "react-router";
 
 import { formatDate } from "../utils/Date";
 
 import { Layout } from "../components/common/Layout";
 import { Card } from "../components/common/Card";
 import { NumberSelector } from "../components/common/NumberSelector";
+import { Button } from "../components/common/Button";
 
 import { LuMoveRight } from "react-icons/lu";
+import { FaRegCreditCard } from "react-icons/fa6";
+
+interface Product {
+  title: string;
+  imageSrc: string;
+  price: number;
+  quantity: number;
+}
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { store, getStoreInfo } = useBoundStore((state) => ({
     store: state.store,
     getStoreInfo: state.getStoreInfo,
   }));
 
-  const [products, setProducts] = useState([
+  const [products, setProducts] = useState<Product[]>([
     {
       title: "스토어 상품1",
       imageSrc:
@@ -39,6 +50,8 @@ const Cart = () => {
       quantity: 1,
     },
   ]);
+
+  const [account, setAccount] = useState<number>(200000);
 
   const handleIncrease = (index: number) => {
     const newProducts = [...products];
@@ -63,7 +76,7 @@ const Cart = () => {
   }, [getStoreInfo]);
 
   return (
-    <Layout className="relative mb-0 px-0">
+    <Layout className="relative px-0 pb-0">
       <div className="relative">
         <div className="absolute right-[-150px] top-[20px] z-0 h-96 w-96 origin-top-right rotate-[15deg] transform bg-secondary" />
         <div className="absolute right-[-240px] top-[160px] z-0 h-[600px] w-[400px] origin-top-right rotate-45 transform bg-primary" />
@@ -101,11 +114,31 @@ const Cart = () => {
         ))}
       </div>
       <div className="relative flex items-center justify-center bg-primary py-4 text-lg text-white">
-        더 담기{" "}
-        <LuMoveRight className="ml-2 h-8 w-8 rounded-full bg-blue-300 p-1" />
+        <button className="flex items-center">
+          더 담기{" "}
+          <LuMoveRight className="ml-2 h-8 w-8 rounded-full bg-blue-500 p-1" />
+        </button>
       </div>
-      <div className="relative flex items-center justify-center bg-primary py-4 text-4xl font-semibold text-white">
+      <div className="relative flex items-center justify-center bg-primary py-4 pb-4 text-4xl font-semibold text-white">
         총 {totalAmount().toLocaleString()}원
+      </div>
+      <div className="relative bottom-2 left-0 w-full animate-fadeInSlideUp rounded-tl-xl rounded-tr-xl bg-white">
+        <div className="mb-4 ml-8 pt-4">
+          <p className="text-xl font-semibold">내 계좌</p>
+        </div>
+        <Card
+          variant="simple"
+          title={"잔액 " + account.toLocaleString()}
+          subtitle={"결제 후 " + (account - totalAmount()).toLocaleString()}
+          icon={<FaRegCreditCard className="h-12 w-12" />}
+        />
+        <div className="mx-2">
+          <Button
+            content="결제하기"
+            className="mb-4"
+            onClick={() => navigate("/receipt")}
+          />
+        </div>
       </div>
     </Layout>
   );

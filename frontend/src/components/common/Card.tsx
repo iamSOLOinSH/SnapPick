@@ -39,7 +39,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
   simple: {
     container: "mb-2 flex items-center rounded-lg p-4 bg-base mx-4",
     image: "mr-4 h-12 w-12 rounded-lg",
-    title: "text-lg font-medium text-black",
+    title: "text-lg font-semibold text-black",
     date: "text-sm text-gray-500",
     spend: "text-xl font-medium text-black",
   },
@@ -67,6 +67,7 @@ type CardProps = {
   time?: string;
   content?: React.ReactElement;
   toggle?: React.ReactElement;
+  icon?: React.ReactElement;
   quantity?: number;
   spend?: number;
 };
@@ -84,13 +85,18 @@ export const Card: React.FC<CardProps> = ({
   toggle,
   spend,
   totalPrice,
+  icon,
 }) => {
   const styles = CARD_VARIANTS[variant];
 
   return (
     <div className={styles.container}>
       {imageSrc && <img src={imageSrc} alt={title} className={styles.image} />}
-
+      {icon && (
+        <div className="mr-4 flex h-24 w-24 items-center justify-center rounded-md bg-white">
+          {icon}
+        </div>
+      )}
       <div className="flex-grow">
         <div className="flex items-center justify-between">
           <div>
