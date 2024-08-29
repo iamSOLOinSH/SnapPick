@@ -223,4 +223,39 @@ public class CartService {
             return false;
         }
     }
+
+    /**
+     * 결제안한 카트 또는 없으면 생성해서 반환
+     *
+     * @param customer
+     * @param store
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public Cart getOrCreateCart(
+        Member customer,
+        Store store
+    ) throws Exception {
+        //1) CartStatus."결제대기" 중인 카트가 있는지 확인한다.
+        Cart cartToCreate = cartRepository.findByStoreIdAndCustomerIdAndStatus(
+            store.getId(), customer.getId(), CartStatus.결제대기);
+        if (cartToCreate == null) {
+            cartToCreate = Cart.builder()
+                               .store(store)
+                               .customer(customer)
+                               .status(CartStatus.결제대기)
+                               .items(new ArrayList<>())
+                               .build();
+        }
+        //있다면 담겨있던 cartItem을 모두 삭제한다.
+        else {
+            cartItemRepository.deleteByCartId(cartToCreate.getId());
+            cartToCreate.getItems()
+                        .clear();
+        }
+        cartToCreate = cartRepository.save(cartToCreate);
+
+        return cartToCreate;
+    }
 }
