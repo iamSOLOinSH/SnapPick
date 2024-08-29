@@ -18,6 +18,7 @@ public interface ProductMapper {
     Product toEntity(ProductCreateReq productCreateReq);
 
     @Mapping(target = "originImageUrls", source = "images", qualifiedByName = "toOriginImageUrls")
+    @Mapping(target = "status", source = "status")
     ProductDetailRes toDetailDto(Product product);
 
     @Mapping(target = "thumbnailImageUrls", source = "images", qualifiedByName = "toThumbnailUrls")

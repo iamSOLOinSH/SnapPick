@@ -49,19 +49,18 @@ public class AccountController {
 
     @PostMapping
     @Operation(summary = "주계좌 지정(구매자용)",
-            description = des_header_token + des_input + des_AccountSingleReq + des_output)
-    public ResponseEntity<Void> updateAccount(
+            description = des_header_token + des_input + des_AccountSingleReq + des_output + des_AccountStateRes)
+    public ResponseEntity<AccountStateRes> updateAccount(
             Authentication authentication,
             @RequestBody AccountSingleReq accountSingleReq
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(transactionService.setMyAccount(memberId, accountSingleReq));
     }
 
     @PostMapping("/transfer")
-    @Operation(summary = "타행 이체(판매자용)",
-            description = des_header_token + des_input + des_AccountTransferReq + des_output)
+    @Operation(summary = "돈 보내기(판매자용)",
+            description = "주계좌에서 다른계좌로 돈을 보냅니다.<br/>" + des_header_token + des_input + des_AccountTransferReq + des_output)
     public ResponseEntity<Void> transfer(
             Authentication authentication,
             @RequestBody AccountTransferReq accountTransferReq

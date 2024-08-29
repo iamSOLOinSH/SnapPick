@@ -62,10 +62,10 @@ public class FinOpenApiHandler {
             throw new RuntimeException(e);
         }
 
-        // for debug TODO 나중에 삭제
-        System.out.println("======header of request message=======");
-        printJson(headerNode);
-        System.out.println("======================================");
+        // for 서버 debug
+//        System.out.println("======header of request message=======");
+//        printJson(headerNode);
+//        System.out.println("======================================");
 
         // UserKey가 필요한 api라면
         if (userKey != null) {
@@ -102,9 +102,9 @@ public class FinOpenApiHandler {
 
     // JsonNode에 있는 모든 값 목록 출력
     public void printJson(JsonNode jsonNode) {
-        System.out.println("====================");
+        System.out.println("======================================");
         System.out.println(jsonNode.toPrettyString());
-        System.out.println("====================");
+        System.out.println("======================================");
     }
 
 }

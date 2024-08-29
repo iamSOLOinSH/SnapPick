@@ -5,6 +5,7 @@ import com.sol.snappick.member.dto.DetailMemberInfoRes;
 import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.entity.Role;
 import com.sol.snappick.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,21 +34,21 @@ public class MemberService {
                                         MemberRegisterReq memberRegisterReq) {
         Member member = basicMemberService.getMemberById(memberId);
 
-        // 계정 생성 후, userKey 저장 (이미 존재하면 에러)
+        // 계정 생성!!
         String userKey = transactionService.postMember(member.getEmail());
-        String newAccountNo = null;
-        // newAccountNo 저장(판매자만 계좌 개설)
+
+        //판매자면
         if (memberRegisterReq.getRole() == 1) {
-            // 판매자면 싸피은행의 계좌 개설
-            newAccountNo = transactionService.createAccount(userKey);
+            // 사업자번호
+            member.setBusinessNumber(memberRegisterReq.getBusinessNumber());
+            // 계좌 생성!!
+            member.setAccountNumber(transactionService.createAccount(userKey));
         }
 
-        member.init(memberRegisterReq.getRole(),
-                userKey,
-                encode(memberRegisterReq.getPinCode()),
-                memberRegisterReq.getPhoneNumber(),
-                newAccountNo,
-                memberRegisterReq.getBusinessNumber());
+        member.setRole(Role.values()[memberRegisterReq.getRole()]);
+        member.setUserKey(userKey);
+        member.setPinCode(encode(memberRegisterReq.getPinCode()));
+        member.setPhoneNumber(memberRegisterReq.getPhoneNumber());
 
         memberRepository.save(member);
         return SimpleMemberInfoRes.fromEntity(member);
