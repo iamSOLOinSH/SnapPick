@@ -3,6 +3,7 @@ package com.sol.snappick.member.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sol.snappick.member.dto.AccountSingleReq;
 import com.sol.snappick.member.dto.AccountStateRes;
+import com.sol.snappick.member.dto.IdentificationReq;
 import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.entity.Role;
 import com.sol.snappick.member.entity.Transaction;
@@ -210,6 +211,30 @@ public class TransactionService {
         JsonNode responseData = jsonNode.get("REC");
 
         return responseData.get("transactionUniqueNo").textValue();
+
+    }
+
+
+    // 1원 송금 확인
+    public void checkAuth(Integer memberId, IdentificationReq identificationReq) {
+
+        Member member = basicMemberService.getMemberById(memberId);
+
+        // 1. 요청 본문 생성
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("accountNo", identificationReq.getAccountNumber());
+        requestBody.put("authText", "snappick");
+        requestBody.put("authCode", identificationReq.getAuthCode());
+
+        // 2. api 요청
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/accountAuth/checkAuthCode", "checkAuthCode", HttpMethod.POST, requestBody, member.getUserKey());
+
+        // 3. 응답값 받아서 반환
+        JsonNode responseData = jsonNode.get("REC");
+
+        if (!responseData.get("status").equals("SUCCESS")) {
+            throw new BasicBadRequestException("Something went wrong");
+        }
 
     }
 
