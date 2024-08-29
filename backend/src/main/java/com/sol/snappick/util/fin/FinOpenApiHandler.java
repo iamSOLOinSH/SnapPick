@@ -102,9 +102,9 @@ public class FinOpenApiHandler {
 
     // JsonNode에 있는 모든 값 목록 출력
     public void printJson(JsonNode jsonNode) {
-        System.out.println("====================");
+        System.out.println("======================================");
         System.out.println(jsonNode.toPrettyString());
-        System.out.println("====================");
+        System.out.println("======================================");
     }
 
 }
