@@ -35,7 +35,6 @@ public class Cart extends BaseEntity {
     @Column
     private CartStatus status;
 
-    @Column
     @OneToOne
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;

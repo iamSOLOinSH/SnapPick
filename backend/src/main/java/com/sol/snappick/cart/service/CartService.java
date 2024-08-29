@@ -97,7 +97,7 @@ public class CartService {
                 .orElseThrow(()->new ProductNotFoundException());
 
         //4) 장바구니에 동일 상품이 있는지 확인한다.
-        CartItem cartItemToCreate = cartItemRepository.findByIdAndproductId(cartId, product.getId());
+        CartItem cartItemToCreate = cartItemRepository.findByIdAndProductId(cartId, product.getId());
         //없으면 새로 생성한다.
         if (cartItemToCreate==null){
             cartItemToCreate = CartItem.builder()
