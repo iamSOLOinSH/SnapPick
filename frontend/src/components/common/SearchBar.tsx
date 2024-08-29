@@ -5,6 +5,7 @@ import { IoIosSearch } from "react-icons/io";
 type SearchBarProps = {
   placeholder?: string;
   value: string;
+  maxLength?: number;
   onChange: (value: string) => void;
   onSearch: () => void;
 };
@@ -14,6 +15,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
   onSearch,
+  maxLength,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,8 +33,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         variant="full"
         placeholder={placeholder}
         value={value}
+        maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-full bg-gray-100 py-3 pl-6 pr-10 text-gray-700 shadow-md"
+        className="h-12 w-full rounded-full py-3 pl-6 pr-10 shadow-md"
       />
       <button
         type="submit"

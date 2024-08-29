@@ -85,6 +85,14 @@ export const ImageSlider = ({ images }: ImageSliderProps) => {
     }
   }, [currentIndex, extendedImages.length]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNextImage();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative w-full overflow-hidden">
       <div

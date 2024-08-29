@@ -2,12 +2,14 @@ import React from "react";
 import clsx from "clsx";
 
 const TAG_VARIANTS = {
-  default: "px-3 py-2 rounded-full text-sm font-medium select-none",
+  default:
+    "px-3 py-2 rounded-full text-sm font-medium select-none inline-flex items-center",
   primary: "bg-primary text-white",
   green: "bg-green text-white",
   red: "bg-red text-white",
   gray: "bg-darkBase text-white",
   select: "cursor-pointer hover:opacity-80",
+  delete: "ml-2 flex items-center justify-center text-white text-xs",
 } as const;
 
 type TagProps = {
@@ -18,6 +20,8 @@ type TagProps = {
   isSelectable?: boolean; // 선택 가능한지
   isSelected?: boolean;
   onClick?: (value: string) => void;
+  isDelete?: boolean; // 삭제 가능한지
+  onDelete?: () => void;
 };
 
 export const Tag: React.FC<TagProps> = ({
@@ -28,6 +32,8 @@ export const Tag: React.FC<TagProps> = ({
   isSelectable = false,
   isSelected = false,
   onClick,
+  onDelete,
+  isDelete,
 }) => {
   const tagClassName = clsx(
     TAG_VARIANTS.default,
@@ -49,6 +55,11 @@ export const Tag: React.FC<TagProps> = ({
   return (
     <span className={tagClassName} onClick={handleClick}>
       {content}
+      {isDelete && (
+        <button onClick={onDelete} className={TAG_VARIANTS.delete}>
+          ✕
+        </button>
+      )}
     </span>
   );
 };
