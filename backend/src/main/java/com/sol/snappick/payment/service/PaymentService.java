@@ -1,8 +1,12 @@
 package com.sol.snappick.payment.service;
 
 import com.sol.snappick.cart.dto.CartItemRes;
+import com.sol.snappick.cart.exception.CartUnauthorizedException;
 import com.sol.snappick.cart.mapper.CartItemMapper;
+import com.sol.snappick.cart.service.CartService;
+import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.repository.MemberRepository;
+import com.sol.snappick.member.service.BasicMemberService;
 import com.sol.snappick.payment.dto.CustomerRes;
 import com.sol.snappick.payment.dto.ReceiptRes;
 import com.sol.snappick.payment.dto.StoreSimpleRes;
@@ -29,6 +33,8 @@ public class PaymentService {
     private final StoreImageRepository storeImageRepository;
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
+    private final BasicMemberService basicMemberService;
+    private final CartService cartService;
 
     public List<ReceiptRes> getPendingCustomers(Integer storeId) {
         //유효성 검증
@@ -82,6 +88,64 @@ public class PaymentService {
         }
 
         return pendingCustomers;
+    }
+
+    public ReceiptRes getReceipt(
+        Integer cartId,
+        Integer memberId
+    ) {
+        // 카트와 회원 정보를 조회
+        Cart cart = cartService.getCartById(cartId);
+        Member member = basicMemberService.getMemberById(memberId);
+
+        // 카트가 해당 회원의 것인지 확인
+        if (!cart.getCustomer()
+                 .getId()
+                 .equals(memberId)) {
+            throw new CartUnauthorizedException();
+        }
+
+        // 카트 아이템 목록 조회
+        List<CartItem> items = cart.getItems();
+        List<CartItemRes> cartItemResList = CartItemMapper.toCartItemResList(items);
+
+        Store store = cart.getStore();
+        //store
+        List<StoreImage> storeImages = storeImageRepository.findAllByStore(store);
+        List<String> thumbnailImages = storeImages.stream()
+                                                  .map(StoreImage::getThumbnailImageUrl)
+                                                  .collect(Collectors.toList());
+
+        StoreSimpleRes nowStore = StoreSimpleRes.builder()
+                                                .id(store.getId())
+                                                .name(store.getName())
+                                                .location(store.getLocation())
+                                                .images(thumbnailImages)
+                                                .build();
+
+        CustomerRes customer = CustomerRes.builder()
+                                          .memberId(cart.getCustomer()
+                                                        .getId())
+                                          .name(cart.getCustomer()
+                                                    .getName())
+                                          .phoneNumber(cart.getCustomer()
+                                                           .getPhoneNumber())
+                                          .build();
+
+        // 영수증 정보 생성
+        ReceiptRes receipt = ReceiptRes.builder()
+                                       .id(cart.getId())
+                                       .status(cart.getStatus())
+                                       .store(nowStore)
+                                       .customer(customer)
+                                       .totalPrice(cart.getTransaction()
+                                                       .getVariation())
+                                       .transactedAt(cart.getTransaction()
+                                                         .getTransactedAt())
+                                       .items(cartItemResList)
+                                       .build();
+
+        return receipt;
     }
 
     //    public String attemptPayment(Integer memberId, Integer cartId) {
