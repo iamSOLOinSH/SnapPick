@@ -5,7 +5,7 @@ import { IoMdQrScanner } from "react-icons/io";
 
 const NAV_ITEMS = [
   { path: "/home", icon: BiHomeAlt },
-  { path: "/add", icon: IoMdQrScanner },
+  { path: "/order", icon: IoMdQrScanner },
   { path: "/profile", icon: FaRegUser },
 ] as const;
 
@@ -23,7 +23,7 @@ export const BottomTab = () => {
             `flex flex-col items-center ${isActive ? "text-primary" : "text-gray-400"}`
           }
         >
-          {item.path === "/add" ? (
+          {item.path === "/order" ? (
             <div className="relative -mt-10 flex items-center justify-center">
               <div
                 className="relative z-40 flex h-16 w-16 -translate-y-2 transform items-center justify-center rounded-full bg-primary shadow-lg"
