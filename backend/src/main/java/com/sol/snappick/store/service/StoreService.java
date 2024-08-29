@@ -1,5 +1,7 @@
 package com.sol.snappick.store.service;
 
+import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.service.BasicMemberService;
 import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreImageDto;
 import com.sol.snappick.store.dto.StoreRes;
@@ -59,6 +61,7 @@ public class StoreService {
     // MINIO 버킷 이름
     private final String BUCKET_NAME = "snappick-store";
     private final MinioUtil minioUtil;
+    private final BasicMemberService basicMemberService;
 
     /**
      * pop up store create 서비스 로직
@@ -350,13 +353,37 @@ public class StoreService {
     }
 
     // 매일 자정에 상태 업데이트
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void updateStoreStatuses() {
         // 모든 스토어에 대해 상태를 업데이트
         for (Store store : storeRepository.findWithoutClosed()) {
             store.updateStatus();
             storeRepository.save(store);
+        }
+    }
+
+    /**
+     * 나에 대한 스토어 검색
+     *
+     * @param memberId 사용자 ID
+     * @param isVisit  방문 / 소유
+     * @return list(storeRes)
+     */
+    @Transactional(readOnly = true)
+    public List<?> getStoreAboutMe(
+        Integer memberId,
+        Boolean isVisit
+    ) {
+        // 멤버 찾기
+        Member member = basicMemberService.getMemberById(memberId);
+
+        // 방문한 스토어라면
+        if (isVisit) {
+            return storeRepository.findVisitedStoresByMember(memberId);
+        } else { // 소유한 스토어라면
+            List<Store> stores = storeRepository.findBySellerId(memberId);
+            return storeMapper.toDtoList(stores);
         }
     }
 }
