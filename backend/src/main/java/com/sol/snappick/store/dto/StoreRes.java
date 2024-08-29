@@ -2,48 +2,41 @@ package com.sol.snappick.store.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Builder
 @Getter
 @AllArgsConstructor
 public class StoreRes {
 
-	private Integer id;
+    private Integer id;
 
-	private UUID uuid;
+    private String name;
 
-	private String name;
+    private String description;
 
-	private String description;
+    private String location;
 
-	private String location;
+    private Double latitude;
 
-	private Double latitude;
+    private Double longitude;
 
-	private Double longitude;
+    private LocalDate operateStartAt;
 
-	private LocalDate operateStartAt;
+    private LocalDate operateEndAt;
 
-	private LocalDate operateEndAt;
+    private int viewCount;
 
-	private int viewCount;
+    private int visitCount;
 
-	private int visitCount;
+    private Integer sellerId;
 
-	private Integer sellerId;
+    private List<String> tags;
 
-	private List<String> tags;
+    private List<StoreImageDto> images;
 
-	private List<StoreImageDto> images;
+    private List<StoreRunningTimeDto> runningTimes;
 
-	private List<StoreRunningTimeDto> runningTimes;
-
-	@Setter
-	private boolean fromQr;
 }
