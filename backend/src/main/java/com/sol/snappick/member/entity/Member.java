@@ -4,10 +4,12 @@ import com.sol.snappick.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Getter
+@Setter
 public class Member extends BaseEntity {
 
     @Id
@@ -71,14 +73,6 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void init(int role, String userKey, String pinCode, String phoneNumber, String accountNumber, String businessNumber) {
-        this.role = Role.values()[role];
-        this.userKey = userKey;
-        this.pinCode = pinCode;
-        this.phoneNumber = phoneNumber;
-        this.accountNumber = accountNumber;
-        this.businessNumber = businessNumber;
-    }
 
     public void changePinCode(String pinCode) {
         this.pinCode = pinCode;

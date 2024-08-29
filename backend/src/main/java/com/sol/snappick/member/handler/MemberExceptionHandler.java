@@ -12,7 +12,7 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(BasicBadRequestException.class)
     public ResponseEntity<String> handleMemberNotFoundException(BasicBadRequestException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
 
