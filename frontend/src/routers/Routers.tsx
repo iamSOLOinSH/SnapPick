@@ -13,6 +13,9 @@ import ProductCreate from "../pages/ProductCreate";
 import ProductCreateSuccess from "../pages/ProductCreateSuccess";
 import StoreCreate from "../pages/StoreCreate";
 import StoreCreateSuccess from "../pages/StoreCreateSuccess";
+import Mypage from "../pages/Mypage";
+import StockControl from "../pages/StockControl";
+import StockControlDetail from "../pages/StockControlDetail";
 
 import Order from "../pages/Order";
 import Cart from "../pages/Cart";
@@ -23,6 +26,9 @@ const Router = () => {
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/profile" element={<Mypage />} />
+      <Route path="/stock" element={<StockControl />} />
+      <Route path="/stcok/detail/:productId" element={<StockControlDetail />} />
       <Route path="/search" element={<StoreSearch />} />
       <Route path="/store/create" element={<StoreCreate />} />
       <Route path="/store/create/success" element={<StoreCreateSuccess />} />
