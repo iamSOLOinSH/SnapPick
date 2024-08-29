@@ -115,19 +115,11 @@ public class StoreController {
         ### StoreSearchReq
         | Name | Type  | Description |
         |------|-------|-------------|
-        | conditions | list(StoreSearchConditionDto) | 검색 조건 리스트 |
+        | query | String | 검색 단어 |
         | size | integer | 한 페이지에 표시할 항목 수 (기본값: 10) |
         | page | integer | 페이지 번호 (0부터 시작, 기본값: 0) |
         | sortType | SortType(enum) | 정렬 타입 (조회순: VIEWS, 최근 등록: RECENT, 운영 마감 임박: CLOSING_SOON) |
         \n
-        \n
-        ### StoreSearchConditionDto
-        | Name | Type  | Description |
-        |------|-------|-------------|
-        | field | string | 검색할 컬럼 이름 (예: 'name', 'tag', '등등', '컬럼에 없는거 검색 필요하시면 추가할게요!') |
-        | values | list(String) | 검색할 값 리스트 (예: ['로스트아크', '다른 값']) |
-        \n
-        ### 주의 사항 : 현재 name은 like 연산, tag는 스토어 tag 들에 대해 any + 동등비교해서 해당하는게 있으면 찾는 것으로 되어있습니다!
         \n
         <b>SortType Enum Values</b>:
         \n
