@@ -47,8 +47,8 @@ public class FinCommonHeader {
     // 팩토리 메서드
     public FinCommonHeader createHeader(String apiName) {
         LocalDateTime now = LocalDateTime.now();
-        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
-        ZonedDateTime koreaTime = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(koreaZoneId);
+        ZoneId SEOUL_ZONE = ZoneId.of("Asia/Seoul");
+        ZonedDateTime koreaTime = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(SEOUL_ZONE);
 
         return new FinCommonHeader(apiName, koreaTime, this.apiKey);
     }

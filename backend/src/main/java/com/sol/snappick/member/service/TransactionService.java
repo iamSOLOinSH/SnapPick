@@ -233,6 +233,7 @@ public class TransactionService {
         JsonNode responseData = jsonNode.get("REC");
 
         if (!responseData.get("status").equals("SUCCESS")) {
+            finOpenApiHandler.printJson(responseData);
             throw new BasicBadRequestException("Something went wrong");
         }
 
