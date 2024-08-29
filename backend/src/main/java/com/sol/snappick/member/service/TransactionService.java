@@ -217,24 +217,26 @@ public class TransactionService {
     /////////////////////////////////////////////////////
 
 
-    public Boolean transfer(Member member, // 구매자
+    public Boolean transfer(Member buyer, // 구매자
+                            Member seller, // 판매자
                             String withdrawalAccountNo, // 출금계좌(구매자꺼)
-                            String depositAccountNo, //입금계좌(스토어 주인의 accountNumber)
                             Integer balance //거래금액
     ) {
 
-        String phoneNumber = member.getPhoneNumber();
+        String phoneNumber = buyer.getPhoneNumber();
+        String depositTransactionSummary = buyer.getName() + " (" + phoneNumber.substring(phoneNumber.lastIndexOf("-") + 1) + ")";
+        String withdrawalTransactionSummary = "snappick 결제";
 
         // 1. 요청 본문 생성
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("withdrawalAccountNo", withdrawalAccountNo);
-        requestBody.put("depositAccountNo", depositAccountNo);
+        requestBody.put("depositAccountNo", seller.getAccountNumber());
         requestBody.put("transactionBalance", balance);
-        requestBody.put("depositTransactionSummary", member.getName() + " (" + phoneNumber.substring(phoneNumber.lastIndexOf("-") + 1) + ")");
-        requestBody.put("withdrawalTransactionSummary", "snappick 결제");
+        requestBody.put("depositTransactionSummary", depositTransactionSummary);
+        requestBody.put("withdrawalTransactionSummary", withdrawalTransactionSummary);
 
         // 2. api 요청
-        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/updateDemandDepositAccountTransfer", "updateDemandDepositAccountTransfer", HttpMethod.POST, requestBody, member.getUserKey());
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/updateDemandDepositAccountTransfer", "updateDemandDepositAccountTransfer", HttpMethod.POST, requestBody, buyer.getUserKey());
 
         // 3. 응답값 받아서 반환
         JsonNode responseData = jsonNode.get("REC");
@@ -242,16 +244,20 @@ public class TransactionService {
             return false;
         }
 
+
         // 4. 입출금 내역 transaction에 넣기
         for (JsonNode account : responseData) {
+
+            Integer transactionType = account.get("transactionType").asInt();
             transactionRepository.save(
                     Transaction.builder()
-                            .member(member)
+                            .member(transactionType == 2 ? buyer : seller)
                             .transactionUniqueNo(account.get("transactionUniqueNo").textValue())
                             .accountNo(account.get("accountNo").textValue())
                             .transactionAccountNo(account.get("transactionAccountNo").textValue())
                             .variation(balance)
-                            .type(TransactionType.values()[Integer.parseInt(account.get("transactionType").textValue())])
+                            .type(TransactionType.values()[transactionType])
+                            .summary(transactionType == 2 ? withdrawalTransactionSummary : depositTransactionSummary)
                             .transactedAt(LocalDateTime.now()).build()
             );
         }

@@ -41,6 +41,9 @@ public class Transaction {
     @Column
     private LocalDateTime transactedAt;
 
+    @Column
+    private String summary;
+
     protected Transaction() {
     }
 }
