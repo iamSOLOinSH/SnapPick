@@ -1,8 +1,11 @@
 package com.sol.snappick.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sol.snappick.member.dto.AccountSingleReq;
 import com.sol.snappick.member.dto.AccountStateRes;
 import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.exception.BasicBadRequestException;
+import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,6 +26,7 @@ public class TransactionService {
 
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
+    private final MemberRepository memberRepository;
 
     @Value("${finopenapi.snappickAccount}")
     private String accountTypeUniqueNo;
@@ -57,6 +61,7 @@ public class TransactionService {
     }
 
     // 주 계좌 확인하기
+    @Transactional(readOnly = true)
     public AccountStateRes getMyAccount(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
 
@@ -82,6 +87,7 @@ public class TransactionService {
     }
 
     // 타행 계좌 확인하기
+    @Transactional(readOnly = true)
     public List<AccountStateRes> getOtherAccount(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
 
@@ -118,5 +124,29 @@ public class TransactionService {
         return accountList;
     }
 
+    // 주 계좌 등록
+    public AccountStateRes setMyAccount(Integer memberId, AccountSingleReq accountSingleReq) {
+        Member member = basicMemberService.getMemberById(memberId);
+        String accountNumber = accountSingleReq.getAccountNumber();
 
+        // 내 계좌목록 불러오기
+        Map<String, Object> requestBody = new HashMap<>();
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireDemandDepositAccountList", "inquireDemandDepositAccountList", HttpMethod.POST, requestBody, member.getUserKey());
+        JsonNode responseData = jsonNode.get("REC");
+
+        for (JsonNode account : responseData) {
+            if (account.get("accountNo").textValue().equals(accountNumber)) {
+                member.changeAccountNumber(accountNumber);
+                memberRepository.save(member);
+
+                return AccountStateRes.builder()
+                        .bankName(account.get("bankName").textValue())
+                        .accountNumber(account.get("accountNo").textValue())
+                        .theBalance(Long.valueOf(account.get("accountBalance").textValue()))
+                        .build();
+            }
+        }
+
+        throw new BasicBadRequestException("내 계좌 목록에서 해당 계좌를 찾을 수 없습니다");
+    }
 }

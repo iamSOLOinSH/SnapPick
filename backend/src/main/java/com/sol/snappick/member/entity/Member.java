@@ -83,4 +83,8 @@ public class Member extends BaseEntity {
     public void changePinCode(String pinCode) {
         this.pinCode = pinCode;
     }
+
+    public void changeAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 }

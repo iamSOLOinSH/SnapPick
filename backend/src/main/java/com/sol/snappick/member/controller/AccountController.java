@@ -49,14 +49,13 @@ public class AccountController {
 
     @PostMapping
     @Operation(summary = "주계좌 지정(구매자용)",
-            description = des_header_token + des_input + des_AccountSingleReq + des_output)
-    public ResponseEntity<Void> updateAccount(
+            description = des_header_token + des_input + des_AccountSingleReq + des_output + des_AccountStateRes)
+    public ResponseEntity<AccountStateRes> updateAccount(
             Authentication authentication,
             @RequestBody AccountSingleReq accountSingleReq
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(transactionService.setMyAccount(memberId, accountSingleReq));
     }
 
     @PostMapping("/transfer")
