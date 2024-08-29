@@ -23,11 +23,11 @@ const Main = () => {
         </div>
       </div>
       {/* 로고 */}
-      <div className="relative z-10 mb-48 mt-64 flex animate-popIn flex-col items-center justify-center">
+      <div className="relative z-10 mb-40 mt-64 flex animate-popIn flex-col items-center justify-center">
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
-      <button className="relative z-20 mb-4 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1">
+      <button className="relative z-20 mb-8 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1">
         <svg
           viewBox="0 0 24 24"
           fill="none"

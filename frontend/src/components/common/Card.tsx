@@ -29,7 +29,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
     description: "mt-12 text-sm text-gray-500",
   },
   product: {
-    container: "mb-2 flex justify-between rounded-sm bg-white p-4",
+    container: "mb-2 flex justify-between rounded-lg bg-white p-4 w-full",
     image: "mr-4 h-32 w-32 rounded-lg",
     title: "text-medium text-lg ",
     price: "text-sm",
@@ -39,7 +39,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
   simple: {
     container: "mb-2 flex items-center rounded-lg p-4 bg-base mx-4",
     image: "mr-4 h-12 w-12 rounded-lg",
-    title: "text-lg font-medium text-black",
+    title: "text-lg font-semibold text-black",
     date: "text-sm text-gray-500",
     spend: "text-xl font-medium text-black",
   },
@@ -58,7 +58,7 @@ const CARD_VARIANTS: Record<string, VariantStyles> = {
 type CardProps = {
   variant: keyof typeof CARD_VARIANTS;
   imageSrc?: string;
-  title: string;
+  title?: string;
   subtitle?: string;
   description?: string;
   price?: number;
@@ -67,6 +67,7 @@ type CardProps = {
   time?: string;
   content?: React.ReactElement;
   toggle?: React.ReactElement;
+  icon?: React.ReactElement;
   quantity?: number;
   spend?: number;
 };
@@ -84,13 +85,18 @@ export const Card: React.FC<CardProps> = ({
   toggle,
   spend,
   totalPrice,
+  icon,
 }) => {
   const styles = CARD_VARIANTS[variant];
 
   return (
     <div className={styles.container}>
       {imageSrc && <img src={imageSrc} alt={title} className={styles.image} />}
-
+      {icon && (
+        <div className="mr-4 flex h-24 w-24 items-center justify-center rounded-md bg-white">
+          {icon}
+        </div>
+      )}
       <div className="flex-grow">
         <div className="flex items-center justify-between">
           <div>
