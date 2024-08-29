@@ -5,6 +5,8 @@ import com.sol.snappick.member.entity.Member;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,24 +36,31 @@ public class Store extends BaseEntity {
     private UUID uuid;
 
     @Column
+    @Setter
     private String name;
 
     @Column(columnDefinition = "TEXT")
+    @Setter
     private String description;
 
     @Column
+    @Setter
     private String location;
 
     @Column
+    @Setter
     private Double latitude;
 
     @Column
+    @Setter
     private Double longitude;
 
     @Column
+    @Setter
     private LocalDate operateStartAt;
 
     @Column
+    @Setter
     private LocalDate operateEndAt;
 
     @Column(nullable = false)
@@ -60,6 +69,11 @@ public class Store extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private Member member;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    @Setter
+    private StoreStatus status;
 
     // 태그 목록
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -117,6 +131,26 @@ public class Store extends BaseEntity {
 
     public void incrementViewCount() {
         this.viewCount++;
+    }
+
+    // 상태를 업데이트하는 메서드
+    public void updateStatus() {
+        // 현재 상태가 TEMPORARILY_CLOSED라면 상태를 자동 업데이트하지 않음
+        if (this.status == StoreStatus.TEMPORARILY_CLOSED && this.status == StoreStatus.CLOSED) {
+            return;
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (operateStartAt != null && operateEndAt != null) {
+            if (today.isBefore(operateStartAt)) {
+                this.status = StoreStatus.PREPARING; // 운영 준비중
+            } else if (today.isAfter(operateEndAt)) {
+                this.status = StoreStatus.CLOSED; // 운영 마감
+            } else {
+                this.status = StoreStatus.OPERATING; // 운영중
+            }
+        }
     }
 
     @PrePersist
