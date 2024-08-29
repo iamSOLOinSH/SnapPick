@@ -1,6 +1,7 @@
 package com.sol.snappick.member.controller;
 
 import com.sol.snappick.member.dto.AccountSingleReq;
+import com.sol.snappick.member.dto.AccountStateRes;
 import com.sol.snappick.member.dto.AccountTransferReq;
 import com.sol.snappick.member.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.sol.snappick.global.ApiDescriptions.AccountController.*;
 import static com.sol.snappick.global.ApiDescriptions.Headers.des_header_token;
@@ -25,24 +28,22 @@ public class AccountController {
 
     @GetMapping
     @Operation(summary = "주계좌 번호와 금액 확인",
-            description = des_header_token + des_output + des_AccountStateRes)
-    public ResponseEntity<Void> getAccount(
+            description = "주계좌가 없으면 빈값을 반환합니다.<br/>" + des_header_token + des_output + des_AccountStateRes)
+    public ResponseEntity<AccountStateRes> getAccount(
             Authentication authentication
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(transactionService.getMyAccount(memberId));
     }
 
     @GetMapping("/list")
     @Operation(summary = "타행 계좌 목록 조회(주계좌 제외)",
             description = des_header_token + des_output + des_AccountStateRes)
-    public ResponseEntity<Void> getAccounts(
+    public ResponseEntity<List<AccountStateRes>> getAccounts(
             Authentication authentication
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(transactionService.getOtherAccount(memberId));
     }
 
 

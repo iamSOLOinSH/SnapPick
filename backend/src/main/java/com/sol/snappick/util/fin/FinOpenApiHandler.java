@@ -18,15 +18,17 @@ public class FinOpenApiHandler {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final FinCommonHeader finCommonHeaderTemplate;
 
     @Value("${finopenapi.url}")
     private String BASE_URL;
     @Value("${finopenapi.apikey}")
     private String apiKey;
 
-    public FinOpenApiHandler(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public FinOpenApiHandler(RestTemplate restTemplate, ObjectMapper objectMapper, FinCommonHeader finCommonHeader) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.finCommonHeaderTemplate = finCommonHeader;
     }
 
     // 공통 헤더 필요없는 경우(사용자 계정 생성)
@@ -54,7 +56,7 @@ public class FinOpenApiHandler {
         String headerJson = null;
         JsonNode headerNode = null;
         try {
-            headerJson = objectMapper.writeValueAsString(FinCommonHeader.createHeader(apiName));
+            headerJson = objectMapper.writeValueAsString(finCommonHeaderTemplate.createHeader(apiName));
             headerNode = objectMapper.readTree(headerJson);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -94,10 +96,9 @@ public class FinOpenApiHandler {
     }
 
     // JsonNode에 있는 모든 값 목록 출력
-    public void printJson(JsonNode responseJson) {
-        System.out.println("=== request body ===");
-        responseJson.fields().forEachRemaining(entry ->
-                System.out.println(entry.getKey() + ": " + entry.getValue().asText()));
+    public void printJson(JsonNode jsonNode) {
+        System.out.println("====================");
+        System.out.println(jsonNode.toPrettyString());
         System.out.println("====================");
     }
 

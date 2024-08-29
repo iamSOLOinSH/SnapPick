@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// 정적 팩토리 메서드 패턴
 @Getter
 @Component
 public class FinCommonHeader {
@@ -23,11 +24,16 @@ public class FinCommonHeader {
     private String apiServiceCode;
     private String institutionTransactionUniqueNo;
 
-    public static FinCommonHeader createHeader(String apiName) {
-        FinCommonHeader header = new FinCommonHeader();
-        LocalDateTime now = LocalDateTime.now();
+    private FinCommonHeader() {
+    }
 
-        return header.setDynamicFields(apiName, now);
+    private FinCommonHeader(String apiName, LocalDateTime now, String apiKey) {
+        this.apiKey = apiKey;
+        this.apiName = apiName;
+        this.transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        this.transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
+        this.apiServiceCode = apiName;
+        this.institutionTransactionUniqueNo = generateUniqueNo();
     }
 
     private static String generateUniqueNo() {
@@ -38,13 +44,12 @@ public class FinCommonHeader {
         return dateTime + String.format("%06d", sequenceNumber);
     }
 
-    private FinCommonHeader setDynamicFields(String apiName, LocalDateTime now) {
-        this.apiName = apiName;
-        this.transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        this.transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
-        this.apiServiceCode = apiName;
-        this.institutionTransactionUniqueNo = generateUniqueNo();
-        return this;
+
+    // 팩토리 메서드
+    public FinCommonHeader createHeader(String apiName) {
+        LocalDateTime now = LocalDateTime.now();
+        return new FinCommonHeader(apiName, now, this.apiKey);
     }
+
 
 }
