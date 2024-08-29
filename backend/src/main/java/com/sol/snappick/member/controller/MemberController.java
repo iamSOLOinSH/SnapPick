@@ -50,17 +50,6 @@ public class MemberController {
     }
 
 
-    @GetMapping("/dev/pincode")
-    @Operation(summary = "(개발용) 핀코드 일치여부 확인",
-            description = des_header_token)
-    public ResponseEntity<Boolean> isCorrectPin(
-            Authentication authentication,
-            @RequestParam(name = "pin_code") String pinCode
-    ) {
-        Integer memberId = Integer.valueOf(authentication.getName());
-        return ResponseEntity.ok().body(memberService.isCorrectPin(memberId, pinCode));
-    }
-
     @PostMapping("/pincode")
     @Operation(summary = "핀코드 재설정",
             description = "새로운 핀코드를 저장합니다.<br/>" + des_header_token)
@@ -97,7 +86,7 @@ public class MemberController {
 
 
     @GetMapping("/dev/token")
-    @Operation(summary = "(개발용) 액세스 토큰 발급")
+    @Operation(summary = "(개발용) 액세스 토큰 발급", description = "토큰 유효시간은 10분입니다!")
     public ResponseEntity<String> getToken(
             @RequestParam(name = "member_id") Integer memberId
     ) {

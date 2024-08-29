@@ -14,7 +14,7 @@ public class ProductSimpleRes {
 
     private Integer id;
     private String name;
-    private Integer price;
+    private Long price;
     private Integer stock;
     private ProductStatus status;
     private List<String> thumbnailImageUrls;

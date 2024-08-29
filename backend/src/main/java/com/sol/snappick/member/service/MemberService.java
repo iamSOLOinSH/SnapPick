@@ -9,17 +9,14 @@ import com.sol.snappick.member.entity.Role;
 import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mariadb.jdbc.plugin.authentication.standard.ed25519.Utils.bytesToHex;
+import static com.sol.snappick.member.service.BasicMemberService.encode;
 
 @Service
 @Transactional
@@ -36,8 +33,7 @@ public class MemberService {
                                         MemberRegisterReq memberRegisterReq) {
         Member member = basicMemberService.getMemberById(memberId);
 
-        // 이미 회원가입한 사람이라면
-        if (member.getUserKey() != null || member.getAccountNumber() != null) {
+        if (member.getUserKey() != null) {
             throw new BasicBadRequestException("이미 정보를 입력한 회원입니다");
         }
 
@@ -69,17 +65,9 @@ public class MemberService {
         return SimpleMemberInfoRes.fromEntity(member);
     }
 
-    // 핀코드 일치여부 확인
-    @Transactional(readOnly = true)
-    public Boolean isCorrectPin(Integer memberId, String pinCode) {
-        String origin = basicMemberService.getMemberById(memberId).getPinCode();
-        return origin.equals(encode(pinCode));
-    }
-
     // 핀코드 재설정
     public void resetPin(Integer memberId, String pinCode) {
         Member member = basicMemberService.getMemberById(memberId);
-        // TODO 본인인증 로직 추가
         member.changePinCode(encode(pinCode));
         memberRepository.save(member);
     }
@@ -109,12 +97,5 @@ public class MemberService {
     public String generateToken(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
         return tokenService.generateToken(member, Duration.ofMinutes(10));
-    }
-
-    @SneakyThrows
-    private String encode(String text) {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-        return bytesToHex(encodedhash);
     }
 }

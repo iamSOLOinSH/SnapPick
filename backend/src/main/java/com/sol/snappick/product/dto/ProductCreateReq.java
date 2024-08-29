@@ -20,7 +20,7 @@ public class ProductCreateReq {
     private String description;
 
     @Schema(description = "상품 가격")
-    private Integer price;
+    private Long price;
 
     @Schema(description = "상품 재고")
     private Integer stock;

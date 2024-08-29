@@ -1,6 +1,7 @@
 package com.sol.snappick.member.controller;
 
 import com.sol.snappick.member.dto.AccountTransferReq;
+import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
 import com.sol.snappick.member.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/manager")
@@ -18,7 +21,7 @@ public class ManagerController {
     private final ManagerService managerService;
 
     @GetMapping("/")
-    @Operation(summary = "거래조회(대사)")
+    @Operation(summary = "개발중 == 거래조회(대사)")
     public ResponseEntity<Void> checkTransactions(
     ) {
         // TODO
@@ -26,11 +29,12 @@ public class ManagerController {
     }
 
     @GetMapping("/history")
-    @Operation(summary = "멤버 거래내역 목록(1원 송금 확인을 위해)")
-    public ResponseEntity<Void> getTransaction(
+    @Operation(summary = "계좌 거래내역 조회")
+    public ResponseEntity<ArrayList<TransactionDetailRes>> getTransaction(
+            @RequestParam(name = "account_no") String accouuntNo
     ) {
-        // TODO
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(
+                managerService.getTransaction(accouuntNo));
     }
 
     @PostMapping("/deposit")

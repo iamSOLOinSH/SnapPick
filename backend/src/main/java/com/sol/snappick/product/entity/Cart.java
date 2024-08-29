@@ -16,12 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.Builder;
+import lombok.*;
 import jakarta.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -42,10 +38,12 @@ public class Cart extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Setter
     private CartStatus status;
 
     @OneToOne
     @JoinColumn(name = "transaction_id")
+    @Setter
     private Transaction transaction;
 
     // 아이템 목록
@@ -60,5 +58,15 @@ public class Cart extends BaseEntity {
         this.status = status;
         this.transaction = transaction;
         this.items = items;
+    }
+
+    public long calculateTotalAmount() {
+        return items.stream()
+                .mapToLong(item -> (long) item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+    }
+
+    public void markAsPaid() {
+        this.status = CartStatus.결제완료;
     }
 }
