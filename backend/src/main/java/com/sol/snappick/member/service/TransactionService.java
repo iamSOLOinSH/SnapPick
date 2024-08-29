@@ -231,9 +231,8 @@ public class TransactionService {
 
         // 3. 응답값 받아서 반환
         JsonNode responseData = jsonNode.get("REC");
-
-        if (!responseData.get("status").equals("SUCCESS")) {
-            finOpenApiHandler.printJson(responseData);
+        finOpenApiHandler.printJson(responseData);
+        if (!responseData.get("status").asText().equals("SUCCESS")) {
             throw new BasicBadRequestException("Something went wrong");
         }
 
