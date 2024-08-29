@@ -217,10 +217,10 @@ public class TransactionService {
     /////////////////////////////////////////////////////
 
 
-    public Boolean transfer(Member buyer, // 구매자
+    public Integer transfer(Member buyer, // 구매자
                             Member seller, // 판매자
                             String withdrawalAccountNo, // 출금계좌(구매자꺼)
-                            Integer balance //거래금액
+                            Long balance //거래금액
     ) {
 
         String phoneNumber = buyer.getPhoneNumber();
@@ -241,29 +241,40 @@ public class TransactionService {
         // 3. 응답값 받아서 반환
         JsonNode responseData = jsonNode.get("REC");
         if (!responseData.isArray() || responseData.size() == 0) {
-            return false;
+            throw new BasicBadRequestException("Something went wrong");
         }
 
-
+        Integer transactionId = 0;
         // 4. 입출금 내역 transaction에 넣기
         for (JsonNode account : responseData) {
+            Transaction transaction = Transaction.builder()
+                    .transactionUniqueNo(account.get("transactionUniqueNo").textValue())
+                    .accountNo(account.get("accountNo").textValue())
+                    .transactionAccountNo(account.get("transactionAccountNo").textValue())
+                    .variation(balance)
+                    .transactedAt(LocalDateTime.now()).build();
 
             Integer transactionType = account.get("transactionType").asInt();
-            transactionRepository.save(
-                    Transaction.builder()
-                            .member(transactionType == 2 ? buyer : seller)
-                            .transactionUniqueNo(account.get("transactionUniqueNo").textValue())
-                            .accountNo(account.get("accountNo").textValue())
-                            .transactionAccountNo(account.get("transactionAccountNo").textValue())
-                            .variation(balance)
-                            .type(TransactionType.values()[transactionType])
-                            .summary(transactionType == 2 ? withdrawalTransactionSummary : depositTransactionSummary)
-                            .transactedAt(LocalDateTime.now()).build()
-            );
+
+            // 구매자
+            if (transactionType == 2) {
+                transaction.setMember(buyer);
+                transaction.setType(TransactionType.출금);
+                transaction.setSummary(withdrawalTransactionSummary);
+                transactionId = transactionRepository.save(transaction).getId();
+            } else {
+                transaction.setMember(seller);
+                transaction.setType(TransactionType.입금);
+                transaction.setSummary(depositTransactionSummary);
+                transactionRepository.save(transaction);
+            }
+
         }
 
-
-        return true;
+        if (transactionId == 0) {
+            throw new BasicBadRequestException("Something went wrong");
+        }
+        return transactionId;
 
     }
 }

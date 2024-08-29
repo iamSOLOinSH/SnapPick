@@ -36,7 +36,7 @@ public class Transaction {
     private String transactionUniqueNo;
 
     @Column
-    private Integer variation;
+    private Long variation;
 
     @Column
     private LocalDateTime transactedAt;
@@ -46,4 +46,17 @@ public class Transaction {
 
     protected Transaction() {
     }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
 }
