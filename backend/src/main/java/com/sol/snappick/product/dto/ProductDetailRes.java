@@ -17,7 +17,7 @@ public class ProductDetailRes {
     private Integer id;
     private String name;
     private String description;
-    private Integer price;
+    private Long price;
     private Integer stock;
     private Integer dailyLimit;
     private Integer personalLimit;

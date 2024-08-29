@@ -1,19 +1,23 @@
 package com.sol.snappick.payment.service;
 
 import com.sol.snappick.cart.dto.CartItemRes;
+import com.sol.snappick.cart.exception.CartNotFoundException;
 import com.sol.snappick.cart.exception.CartUnauthorizedException;
 import com.sol.snappick.cart.mapper.CartItemMapper;
 import com.sol.snappick.cart.service.CartService;
 import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.entity.Transaction;
+import com.sol.snappick.member.exception.BasicNotFoundException;
 import com.sol.snappick.member.repository.MemberRepository;
+import com.sol.snappick.member.repository.TransactionRepository;
 import com.sol.snappick.member.service.BasicMemberService;
+import com.sol.snappick.member.service.TransactionService;
 import com.sol.snappick.payment.dto.CustomerRes;
 import com.sol.snappick.payment.dto.ReceiptRes;
 import com.sol.snappick.payment.dto.StoreSimpleRes;
-import com.sol.snappick.product.entity.Cart;
-import com.sol.snappick.product.entity.CartItem;
-import com.sol.snappick.product.entity.CartStatus;
+import com.sol.snappick.product.entity.*;
 import com.sol.snappick.product.repository.CartRepository;
+import com.sol.snappick.product.repository.ProductRepository;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreImage;
 import com.sol.snappick.store.exception.StoreNotFoundException;
@@ -35,9 +39,65 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final BasicMemberService basicMemberService;
     private final CartService cartService;
+    private final TransactionService transactionService;
+    private final TransactionRepository transactionRepository;
+    private final ProductRepository productRepository;
 
-    public List<ReceiptRes> getPendingCustomers(Integer storeId) {
+    public Boolean cartItemReceived(Integer cartId){
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()->new CartNotFoundException());
+
+        //카트가 결제완료 상태인지 확인한다.
+        if (cart.getStatus()==CartStatus.결제완료){
+            cart.setStatus(CartStatus.수령완료);
+            cartRepository.save(cart);
+            return true;
+        }
+        return false;
+
+    }
+
+    public Boolean attemptTransfer(Integer customerId, Integer cartId) {
+        Member customer = memberRepository.findById(customerId)
+                .orElseThrow(() -> new BasicNotFoundException("해당하는 사용자를 찾을 수 없습니다."));
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CartNotFoundException());
+
+        Member seller = cart.getStore().getMember();
+
+        long totalAmount = cart.calculateTotalAmount();
+
+        Integer transactionId = transactionService.transfer(customer, seller, customer.getAccountNumber(), totalAmount);
+
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new BasicNotFoundException("해당하는 결제 내역을 찾을 수 없습니다."));
+
+        cart.setTransaction(transaction);
+        cart.markAsPaid();
+
+        updateProductStock(cart);
+
+        cartRepository.save(cart);
+
+        return true;
+    }
+
+    private void updateProductStock(Cart cart) {
+        for (CartItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            product.decreaseStock(item.getQuantity());
+        }
+    }
+
+
+    public List<ReceiptRes> getPendingCustomers(Integer memberId, Integer storeId) {
         //유효성 검증
+        //0) 회원이 존재하는지 확인한다.
+        boolean memeberIsExist = memberRepository.existsById(memberId);
+        if (!memeberIsExist) throw new BasicNotFoundException();
+
         //1) 스토어가 존재하는지 확인한다.
         Store store = storeRepository.findById(storeId)
                                      .orElseThrow(() -> new StoreNotFoundException());
@@ -148,29 +208,5 @@ public class PaymentService {
         return receipt;
     }
 
-    //    public String attemptPayment(Integer memberId, Integer cartId) {
-    //
-    //        //구매자 ID
-    //        Integer customerId = memberId;
-    //
-    //        Cart cart = cartRepository.findById(cartId)
-    //                                  .orElseThrow(() -> new CartNotFoundException());
-    //
-    //        //판매자 ID
-    //        Integer sellerId = cart.getStore().getMember().getId();
-    //        Member seller = memberRepository.findById(sellerId)
-    //                                        .orElseThrow(() -> new BasicNotFoundException());
-    //
-    //        //판매자 계좌번호
-    //        String sellerAccountNumber = seller.getAccountNumber();
-    //
-    //        //총 결제 금액
-    //        Integer sumPrice = 0;
-    //        for (CartItem item: cart.getItems()){
-    //            sumPrice += item.getQuantity() * item.getProduct().getPrice();
-    //        }
-    //
-    //
-    //
-    //    }
+
 }

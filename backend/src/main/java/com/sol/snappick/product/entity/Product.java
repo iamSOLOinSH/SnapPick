@@ -25,9 +25,10 @@ public class Product extends BaseEntity {
     private String description;
 
     @Column
-    private Integer price;
+    private Long price;
 
     @Column
+    @Setter
     private Integer stock;
 
     @Column
@@ -53,7 +54,7 @@ public class Product extends BaseEntity {
     public Product(
             String name,
             String description,
-            Integer price,
+            Long price,
             Integer stock,
             Integer dailyLimit,
             Integer personalLimit,
@@ -74,7 +75,7 @@ public class Product extends BaseEntity {
     public void updateDetails(
             String name,
             String description,
-            Integer price,
+            Long price,
             Integer stock,
             Integer dailyLimit,
             Integer personalLimit
@@ -100,6 +101,14 @@ public class Product extends BaseEntity {
     private void addImage(ProductImage image) {
         this.images.add(image);
         image.setProduct(this);
+    }
+
+    public void decreaseStock(int quantity) {
+        this.stock -= quantity;
+        if (this.stock <= 0) {
+            this.stock = 0;
+            this.status = ProductStatus.품절;
+        }
     }
 
 }
