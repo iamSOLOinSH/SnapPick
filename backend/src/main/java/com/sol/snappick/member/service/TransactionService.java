@@ -40,10 +40,13 @@ public class TransactionService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("userId", email);
 
+        JsonNode jsonNode;
         // 2. api 요청
-        JsonNode jsonNode = finOpenApiHandler.apiRequest("/member", HttpMethod.POST, requestBody);
-
-        finOpenApiHandler.printJson(jsonNode);
+        try {
+            jsonNode = finOpenApiHandler.apiRequest("/member", HttpMethod.POST, requestBody);
+        } catch (Exception e) {
+            jsonNode = finOpenApiHandler.apiRequest("/member/search", HttpMethod.POST, requestBody);
+        }
 
         return finOpenApiHandler.getValueByKey(jsonNode, "userKey");
     }
