@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@tanstack/react-table": "^8.20.5",
+    "@types/lodash": "^4.17.7",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.4",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.41",
     "react": "^18.3.1",
     "react-cookie": "^7.2.0",

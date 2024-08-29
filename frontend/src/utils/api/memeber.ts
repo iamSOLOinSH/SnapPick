@@ -14,8 +14,8 @@ export const membersRegister = (memberData: memberDataProps) => {
 };
 
 // 핀코드 재설정
-export const membersPincode = (pinCode: number) => {
-  const response = Axios.post("/members/pincode", pinCode);
+export const membersPincode = (pinCode: string) => {
+  const response = Axios.post(`/members/pincode?pin_code=${pinCode}`);
   return response;
 };
 

@@ -16,7 +16,7 @@ import StoreCreateSuccess from "../pages/StoreCreateSuccess";
 import Mypage from "../pages/Mypage";
 import StockControl from "../pages/StockControl";
 import StockControlDetail from "../pages/StockControlDetail";
-
+import PasswordChange from "../pages/PasswordChange";
 import Order from "../pages/Order";
 import Cart from "../pages/Cart";
 import Products from "../pages/Products";
@@ -41,6 +41,7 @@ const Router = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/signup/success" element={<SignupSuccess />} />
       <Route path="/signup/password" element={<PasswordSetup />} />
+      <Route path="/password/change" element={<PasswordChange />} />
       <Route path="/history" element={<VisitHistory />} />
       <Route path="/order" element={<Order />} />
       <Route path="/products" element={<Products />} />
