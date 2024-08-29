@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +91,9 @@ public class ManagerService {
         Integer memberId = responseData1.get("userName").asInt();
         String userKey = basicMemberService.getMemberById(memberId).getUserKey();
         ////// 2. 거래내역 조회
-        LocalDate now = LocalDate.now();
+        ZoneId SEOUL_ZONE = ZoneId.of("Asia/Seoul");
+
+        LocalDate now = LocalDate.now(SEOUL_ZONE);
         String endDate = yyyyMMddFormat(now);
         String startDate = yyyyMMddFormat(now.minusDays(6));
 
