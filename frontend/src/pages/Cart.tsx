@@ -114,8 +114,11 @@ const Cart = () => {
         ))}
       </div>
       <div className="relative flex items-center justify-center bg-primary py-4 text-lg text-white">
-        <button className="flex items-center">
-          더 담기{" "}
+        <button
+          className="flex items-center"
+          onClick={() => navigate("/products")}
+        >
+          더 담기
           <LuMoveRight className="ml-2 h-8 w-8 rounded-full bg-blue-500 p-1" />
         </button>
       </div>
