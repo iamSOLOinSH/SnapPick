@@ -45,10 +45,6 @@ public class SecurityConfig {
                         .redirectionEndpoint(redirection ->
                                 redirection.baseUri("/login/oauth2/code/*"))
                         .successHandler(oAuth2SuccessHandler()))
-//                .exceptionHandling(exceptionConfig ->
-//                        exceptionConfig.defaultAuthenticationEntryPointFor(
-//                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-//                                new AntPathRequestMatcher("/**")))
                 .build();
     }
 

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,28 +29,28 @@ public class FinCommonHeader {
     private FinCommonHeader() {
     }
 
-    private FinCommonHeader(String apiName, LocalDateTime now, String apiKey) {
+    private FinCommonHeader(String apiName, ZonedDateTime now, String apiKey) {
         this.apiKey = apiKey;
         this.apiName = apiName;
         this.transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         this.transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
         this.apiServiceCode = apiName;
-        this.institutionTransactionUniqueNo = generateUniqueNo();
+        this.institutionTransactionUniqueNo = generateUniqueNo(transmissionDate + transmissionTime);
     }
 
-    private static String generateUniqueNo() {
-        LocalDateTime now = LocalDateTime.now();
-        String dateTime = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-
+    private static String generateUniqueNo(String now) {
         int sequenceNumber = sequence.getAndIncrement() % 1000000;
-        return dateTime + String.format("%06d", sequenceNumber);
+        return now + String.format("%06d", sequenceNumber);
     }
 
 
     // 팩토리 메서드
     public FinCommonHeader createHeader(String apiName) {
         LocalDateTime now = LocalDateTime.now();
-        return new FinCommonHeader(apiName, now, this.apiKey);
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+        ZonedDateTime koreaTime = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(koreaZoneId);
+
+        return new FinCommonHeader(apiName, koreaTime, this.apiKey);
     }
 
 
