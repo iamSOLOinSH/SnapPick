@@ -74,12 +74,12 @@ public class AccountController {
     @PostMapping("/identity")
     @Operation(summary = "1원 송금 보내기",
             description = "타행으로 1원 송금을 하여 본인 인증을 시도합니다")
-    public ResponseEntity<Void> beforeIdentification(
+    public ResponseEntity<String> beforeIdentification(
             Authentication authentication,
-            AccountSingleReq accountSingleReq) {
+            @RequestParam(name = "account_number") String accountNumber) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
-        return ResponseEntity.ok().body(null);
+        String transactionUniqueNo = transactionService.openAuth(memberId, accountNumber);
+        return ResponseEntity.ok().body(transactionUniqueNo);
     }
 
     @GetMapping("/identity")
