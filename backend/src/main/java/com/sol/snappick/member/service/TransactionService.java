@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sol.snappick.member.dto.AccountSingleReq;
 import com.sol.snappick.member.dto.AccountStateRes;
 import com.sol.snappick.member.entity.Member;
+import com.sol.snappick.member.entity.Role;
 import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
@@ -128,6 +129,9 @@ public class TransactionService {
     public AccountStateRes setMyAccount(Integer memberId, AccountSingleReq accountSingleReq) {
         Member member = basicMemberService.getMemberById(memberId);
         String accountNumber = accountSingleReq.getAccountNumber();
+        if (member.getRole() == Role.판매자) {
+            throw new BasicBadRequestException("판매자는 주계좌를 변경할 수 없습니다");
+        }
 
         // 내 계좌목록 불러오기
         Map<String, Object> requestBody = new HashMap<>();
