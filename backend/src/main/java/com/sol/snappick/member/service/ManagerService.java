@@ -1,7 +1,9 @@
 package com.sol.snappick.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sol.snappick.global.CommonFormatter;
 import com.sol.snappick.member.dto.AccountTransferReq;
+import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
 import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
@@ -11,8 +13,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.sol.snappick.global.CommonFormatter.yyyyMMddFormat;
 
 @Service
 @Transactional
@@ -26,6 +32,14 @@ public class ManagerService {
     @Value("${finopenapi.userkey}")
     private String managerUserkey;
 
+    // 예금주 조회
+    private JsonNode inquireDemandDepositAccountHolderName(String accountNumber) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("accountNo", accountNumber);
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireDemandDepositAccountHolderName", "inquireDemandDepositAccountHolderName", HttpMethod.POST, requestBody, managerUserkey);
+        return jsonNode.get("REC");
+    }
+
     // 계좌 현금 입금
     public TransactionHistoryRes deposit(AccountTransferReq accountTransferReq) {
 
@@ -33,18 +47,13 @@ public class ManagerService {
         String accountNumber = accountTransferReq.getAccountNumber();
 
         ////// 1. 예금주 조회
-        Map<String, Object> requestBody1 = new HashMap<>();
-        requestBody1.put("accountNo", accountNumber);
-        JsonNode jsonNode1 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireDemandDepositAccountHolderName", "inquireDemandDepositAccountHolderName", HttpMethod.POST, requestBody1, managerUserkey);
-        JsonNode responseData1 = jsonNode1.get("REC");
+        JsonNode responseData1 = inquireDemandDepositAccountHolderName(accountNumber);
 
         accountHolderRes.setAccountNumber(accountNumber);
         accountHolderRes.setBankName(responseData1.get("bankName").asText());
         accountHolderRes.setName(responseData1.get("userName").asText());
 
         ////// 2. 계좌 입금
-
-
         Map<String, Object> requestBody2 = new HashMap<>();
         requestBody2.put("accountNo", accountNumber);
         requestBody2.put("transactionBalance", accountTransferReq.getBalance());
@@ -70,5 +79,47 @@ public class ManagerService {
 
         return accountHolderRes;
     }
+
+
+    // 계좌 거래내역 조회
+    public ArrayList<TransactionDetailRes> getTransaction(String accountNumber) {
+
+
+        ////// 1. 예금주 조회
+        JsonNode responseData1 = inquireDemandDepositAccountHolderName(accountNumber);
+        Integer memberId = responseData1.get("userName").asInt();
+        String userKey = basicMemberService.getMemberById(memberId).getUserKey();
+        ////// 2. 거래내역 조회
+        LocalDate now = LocalDate.now();
+        String endDate = yyyyMMddFormat(now);
+        String startDate = yyyyMMddFormat(now.minusDays(6));
+
+
+        Map<String, Object> requestBody2 = new HashMap<>();
+        requestBody2.put("accountNo", accountNumber);
+        requestBody2.put("startDate", startDate);
+        requestBody2.put("endDate", endDate);
+        requestBody2.put("transactionType", "A");
+        requestBody2.put("orderByType", "DESC");
+        JsonNode jsonNode2 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireTransactionHistoryList", "inquireTransactionHistoryList", HttpMethod.POST, requestBody2, userKey);
+        JsonNode responseData2 = jsonNode2.get("REC");
+
+        ArrayList<TransactionDetailRes> transactionList = new ArrayList<>();
+
+        for (JsonNode t : responseData2.get("list")) {
+            transactionList.add(
+                    TransactionDetailRes
+                            .builder()
+                            .transactionType(t.get("transactionTypeName").asText())
+                            .balance(CommonFormatter.numberFormat(t.get("transactionBalance").asText()))
+                            .afterBalance(CommonFormatter.numberFormat(t.get("transactionAfterBalance").asText()))
+                            .summary(t.get("transactionSummary").asText())
+                            .time(CommonFormatter.timeFormat(t.get("transactionDate").asText() + t.get("transactionTime").asText()))
+                            .build()
+            );
+        }
+        return transactionList;
+    }
+
 
 }
