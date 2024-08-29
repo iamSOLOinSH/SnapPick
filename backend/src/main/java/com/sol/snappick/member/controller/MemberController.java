@@ -95,4 +95,12 @@ public class MemberController {
         return ResponseEntity.ok().body(responseData);
     }
 
+
+    @GetMapping("/dev/token")
+    @Operation(summary = "(개발용) 액세스 토큰 발급")
+    public ResponseEntity<String> getToken(
+            @RequestParam(name = "member_id") Integer memberId
+    ) {
+        return ResponseEntity.ok().body(memberService.generateToken(memberId));
+    }
 }

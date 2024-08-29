@@ -6,6 +6,7 @@ import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.entity.Role;
+import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +36,23 @@ public class MemberService {
                                         MemberRegisterReq memberRegisterReq) {
         Member member = basicMemberService.getMemberById(memberId);
 
-        // 계정 생성!!
+        // 이미 회원가입한 사람이라면
+        if (member.getUserKey() != null || member.getAccountNumber() != null) {
+            throw new BasicBadRequestException("이미 정보를 입력한 회원입니다");
+        }
+
+        // 1. 계정 생성
         String userKey = transactionService.postMember(member.getEmail());
 
         //판매자면
         if (memberRegisterReq.getRole() == 1) {
             // 사업자번호
             member.setBusinessNumber(memberRegisterReq.getBusinessNumber());
-            // 계좌 생성!!
+            // 2. 계좌 생성
             member.setAccountNumber(transactionService.createAccount(userKey));
         }
 
+        // 3. 저장
         member.setRole(Role.values()[memberRegisterReq.getRole()]);
         member.setUserKey(userKey);
         member.setPinCode(encode(memberRegisterReq.getPinCode()));
@@ -98,6 +106,10 @@ public class MemberService {
         return response;
     }
 
+    public String generateToken(Integer memberId) {
+        Member member = basicMemberService.getMemberById(memberId);
+        return tokenService.generateToken(member, Duration.ofMinutes(10));
+    }
 
     @SneakyThrows
     private String encode(String text) {

@@ -34,7 +34,7 @@ public class ManagerController {
     }
 
     @PostMapping("/deposit")
-    @Operation(summary = "계좌 입금")
+    @Operation(summary = "현금 입금")
     public ResponseEntity<TransactionHistoryRes> deposit(
             @RequestBody AccountTransferReq accountTransferReq
     ) {
