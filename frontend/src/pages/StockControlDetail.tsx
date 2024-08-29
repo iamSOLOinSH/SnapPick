@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Layout } from "../components/common/Layout";
 import { BackButton } from "../components/common/BackButton";
 import { useParams } from "react-router";
@@ -6,15 +6,36 @@ import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { PiNotePencilBold } from "react-icons/pi";
 import { NumberSelector } from "../components/common/NumberSelector";
+import { Input } from "../components/common/Input";
 
 const StockControlDetail = () => {
   const { productId } = useParams();
 
   const [productName, setProductName] = useState("상품명 이름");
+  const [isEdit, setIsEdit] = useState(false);
+  const [editName, setEditName] = useState(productName);
   const [quantity, setQuantity] = useState(3);
+
+  const editRef = useRef<HTMLInputElement>(null);
 
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity - 1);
+
+  const handleEdit = () => {
+    setIsEdit((prev) => !prev);
+
+    if (!isEdit) {
+      setTimeout(() => editRef.current?.focus(), 0);
+    } else {
+      setProductName(editName);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleEdit();
+    }
+  };
 
   const handleProductChange = () => {};
 
@@ -40,8 +61,19 @@ const StockControlDetail = () => {
             title="상품명"
             content={
               <div className="flex items-center gap-4">
-                <span>{productName}</span>
-                <PiNotePencilBold />
+                {isEdit ? (
+                  <input
+                    className="bg-base text-right outline-none"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    ref={editRef}
+                    maxLength={50}
+                    onKeyDown={handleKeyDown}
+                  />
+                ) : (
+                  <span>{productName}</span>
+                )}
+                <PiNotePencilBold onClick={handleEdit} />
               </div>
             }
           />
