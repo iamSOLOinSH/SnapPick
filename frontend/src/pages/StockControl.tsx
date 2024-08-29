@@ -163,7 +163,7 @@ const StockControl = () => {
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <BackButton />
-            <h3 className="ml-4 text-2xl font-bold">재고 현황</h3>
+            <h3 className="ml-4 text-2xl font-bold">재고 관리</h3>
           </div>
         </div>
         <div className="mb-4">
