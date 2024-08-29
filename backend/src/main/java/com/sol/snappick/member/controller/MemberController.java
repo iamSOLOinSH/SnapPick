@@ -5,6 +5,7 @@ import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import static com.sol.snappick.global.ApiDescriptions.common.des_output;
 
 @RestController
 @RequestMapping("/members")
+@Tag(name = "member", description = "멤버 : 회원 정보 API")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -28,7 +30,7 @@ public class MemberController {
 
     @PostMapping("/register")
     @Operation(summary = "회원가입 정보 입력",
-            description = des_header_token + des_input + des_MemberRegisterReq + des_output + des_SimpleMemberInfoRes)
+            description = "이미 정보 입력한 적이 있다면 되면 에러가 뜹니다.<br/>" + des_header_token + des_input + des_MemberRegisterReq + des_output + des_SimpleMemberInfoRes)
     public ResponseEntity<SimpleMemberInfoRes> signup(
             Authentication authentication,
             @RequestBody MemberRegisterReq memberRegisterReq
@@ -48,7 +50,7 @@ public class MemberController {
     }
 
 
-    @GetMapping("/pincode")
+    @GetMapping("/dev/pincode")
     @Operation(summary = "(개발용) 핀코드 일치여부 확인",
             description = des_header_token)
     public ResponseEntity<Boolean> isCorrectPin(
@@ -92,4 +94,5 @@ public class MemberController {
         }
         return ResponseEntity.ok().body(responseData);
     }
+
 }

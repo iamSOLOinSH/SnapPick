@@ -15,8 +15,8 @@ import com.sol.snappick.product.mapper.ProductMapper;
 import com.sol.snappick.product.repository.*;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.repository.StoreRepository;
-import com.sol.snappick.util.ImageUploadRes;
-import com.sol.snappick.util.MinioUtil;
+import com.sol.snappick.util.minio.ImageUploadRes;
+import com.sol.snappick.util.minio.MinioUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -166,9 +166,9 @@ public class ProductService {
             productToUpdate.getImages().addAll(newImages);
             productImageRepository.saveAll(newImages);
         }
-        
+
         // store는 변경할 수 없다.
-        
+
         //status
         if (productToUpdate.getStock()>0) productToUpdate.setStatus(ProductStatus.판매가능);
         else productToUpdate.setStatus(ProductStatus.품절);

@@ -44,12 +44,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalStateException("An error has occurred")
         );
-        
+
         String accessToken = tokenService.generateToken(member, ACCESS_TOKEN_DURATION);
         CookieUtils.addCookie(response, "token", accessToken,
                 (int) ACCESS_TOKEN_DURATION.toSeconds());
 
-        if (member.getAccountNumber() == null) {
+        if (member.getUserKey() == null) {
             // 회원가입에 폼정보 입력 안된 사람이라면
             getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/signup");
         } else {

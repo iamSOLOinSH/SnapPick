@@ -5,7 +5,6 @@ import com.sol.snappick.member.dto.DetailMemberInfoRes;
 import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.entity.Member;
-import com.sol.snappick.member.exception.MemberNotFoundException;
 import com.sol.snappick.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,23 +24,29 @@ import static org.mariadb.jdbc.plugin.authentication.standard.ed25519.Utils.byte
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BasicMemberService basicMemberService;
     private final TransactionService transactionService;
     private final TokenService tokenService;
 
     // 회원가입
     public SimpleMemberInfoRes register(Integer memberId,
                                         MemberRegisterReq memberRegisterReq) {
-        Member member = getMemberById(memberId);
+        Member member = basicMemberService.getMemberById(memberId);
 
         // 계정 생성 후, userKey 저장 (이미 존재하면 에러)
         String userKey = transactionService.postMember(member.getEmail());
+        String newAccountNo = null;
+        // newAccountNo 저장(판매자만 계좌 개설)
+        if (memberRegisterReq.getRole() == 1) {
+            // 판매자면 싸피은행의 계좌 개설
+            newAccountNo = transactionService.createAccount(userKey);
+        }
 
-        //TODO 계좌생성
         member.init(memberRegisterReq.getRole(),
                 userKey,
                 encode(memberRegisterReq.getPinCode()),
                 memberRegisterReq.getPhoneNumber(),
-                null,
+                newAccountNo,
                 memberRegisterReq.getBusinessNumber());
 
         memberRepository.save(member);
@@ -51,20 +56,20 @@ public class MemberService {
     // 회원정보 확인
     @Transactional(readOnly = true)
     public SimpleMemberInfoRes getSimpleMemberInfo(Integer memberId) {
-        Member member = getMemberById(memberId);
+        Member member = basicMemberService.getMemberById(memberId);
         return SimpleMemberInfoRes.fromEntity(member);
     }
 
     // 핀코드 일치여부 확인
     @Transactional(readOnly = true)
     public Boolean isCorrectPin(Integer memberId, String pinCode) {
-        String origin = getMemberById(memberId).getPinCode();
+        String origin = basicMemberService.getMemberById(memberId).getPinCode();
         return origin.equals(encode(pinCode));
     }
 
     // 핀코드 재설정
     public void resetPin(Integer memberId, String pinCode) {
-        Member member = getMemberById(memberId);
+        Member member = basicMemberService.getMemberById(memberId);
         // TODO 본인인증 로직 추가
         member.changePinCode(encode(pinCode));
         memberRepository.save(member);
@@ -78,33 +83,18 @@ public class MemberService {
         List<DetailMemberInfoRes> response = new ArrayList<>();
         if (type.equals("token")) {
             Integer memberId = Integer.parseInt(tokenService.getClaims(value).getSubject());
-            response.add(DetailMemberInfoRes.fromEntity(getMemberById(memberId)));
+            Member member = basicMemberService.getMemberById(memberId);
+            response.add(DetailMemberInfoRes.fromEntity(member));
         } else if (type.equals("email")) {
-            response.add(DetailMemberInfoRes.fromEntity(
-                    memberRepository.findByEmail(value).orElseThrow(
-                            () -> new MemberNotFoundException("Not Found Member : email is " + value)
-                    )
-            ));
+            Member member = basicMemberService.getMemberByEmail(value);
+            response.add(DetailMemberInfoRes.fromEntity(member));
         } else if (type.equals("id")) {
-            response.add(DetailMemberInfoRes.fromEntity(getMemberById(value)));
+            Member member = basicMemberService.getMemberById(value);
+            response.add(DetailMemberInfoRes.fromEntity(member));
         } else if (type.equals("all")) {
             return memberRepository.findAll().stream().map(DetailMemberInfoRes::fromEntity).toList();
         }
         return response;
-    }
-
-    //////////////////////////////////////////////// private
-
-    private Member getMemberById(Integer memberId) {
-        return memberRepository.findById(memberId).orElseThrow(
-                () -> new MemberNotFoundException("Not Found Member : MemberId is " + memberId)
-        );
-    }
-
-    private Member getMemberById(String memberIdStr) {
-        return memberRepository.findById(Integer.parseInt(memberIdStr)).orElseThrow(
-                () -> new MemberNotFoundException("Not Found Member : MemberId is " + memberIdStr)
-        );
     }
 
 
