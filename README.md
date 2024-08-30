@@ -272,7 +272,7 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 | --- | --- | --- |
 | Backend | 김진이 | 팀장, 상품 관리 API, 장바구니 관리 API 개발 |
 | Backend | 강유미 | 사용자 및 인증 API, 계좌 및 결제 API, 인프라 |
-| Backend | 김인엽 | 스토어 관리 API, QR 코드 API |
+| Backend | 김인엽 | 스토어 관리 API, QR API, 초기 데이터 수집 |
 | Frontend | 김일태 | 공통 화면, 구매자 화면 개발 |
 | Frontend | 김지윤 | 공통 화면, 판매자 화면 개발 |
 
@@ -296,7 +296,7 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
         cd SnapPick/backend
         ```
     2. **환경 변수 설정**:
-        - `application.yml` 파일에 데이터베이스 및 기타 환경 변수 설정
+        - `application.yml` 파일에 데이터베이스 및 기타 환경 변수(jpa, minio, oauth 등) 설정
         - 예시:
             ```yaml
             spring:
