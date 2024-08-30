@@ -5,16 +5,18 @@ import com.sol.snappick.cart.dto.CartItemRes;
 import com.sol.snappick.cart.service.CartService;
 import com.sol.snappick.product.dto.CartCreateRes;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "cart", description = "장바구니 : 장바구니 관리 API")
 @RequestMapping("/cart")
 public class CartController {
 
@@ -23,8 +25,8 @@ public class CartController {
     @PostMapping()
     @Operation(summary = "카트 생성", description = "storeID를 입력해주세요. 해당 스토어의 상품을 담을 수 있는 카트를 생성합니다.")
     public ResponseEntity<CartCreateRes> createCart(
-        Authentication authentication,
-        @RequestBody Integer storeId
+            Authentication authentication,
+            @RequestBody Integer storeId
     ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
 
@@ -42,7 +44,7 @@ public class CartController {
             Authentication authentication,
             @PathVariable("cart_id") Integer cartId,
             @RequestBody CartItemReq cartItemReq
-    ) throws Exception{
+    ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
 
         CartItemRes response = cartService.createCartItem(memberId, cartId, cartItemReq);
@@ -60,7 +62,7 @@ public class CartController {
             @PathVariable("cart_id") Integer cartId,
             @PathVariable("item_id") Integer itemId,
             @RequestBody CartItemReq cartItemReq
-    ) throws Exception{
+    ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
 
         CartItemRes response = cartService.updateCartItem(memberId, cartId, itemId, cartItemReq);
@@ -75,7 +77,7 @@ public class CartController {
     public ResponseEntity<List<CartItemRes>> updateCartItem(
             Authentication authentication,
             @PathVariable("cart_id") Integer cartId
-    ) throws Exception{
+    ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
         List<CartItemRes> response = cartService.readCartItem(memberId, cartId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -89,7 +91,7 @@ public class CartController {
             Authentication authentication,
             @PathVariable("cart_id") Integer cartId,
             @PathVariable("item_id") Integer itemId
-    ) throws Exception{
+    ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
 
         Boolean response = cartService.deleteCartItem(memberId, cartId, itemId);

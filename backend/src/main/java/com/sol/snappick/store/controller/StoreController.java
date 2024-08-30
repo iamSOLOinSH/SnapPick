@@ -11,26 +11,19 @@ import com.sol.snappick.store.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "store", description = "스토어 : 팝업 스토어 CRUD API")
+@Tag(name = "store", description = "스토어 : 팝업 스토어 관리 API")
 @RequestMapping("/stores")
 public class StoreController {
 
@@ -98,7 +91,7 @@ public class StoreController {
         Integer memberId = Integer.valueOf(authentication.getName());
         StoreRes response = storeService.createPopupStore(storeCreateReq, imageFiles, memberId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(response);
+                .body(response);
     }
 
     @PostMapping("/search")
@@ -130,7 +123,7 @@ public class StoreController {
     ) {
         List<StoreRes> response = storeService.searchStores(storeSearchReq);
         return ResponseEntity.ok()
-                             .body(response);
+                .body(response);
     }
 
     @GetMapping("/{store_id}")
@@ -140,7 +133,7 @@ public class StoreController {
     ) {
         StoreRes response = storeService.getStoreById(storeId);
         return ResponseEntity.ok()
-                             .body(response);
+                .body(response);
     }
 
     @PutMapping(value = "/{store_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -203,7 +196,7 @@ public class StoreController {
         Integer memberId = Integer.valueOf(authentication.getName());
         StoreRes response = storeService.updateStore(storeId, storeUpdateReq, images, memberId);
         return ResponseEntity.ok()
-                             .body(response);
+                .body(response);
     }
 
     @PostMapping("/{store_id}/visit")
@@ -222,7 +215,7 @@ public class StoreController {
             Authentication authentication
     ) throws Exception {
         // QR 코드 토큰 검증
-        if(!jwtUtil.validateToken(token)) {
+        if (!jwtUtil.validateToken(token)) {
             throw new QrInvalidException();
         }
         // 현재 사용자 ID 식별
@@ -232,7 +225,7 @@ public class StoreController {
         Integer cartId = storeVisitService.recordVisit(storeId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(cartId);
+                .body(cartId);
     }
 
     @GetMapping("/me")
@@ -246,6 +239,6 @@ public class StoreController {
 
         List<?> response = storeService.getStoreAboutMe(memberId, isVisit);
         return ResponseEntity.ok()
-                             .body(response);
+                .body(response);
     }
 }

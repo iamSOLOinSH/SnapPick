@@ -3,14 +3,17 @@ package com.sol.snappick.payment.controller;
 import com.sol.snappick.payment.dto.ReceiptRes;
 import com.sol.snappick.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "payment", description = "결제 : 결제 및 거래 관련 API")
 @RequestMapping("payment")
 public class PaymentController {
 
@@ -41,8 +44,8 @@ public class PaymentController {
     @GetMapping("/status")
     @Operation(summary = "수령 대기 고객 조회", description = "해당 store의 수령 대기 고객 정보를 조회할 수 있습니다.")
     public ResponseEntity<List<ReceiptRes>> getPendingCustomers(
-        Authentication authentication,
-        @RequestParam("store_id") Integer storeId
+            Authentication authentication,
+            @RequestParam("store_id") Integer storeId
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
         List<ReceiptRes> response = paymentService.getPendingCustomers(memberId, storeId);
@@ -52,13 +55,13 @@ public class PaymentController {
     @GetMapping("/{cart_id}")
     @Operation(summary = "영수증 단일 조회", description = "영수증 단일 조회 API.")
     public ResponseEntity<ReceiptRes> getReceipt(
-        @PathVariable("cart_id") Integer cartId,
-        Authentication authentication
+            @PathVariable("cart_id") Integer cartId,
+            Authentication authentication
     ) {
         // 현재 사용자 ID 식별
         Integer memberId = Integer.valueOf(authentication.getName());
         ReceiptRes response = paymentService.getReceipt(cartId, memberId);
         return ResponseEntity.ok()
-                             .body(response);
+                .body(response);
     }
 }
