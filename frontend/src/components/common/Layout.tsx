@@ -9,10 +9,10 @@ type LayoutProps = {
 
 export const Layout = ({ children, className }: LayoutProps) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-base">
+    <div className="flex flex-col items-center justify-center bg-base">
       <div
         className={clsx(
-          "mx-auto mb-16 w-full max-w-md overflow-hidden border-l-2 border-r-2 p-4",
+          "mx-auto mb-16 min-h-screen w-full max-w-md overflow-hidden border-l-2 border-r-2 p-4",
           className,
         )}
       >

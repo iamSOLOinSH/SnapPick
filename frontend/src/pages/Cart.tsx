@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 
 import { payment } from "../utils/api/payment";
-import { ModifyCartItem } from "../utils/api/cart";
+import { ModifyCartItem, deleteCartItem } from "../utils/api/cart";
 
 import { useBoundStore } from "../store/store";
 import { useNavigate, useLocation } from "react-router";
@@ -37,13 +37,32 @@ const Cart = () => {
 
   const cartId = localStorage.getItem("cartId");
 
-  const handleChange = (
+  const handleChange = async (
     itemId: number,
     productId: number,
     quantity: number,
+    status: string,
   ) => {
     if (cartId) {
-      ModifyCartItem(+cartId, itemId, productId, quantity);
+      try {
+        if (status === "plus") {
+          quantity++;
+        } else {
+          quantity--;
+        }
+
+        await ModifyCartItem(+cartId, itemId, productId, quantity);
+        await getCartList(+cartId);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDelete = async (itemId: number) => {
+    if (cartId) {
+      await deleteCartItem(+cartId, itemId);
+      await getCartList(+cartId);
     }
   };
 
@@ -60,7 +79,11 @@ const Cart = () => {
   }, [checkAccounts]);
 
   useEffect(() => {
-    searchStoreInfo(location.state.id);
+    if (location.state) {
+      searchStoreInfo(location.state.id);
+    } else {
+      searchStoreInfo(localStorage.getItem("storeId") || "");
+    }
   }, [searchStoreInfo, location]);
 
   const handleMoreCart = () => {
@@ -68,13 +91,17 @@ const Cart = () => {
   };
 
   const handlePayment = () => {
-    payment()
-      .then(() => {
-        navigate("/receipt");
-      })
-      .catch(() => {
-        alert("결제에 실패했습니다.");
-      });
+    if (mainAccount.theBalance - totalAmount() >= 0) {
+      payment()
+        .then(() => {
+          navigate("/receipt");
+        })
+        .catch(() => {
+          alert("결제에 실패했습니다.");
+        });
+    } else {
+      alert("잔액이 부족합니다.");
+    }
   };
 
   return (
@@ -92,7 +119,7 @@ const Cart = () => {
           <Card
             variant="mini"
             imageSrc={
-              store.images[0].thumbnailImageUrl ||
+              store.images[0]?.thumbnailImageUrl ||
               "https://s3.youm.me/snappick-product/no_product.png"
             }
           />
@@ -115,13 +142,14 @@ const Cart = () => {
               <NumberSelector
                 quantity={item.quantity}
                 onIncrease={() =>
-                  handleChange(item.id, item.product.id, item.quantity + 1)
+                  handleChange(item.id, item.product.id, item.quantity, "plus")
                 }
                 onDecrease={() =>
-                  handleChange(item.id, item.product.id, item.quantity - 1)
+                  handleChange(item.id, item.product.id, item.quantity, "minus")
                 }
               />
             }
+            onDelete={() => handleDelete(item.id)}
           />
         ))}
       </div>
@@ -136,11 +164,13 @@ const Cart = () => {
       </div>
       <div className="relative bottom-2 left-0 w-full animate-fadeInSlideUp rounded-tl-xl rounded-tr-xl bg-white">
         <div className="mb-4 ml-8 pt-4">
-          <p className="text-xl font-semibold">내 계좌</p>
+          <p className="text-xl font-semibold">
+            내 계좌 <span className="text-primary">{mainAccount.bankName}</span>
+          </p>
         </div>
         <Card
           variant="simple"
-          title={"잔액 " + mainAccount.theBalance.toLocaleString()}
+          title={"잔액 " + mainAccount.theBalance?.toLocaleString()}
           subtitle={
             "결제 후 " +
             (mainAccount.theBalance - totalAmount()).toLocaleString()

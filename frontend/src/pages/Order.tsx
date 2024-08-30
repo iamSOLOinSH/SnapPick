@@ -32,7 +32,8 @@ const Order: React.FC = () => {
 
   const handleEnter = () => {
     verifyVisit(store.id, token).then((res) => {
-      localStorage.setItem("cartId", res.data.cartId + "");
+      localStorage.setItem("cartId", res.data + "");
+      localStorage.setItem("storeId", store.id + "");
       navigate("/products", { state: { id: store.id } });
     });
   };
