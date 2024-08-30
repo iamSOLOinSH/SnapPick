@@ -21,3 +21,9 @@ export const validateIdentity = async (
   const response = await Axios.post("/accounts/identity", bodyData);
   return response;
 };
+
+// 주계좌 번호와 금액 확인
+export const getAccounts = () => {
+  const response = Axios("/accounts");
+  return response;
+};
