@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +43,7 @@ public class PaymentController {
 	@Operation(summary = "상품 전달 완료 처리", description = "수령완료로 카트의 상태를 갱신합니다.")
 	public ResponseEntity<Boolean> cartItemReceived(
 		Authentication authentication,
-		@RequestBody Integer cartId
+		@RequestParam("cartId") Integer cartId
 	) {
 		Integer memberId = Integer.valueOf(authentication.getName());
 		Boolean response = paymentService.cartItemReceived(cartId);
