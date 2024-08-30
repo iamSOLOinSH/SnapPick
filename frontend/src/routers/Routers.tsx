@@ -35,9 +35,9 @@ const Router = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/profile" element={<Mypage />} />
-      <Route path="/stock" element={<StockControl />} />
+      <Route path="/stock/:storeId" element={<StockControl />} />
       <Route path="/stock/detail/:productId" element={<StockControlDetail />} />
-      <Route path="/storecontrol" element={<StoreControl />} />
+      <Route path="/store/manage" element={<StoreControl />} />
       <Route path="/search" element={<StoreSearch />} />
       <Route path="/store/create" element={<StoreCreate />} />
       <Route path="/store/create/success" element={<StoreCreateSuccess />} />
