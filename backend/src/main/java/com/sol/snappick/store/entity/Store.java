@@ -61,9 +61,10 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private Integer viewCount;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Member member;
+	@ManyToOne
+	@JoinColumn(name = "seller_id")
+	@Setter
+	private Member member;
 
     @Enumerated(EnumType.STRING)
     @Column

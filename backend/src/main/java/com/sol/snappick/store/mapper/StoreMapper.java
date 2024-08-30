@@ -21,11 +21,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface StoreMapper {
 
-    @Mapping(target = "images", ignore = true)
-    @Mapping(target = "tags", ignore = true)
-    @Mapping(target = "runningTimes", ignore = true)
-    @Mapping(target = "member", ignore = true)
-    Store toEntity(StoreCreateReq dto);
+	@Mapping(target = "images", ignore = true)
+	@Mapping(target = "tags", ignore = true)
+	@Mapping(target = "runningTimes", ignore = true)
+	Store toEntity(StoreCreateReq dto);
 
     @Mapping(source = "tags", target = "tags", qualifiedByName = "entityTagsToString")
     @Mapping(source = "images", target = "images", qualifiedByName = "mapImageDtos")
