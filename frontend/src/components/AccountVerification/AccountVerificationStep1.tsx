@@ -3,7 +3,7 @@ import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 
 interface AccountVerificationStep1Props {
-  onNext: () => void;
+  onNext: (value: string) => void;
 }
 
 const AccountVerificationStep1: React.FC<AccountVerificationStep1Props> = ({
@@ -29,7 +29,13 @@ const AccountVerificationStep1: React.FC<AccountVerificationStep1Props> = ({
           onChange={handleNumberInput}
         />
       </div>
-      <Button content="다음" onClick={onNext} disabled={!isFormComplete} />
+      <div className="mt-9">
+        <Button
+          content="다음"
+          onClick={() => onNext(account)}
+          disabled={!isFormComplete}
+        />
+      </div>
     </div>
   );
 };
