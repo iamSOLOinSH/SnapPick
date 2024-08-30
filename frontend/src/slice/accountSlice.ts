@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { getAccounts } from "../utils/api/account";
+import { getAccounts, getAccountList } from "../utils/api/account";
 
 interface AccountState {
   mainAccount: {
@@ -7,14 +7,24 @@ interface AccountState {
     accountNumber: string;
     theBalance: number;
   };
+  myAccounts: {
+    bankName: string;
+    accountNumber: string;
+    theBalance: number;
+  }[];
   checkAccounts: () => Promise<void>;
+  checkAccountsList: () => Promise<void>;
 }
 
 export const createAccountSlice: StateCreator<AccountState> = (set) => ({
   mainAccount: { bankName: "", accountNumber: "", theBalance: 0 },
+  myAccounts: [],
   checkAccounts: async () => {
     const result = await getAccounts();
-    console.log(result);
     set({ mainAccount: result.data });
+  },
+  checkAccountsList: async () => {
+    const result = await getAccountList();
+    set({ myAccounts: result.data });
   },
 });

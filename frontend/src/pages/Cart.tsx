@@ -91,10 +91,10 @@ const Cart = () => {
   };
 
   const handlePayment = () => {
-    if (mainAccount.theBalance - totalAmount() >= 0) {
-      payment()
+    if (mainAccount.theBalance - totalAmount() >= 0 && cartId) {
+      payment(+cartId)
         .then(() => {
-          navigate("/receipt");
+          navigate("/receipt", { state: { id: location.state.id } });
         })
         .catch(() => {
           alert("결제에 실패했습니다.");

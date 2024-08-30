@@ -27,3 +27,15 @@ export const getAccounts = () => {
   const response = Axios("/accounts");
   return response;
 };
+
+// 주계좌 지정
+export const grantMain = (accountNumber: string) => {
+  const response = Axios.post("/accounts", { accountNumber });
+  return response;
+};
+
+// 계좌 목록 조회(주 계좌 제외)
+export const getAccountList = () => {
+  const response = Axios("/accounts/list");
+  return response;
+};

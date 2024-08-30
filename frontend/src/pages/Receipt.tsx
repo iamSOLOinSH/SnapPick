@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useBoundStore } from "../store/store";
+
+import { useLocation } from "react-router";
 
 import { Layout } from "../components/common/Layout";
 import { Button } from "../components/common/Button";
@@ -8,10 +10,19 @@ import { PaymentSuccess } from "../components/Receipt/PaymentSuccess";
 import { PaymentDetail } from "../components/Receipt/PaymentDetail";
 
 const Receipt = () => {
-  const { payment } = useBoundStore((state) => ({
+  const location = useLocation();
+  const { payment, store, searchStoreInfo } = useBoundStore((state) => ({
     payment: state.payment,
+    store: state.store,
+    searchStoreInfo: state.searchStoreInfo,
   }));
   const [showDetail, setShowDetail] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (location.state) {
+      searchStoreInfo(location.state.id);
+    }
+  }, [searchStoreInfo, location.state]);
 
   const totalPrice = payment.reduce((acc, cur) => acc + cur.price, 0);
 
@@ -21,7 +32,7 @@ const Receipt = () => {
         <div className="absolute left-[32px] top-[-63px] z-0 animate-octagonAppear">
           <Ribbons />
         </div>
-        <div className="scrollbar-hide mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center scrollbar-hide">
           <h1 className="z-10 inline-block rounded-full bg-primary p-2 text-center text-2xl text-white">
             모바일 영수증
           </h1>
@@ -29,9 +40,9 @@ const Receipt = () => {
       </header>
       <main className="relative mx-4 mt-4 h-64 min-h-[76vh] rounded-lg bg-white">
         {showDetail ? (
-          <PaymentDetail payment={payment} />
+          <PaymentDetail payment={payment} store={store} />
         ) : (
-          <PaymentSuccess totalPrice={totalPrice} />
+          <PaymentSuccess totalPrice={totalPrice} store={store} />
         )}
         <div className="absolute bottom-4 left-0 right-0 z-20 mx-4">
           {showDetail ? (
