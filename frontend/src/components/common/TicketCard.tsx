@@ -10,6 +10,7 @@ type TicketCardProps = {
   buttonText: string;
   isActive: boolean;
   className?: string;
+  onClick?: () => void;
 };
 
 export const TicketCard: React.FC<TicketCardProps> = ({
@@ -20,6 +21,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   buttonText,
   isActive,
   className,
+  onClick,
 }) => {
   return (
     <div
@@ -84,6 +86,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
               ? "bg-primary text-white hover:bg-secondary hover:text-black"
               : "text-grey-600 bg-gray-300 hover:bg-gray-600 hover:text-white",
           )}
+          onClick={onClick}
         >
           {buttonText}
         </button>

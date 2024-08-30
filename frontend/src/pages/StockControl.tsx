@@ -18,7 +18,7 @@ interface Product {
   id: string;
   name: string;
   quantity: number;
-  status: "new" | "selling" | "soldout";
+  status: "selling" | "soldout";
   productImg: string;
 }
 
@@ -160,7 +160,7 @@ const StockControl = () => {
   return (
     <Layout>
       <div className="flex min-h-screen flex-col p-4">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 mt-12 flex items-center justify-between">
           <div className="flex items-center">
             <BackButton />
             <h3 className="ml-4 text-2xl font-bold">재고 관리</h3>

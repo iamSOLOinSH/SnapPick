@@ -1,26 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { Card } from "../components/common/Card";
-import { getStores } from "../mocks/store";
 import { IoIosSearch } from "react-icons/io";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 import { Blob_1 } from "../components/common/Background/Blob_1";
+import { Store } from "../types/store";
+import { getStores } from "../utils/api/store";
 
 const Home = () => {
   const navigate = useNavigate();
   const PROFILE_IMG =
     "https://i.namu.wiki/i/wXGU6DZbHowc6IB0GYPJpcmdDkLO3TW3MHzjg63jcTJvIzaBKhYqR0l9toBMHTv2OSU4eFKfPOlfrSQpymDJlA.webp";
   const [userName, setUserName] = useState("팝콘");
-  const stores = getStores();
+  const [popularStores, setPopularStores] = useState<Store[]>([]);
+  // const stores = getStores();
 
   const handleSearchClick = () => {
     navigate("/search");
   };
 
-  const handleStoreDetail = (id: string) => {
+  const handleStoreDetail = (id: number) => {
     navigate(`/store/detail/${id}`);
   };
+
+  const handleGetStores = async () => {
+    try {
+      const popularStoresData = await getStores("", 10, 0, "VIEWS");
+      setPopularStores(popularStoresData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetStores();
+  }, []);
 
   return (
     <Layout>
@@ -52,7 +67,7 @@ const Home = () => {
         <div className="z-10">
           <h3 className="p-2 text-lg font-semibold">인기 스토어</h3>
           <div className="flex overflow-x-auto whitespace-nowrap pb-4 pl-2 scrollbar-hide">
-            {stores.map((store) => (
+            {popularStores.map((store) => (
               <div
                 key={store.id}
                 className="mr-1 flex-shrink-0 cursor-pointer"
@@ -60,8 +75,8 @@ const Home = () => {
               >
                 <Card
                   variant="mini"
-                  title={store.title}
-                  imageSrc={store.imageSrc}
+                  title={store.name}
+                  imageSrc={store?.images[0]?.thumbnailImageUrl}
                 />
               </div>
             ))}
@@ -82,7 +97,7 @@ const Home = () => {
             </div>
           </div>
           <div className="flex overflow-x-auto whitespace-nowrap pb-4 pl-2 scrollbar-hide">
-            {stores.map((store) => (
+            {popularStores.map((store) => (
               <div
                 key={store.id}
                 className="mr-1 flex-shrink-0 cursor-pointer"
@@ -90,8 +105,8 @@ const Home = () => {
               >
                 <Card
                   variant="mini"
-                  title={store.title}
-                  imageSrc={store.imageSrc}
+                  title={store?.name}
+                  imageSrc={store?.images[0]?.thumbnailImageUrl}
                 />
               </div>
             ))}

@@ -5,9 +5,9 @@ import { ProgressSteps } from "../components/common/ProgressSteps";
 import { Button } from "../components/common/Button";
 import { useBoundStore } from "../store/store";
 import { IoChevronBack } from "react-icons/io5";
-import StoreCreateStep1 from "../components/storeCreate/StoreCreateStep1";
-import StoreCreateStep2 from "../components/storeCreate/StoreCreateStep2";
-import StoreCreateStep3 from "../components/storeCreate/StoreCreateStep3";
+import StoreCreateStep1 from "../components/StoreCreate/StoreCreateStep1";
+import StoreCreateStep2 from "../components/StoreCreate/StoreCreateStep2";
+import StoreCreateStep3 from "../components/StoreCreate/StoreCreateStep3";
 
 const StoreCreate = () => {
   const [step, setStep] = useState(1);
