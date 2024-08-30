@@ -1,11 +1,5 @@
 import Axios from "../axios";
 
-// 카트 생성
-export const makeCart = () => {
-  const response = Axios.post("/cart");
-  return response;
-};
-
 // 카트 상품 조회
 export const getCart = (cartId: number) => {
   const response = Axios(`/cart/${cartId}/items`);

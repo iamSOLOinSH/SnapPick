@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { addCartItem } from "../../utils/api/cart";
+
 import { Button } from "../common/Button";
 import { ImageSlider } from "../common/ImageSlider";
 import { NumberSelector } from "../common/NumberSelector";
@@ -23,6 +25,10 @@ export const ProductDetail: React.FC<ProductModalProps> = ({
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
 
+  const cartId = localStorage.getItem("cartId");
+
+  console.log(cartId);
+
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
   };
@@ -32,8 +38,18 @@ export const ProductDetail: React.FC<ProductModalProps> = ({
   };
 
   const handleCart = () => {
-    alert("추가 완료");
-    onClose();
+    if (cartId) {
+      addCartItem(+cartId, product.id, quantity)
+        .then(() => {
+          alert("장바구니에 담았습니다.");
+          onClose();
+        })
+        .catch(() => {
+          alert("장바구니에 담는 중 문제가 발생했습니다.");
+        });
+    } else {
+      alert("카트 ID를 찾을 수 없습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (
@@ -51,7 +67,13 @@ export const ProductDetail: React.FC<ProductModalProps> = ({
         >
           &times;
         </button>
-        <ImageSlider images={product.thumbnailImageUrls} />
+        <ImageSlider
+          images={
+            product.thumbnailImageUrls[0]
+              ? product.thumbnailImageUrls
+              : ["https://s3.youm.me/snappick-product/no_product.png"]
+          }
+        />
         <h3 className="mb-2 ml-4 text-2xl font-bold">{product.name}</h3>
         <p className="mb-2 ml-4 text-lg text-gray-700">
           가격: {product.price.toLocaleString()}원
