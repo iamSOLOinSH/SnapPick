@@ -20,13 +20,18 @@ export const getStores = async (
 
 // 스토어 단일 조회
 export const getStoreInfo = async (storeId: string) => {
-  const response = await Axios.get(`/stores/${storeId}`);
+  const response = await Axios(`/stores/${storeId}`);
   return response;
 };
 
 // 내가 가진/방문한 스토어 조회
 export const getMyStores = async (isVisit: boolean) => {
-  const response = await Axios.get(`/stores/me`, { params: { isVisit } });
+  const response = await Axios(`/stores/me`, { params: { isVisit } });
+  return response;
+};
 
+// 스토어 방문 처리
+export const verifyVisit = async (storeId: number, token: string) => {
+  const response = await Axios.post(`/stores/${storeId}/visit?token=${token}`);
   return response;
 };

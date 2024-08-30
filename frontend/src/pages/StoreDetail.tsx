@@ -16,21 +16,20 @@ const StoreDetail = () => {
   const [store, setStore] = useState<Store>();
   const [storeImgList, setStoreImgList] = useState<string[]>([]);
 
-  const handleStoreInfo = async () => {
-    try {
-      const storeData = await getStoreInfo(storeId);
-      const imgList = storeData?.data?.images.map(
-        (img: ImageObject) => img.originImageUrl,
-      );
-
-      setStore(storeData?.data);
-      setStoreImgList(imgList);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
+    const handleStoreInfo = async () => {
+      try {
+        const storeData = await getStoreInfo(storeId || "");
+        const imgList = storeData?.data?.images.map(
+          (img: ImageObject) => img.originImageUrl,
+        );
+
+        setStore(storeData?.data);
+        setStoreImgList(imgList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     handleStoreInfo();
   }, [storeId]);
 

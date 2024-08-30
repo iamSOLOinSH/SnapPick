@@ -58,7 +58,6 @@ const PasswordSetup: React.FC = () => {
   const isFormComplete = password.every((char) => char !== "");
 
   const handleRegister = async () => {
-    console.log({ ...prevInfo, pinCode: password.join("") });
     membersRegister({ ...prevInfo, pinCode: password.join("") })
       .then(() => navigate("/signup/success", { replace: true }))
       .catch((err) => console.log(err.response.data));
