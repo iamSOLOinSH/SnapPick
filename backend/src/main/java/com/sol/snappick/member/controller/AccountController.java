@@ -1,9 +1,6 @@
 package com.sol.snappick.member.controller;
 
-import com.sol.snappick.member.dto.AccountSingleReq;
-import com.sol.snappick.member.dto.AccountStateRes;
-import com.sol.snappick.member.dto.AccountTransferReq;
-import com.sol.snappick.member.dto.IdentificationReq;
+import com.sol.snappick.member.dto.*;
 import com.sol.snappick.member.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,6 +68,16 @@ public class AccountController {
         return ResponseEntity.ok().body(null);
     }
 
+    @GetMapping("/transaction")
+    @Operation(summary = "입금 송금 내역 조회(판매자용)",
+            description = "주계좌의 입금(결제), 송금(돈 보내기) 내역을 확인합니다.<br/>" + des_header_token + des_input + des_string_date)
+    public ResponseEntity<List<TransactionDetailRes>> transfer(
+            Authentication authentication,
+            @RequestParam(name = "date") String date
+    ) {
+        Integer memberId = Integer.valueOf(authentication.getName());
+        return ResponseEntity.ok().body(transactionService.checkTransactions(memberId, date));
+    }
 
     @GetMapping("/identity")
     @Operation(summary = "1원 송금 보내기",
