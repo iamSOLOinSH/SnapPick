@@ -1,37 +1,24 @@
-import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBoundStore } from "../store/store";
 import { Layout } from "../components/common/Layout";
 import { BackButton } from "../components/common/BackButton";
 
-interface Account {
-  id: number;
-  name: string;
-  number: string;
-  balance: number;
-  isPrimary: boolean;
-}
-
 const AccounListDetail: React.FC = () => {
   const navigate = useNavigate();
-  const accounts: Account[] = [
-    {
-      id: 1,
-      name: "주 계좌",
-      number: "111-1111-1111",
-      balance: 90000,
-      isPrimary: true,
-    },
-    {
-      id: 2,
-      name: "부 계좌",
-      number: "222-2222-2222",
-      balance: 50000,
-      isPrimary: false,
-    },
-  ];
+  const { myAccounts, checkAccountsList } = useBoundStore((state) => ({
+    myAccounts: state.myAccounts,
+    checkAccountsList: state.checkAccountsList,
+  }));
 
-  const handleAccountDetail = (accountId: number) => {
-    navigate(`/account/detail/${accountId}`);
+  useEffect(() => {
+    checkAccountsList();
+  }, [checkAccountsList]);
+
+  const handleAccountDetail = (index: number) => {
+    navigate(`/account/detail/${index}`, {
+      state: { account: myAccounts[index] },
+    });
   };
 
   return (
@@ -41,18 +28,16 @@ const AccounListDetail: React.FC = () => {
           <BackButton />
           <h1 className="ml-4 text-2xl font-semibold">계좌 목록 조회</h1>
         </div>
-        {accounts.map((account) => (
+        {myAccounts.map((account, index) => (
           <div
-            key={account.id}
+            key={account.accountNumber}
             className="mb-4 cursor-pointer rounded-lg bg-primary p-4 text-white transition-transform duration-300 hover:scale-105"
-            onClick={() => handleAccountDetail(account.id)}
+            onClick={() => handleAccountDetail(index)}
           >
-            <div className="font-semibold">
-              {account.isPrimary ? "주 계좌" : "계좌"} - {account.name}
-            </div>
-            <div className="mb-4 text-sm">{account.number}</div>
+            <div className="font-semibold">{account.bankName}</div>
+            <div className="mb-4 text-sm">{account.accountNumber}</div>
             <div className="text-right text-2xl font-bold">
-              {account.balance.toLocaleString()}원
+              {account.theBalance.toLocaleString()}원
             </div>
           </div>
         ))}
