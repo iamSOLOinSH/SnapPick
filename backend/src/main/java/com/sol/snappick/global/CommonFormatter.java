@@ -29,5 +29,8 @@ public class CommonFormatter {
         return date.format(OUTPUT_FORMAT);
     }
 
+    public static String timeFormat(LocalDateTime time) {
+        return time.format(OUTPUT_FORMAT);
+    }
 
 }

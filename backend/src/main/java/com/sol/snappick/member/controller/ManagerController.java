@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+import static com.sol.snappick.global.ApiDescriptions.AccountController.des_string_date;
+import static com.sol.snappick.global.ApiDescriptions.common.des_input;
+
 @RestController
 @RequestMapping("/manager")
 @Tag(name = "manager", description = "멤버 : 관리자 API")
@@ -25,8 +28,8 @@ public class ManagerController {
     @Value("${finopenapi.secretkey}")
     private String secretKey;
 
-    @GetMapping("/")
-    @Operation(summary = "거래조회(대사)")
+    @GetMapping("/transaction/inquiry")
+    @Operation(summary = "거래조회(대사)", description = des_input + des_string_date)
     public ResponseEntity<TodayTransactionRes> checkTransactions(
             @RequestParam(name = "secret_key") String secretKey,
             @RequestParam(name = "date") String date
