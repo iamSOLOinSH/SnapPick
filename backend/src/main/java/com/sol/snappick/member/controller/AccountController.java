@@ -60,7 +60,7 @@ public class AccountController {
     }
 
     @PostMapping("/transfer")
-    @Operation(summary = "개발중 == 돈 보내기(판매자용)",
+    @Operation(summary = "돈 보내기(판매자용)",
             description = "주계좌에서 다른계좌로 돈을 보냅니다.<br/>" + des_header_token + des_input + des_AccountTransferReq + des_output)
     public ResponseEntity<Void> transfer(
             Authentication authentication,

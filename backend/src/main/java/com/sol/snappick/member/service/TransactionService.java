@@ -70,7 +70,6 @@ public class TransactionService {
                 "/edu/demandDeposit/createDemandDepositAccount", "createDemandDepositAccount",
                 HttpMethod.POST, requestBody, userKey
         );
-        finOpenApiHandler.printJson(jsonNode);
         // 3. 응답값 받아서 반환
         String newAccountNo = jsonNode.get("REC")
                 .get("accountNo")
@@ -232,7 +231,6 @@ public class TransactionService {
 
         // 3. 응답값 받아서 반환
         JsonNode responseData = jsonNode.get("REC");
-        finOpenApiHandler.printJson(responseData);
         if (!responseData.get("status").asText().equals("SUCCESS")) {
             throw new BasicBadRequestException("Something went wrong");
         }
@@ -266,7 +264,6 @@ public class TransactionService {
         }
 
         // 2. 이체
-        finOpenApiHandler.printJson(responseData1);
         String depositTransactionSummary = "snappick 입금";
         String withdrawalTransactionSummary = "송금 (" + responseData1.get("bankName").asText() + ")";
 
@@ -284,7 +281,6 @@ public class TransactionService {
         if (!responseData2.isArray() || responseData2.size() == 0) {
             throw new BasicBadRequestException("Something went wrong");
         }
-        finOpenApiHandler.printJson(responseData2);
 
         // 3. 출금내역 transaction에 저장
         Integer transactionId = 0;

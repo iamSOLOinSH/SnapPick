@@ -69,7 +69,6 @@ public class ManagerService {
         requestBody3.put("transactionUniqueNo", transactionUniqueNo);
         JsonNode jsonNode3 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireTransactionHistory", "inquireTransactionHistory", HttpMethod.POST, requestBody3, ownerUserkey);
         JsonNode responseData3 = jsonNode3.get("REC");
-        finOpenApiHandler.printJson(responseData3);
 
         accountHolderRes.setBalance(responseData3.get("transactionBalance").asText());
         accountHolderRes.setAfterBalance(responseData3.get("transactionAfterBalance").asText());
