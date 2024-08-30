@@ -108,21 +108,15 @@ public class CartService {
                 .orElseThrow(() -> new ProductNotFoundException());
 
         //4) 장바구니에 동일 상품이 있는지 확인한다.
-        CartItem cartItemToCreate = cartItemRepository.findByIdAndProductId(
+        CartItem cartItemToCreate = cartItemRepository.findByCartIdAndProductId(
                 cartId, product.getId());
-        //없으면 새로 생성한다.
-        if (cartItemToCreate == null) {
-            cartItemToCreate = CartItem.builder()
-                    .cart(cart)
-                    .product(product)
-                    .quantity(cartItemReq.getQuantity())
-                    .build();
-        }
-        //이미 존재한다면 반영해서 quantity를 수정한다.
-        else {
-            cartItemToCreate.setQuantity(
-                    cartItemReq.getQuantity() + cartItemToCreate.getQuantity());
-        }
+        //있으면 삭제한다.
+        if (cartItemToCreate!=null) cartItemRepository.deleteById(cartItemToCreate.getId());
+        cartItemToCreate = CartItem.builder()
+                .cart(cart)
+                .product(product)
+                .quantity(cartItemReq.getQuantity())
+                .build();
 
         //5) 주문 수량이 재고의 개수보다 적은지 확인한다.
         if (cartItemToCreate.getQuantity() > product.getStock()) {
@@ -260,8 +254,8 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        if (cart.getCustomer()
-                .getId() != memberId) {
+        if (!Objects.equals(cart.getCustomer()
+                .getId(), memberId)) {
             throw new AccessDeniedException();
         }
 
@@ -270,13 +264,11 @@ public class CartService {
                 .orElseThrow(
                         () -> new CartItemNotFoundException());
 
-        //cartItem을 삭제한다.
-        try {
+        //존재한다면 삭제한다.
+        if (cartItemToDelete!=null){
             cartItemRepository.delete(cartItemToDelete);
-            return true;
-        } catch (Exception e) {
-            return false;
         }
+        return true;
     }
 
     /**
