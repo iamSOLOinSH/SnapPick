@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
     List<CartItem> findByCartId(Integer cartId);
-    Boolean deleteByCartId(Integer cartId);
+    int deleteByCartId(Integer cartId);
     CartItem findByIdAndProductId(Integer cartId, Integer productId);
     List<CartItem> findByProductId(Integer id);
 
