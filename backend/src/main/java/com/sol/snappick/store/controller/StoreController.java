@@ -229,8 +229,64 @@ public class StoreController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "내가 가진/방문한 스토어 반환", description = "")
-    public ResponseEntity<List<?>> getStoreAboutMe(
+	@Operation(summary = "내가 가진/방문한 스토어 반환", description = """
+        이 API는 사용자가 소유하거나 방문한 스토어의 정보를 반환합니다.
+        \n
+        **헤더에 토큰을 넣어주세요!**
+        \n
+        <b>Input</b>:
+        \n
+        | Name | Type  | Description |
+        |-----|-----|-------|
+        | isVisit | boolean | true일 경우 방문한 스토어 정보 반환, false일 경우 소유한 스토어 정보 반환 |
+        \n
+        \n
+        <b>Output</b>:
+        <br>
+        **isVisit 값에 따라 두 가지 경우로 나뉩니다.**
+        \n
+        **1. isVisit = false (내가 소유한 스토어 정보)**
+        <br>
+        반환 타입: <b>List(StoreRes)</b>
+        <br>
+        | Name | Type  | Description |
+        |-----|-----|-------|
+        | id | Integer | 스토어 ID |
+        | name | String | 스토어 이름 |
+        | description | String | 스토어 설명 |
+        | location | String | 스토어 위치 |
+        | latitude | Double | 스토어 위치의 위도 |
+        | longitude | Double | 스토어 위치의 경도 |
+        | operateStartAt | LocalDate | 운영 시작 날짜 |
+        | operateEndAt | LocalDate | 운영 종료 날짜 |
+        | viewCount | int | 조회 수 |
+        | visitCount | int | 방문 수 |
+        | sellerId | Integer | 판매자 ID |
+        | tags | List(String) | 태그 목록 |
+        | images | List(StoreImageDto) | 스토어 이미지 목록 |
+        | runningTimes | List(StoreRunningTimeDto) | 운영 시간 목록 |
+        \n
+        **2. isVisit = true (내가 방문한 스토어 정보)**
+        <br>
+        반환 타입: <b>List(VisitedStoreRes)</b>
+        <br>
+        | Name | Type  | Description |
+        |-----|-----|-------|
+        | storeDetailDto | VisitedStoreDetailDto | 방문한 스토어의 기본 정보 |
+        | - storeId | Integer | 스토어 ID |
+        | - name | String | 스토어 이름 |
+        | - location | String | 스토어 위치 |
+        | storeVisitDto | StoreVisitDto | 방문 기록 정보 |
+        | - storeVisitId | Integer | 방문 기록 ID |
+        | - cartId | Integer | 방문 시 이용한 장바구니 ID |
+        | - visitedAt | LocalDateTime | 방문 일시 |
+        | cartPurchasedDto | CartPurchasedDto | 장바구니 구매 정보 |
+        | - cartId | Integer | 장바구니 ID |
+        | - transactionId | Integer | 거래 ID |
+        | - purchasedAmount | Long | 구매 금액 |
+        """)
+
+	public ResponseEntity<List<?>> getStoreAboutMe(
             @RequestParam("isVisit") Boolean isVisit,
             Authentication authentication
     ) {
