@@ -22,7 +22,7 @@ const Main = () => {
         </div>
       </div>
       {/* 로고 */}
-      <div className="relative z-10 mb-32 mt-64 flex animate-popIn flex-col items-center justify-center">
+      <div className="relative z-10 my-64 flex animate-popIn flex-col items-center justify-center">
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
