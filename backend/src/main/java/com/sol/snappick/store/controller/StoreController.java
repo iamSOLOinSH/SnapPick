@@ -215,31 +215,34 @@ public class StoreController {
 							 .body(response);
 	}
 
-	@PostMapping("/{store_id}/visit")
-	@Operation(summary = "해당 스토어 방문 처리", description = """
-			token : qr 코드로 한건지 확인용 \n
-			store_id : path parameter \n
-			header 에 인증코드도 넣어주세요
-			""")
-	public ResponseEntity<HttpStatus> visitStore(
-			@PathVariable("store_id") Integer storeId,
-			@RequestParam("token") String token,
-			Authentication authentication
-	) throws Exception {
-		// QR 코드 토큰 검증
-		if(!jwtUtil.validateToken(token)) {
-			throw new QrInvalidException();
-		}
-		// 현재 사용자 ID 식별
-		Integer memberId = Integer.valueOf(authentication.getName());
+    @PostMapping("/{store_id}/visit")
+    @Operation(summary = "해당 스토어 방문 처리", description = """
+        ## input:
+        **token** : (string) qr 코드의 값 -> QR로 통해 접근한건지 확인용 \n
+        **store_id** : path parameter \n
+        header 에 인증코드도 넣어주세요\n
+        \n\n
+        ## return :
+        cart Id (int)
+        """)
+    public ResponseEntity<Integer> visitStore(
+        @PathVariable("store_id") Integer storeId,
+        @RequestParam("token") String token,
+        Authentication authentication
+    ) throws Exception {
+        // QR 코드 토큰 검증
+        if (!jwtUtil.validateToken(token)) {
+            throw new QrInvalidException();
+        }
+        // 현재 사용자 ID 식별
+        Integer memberId = Integer.valueOf(authentication.getName());
 
-		// 방문처리
-		storeVisitService.recordVisit(storeId,
-									  memberId);
+        // 방문처리
+        Integer cartId = storeVisitService.recordVisit(storeId, memberId);
 
-		return ResponseEntity.status(HttpStatus.OK)
-							 .build();
-	}
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(cartId);
+    }
 
 	@GetMapping("/me")
 	@Operation(summary = "내가 가진/방문한 스토어 반환", description = "")
