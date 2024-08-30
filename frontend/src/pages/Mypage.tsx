@@ -18,7 +18,7 @@ const Mypage = () => {
     if (user.role === "0") {
       navigate("/history");
     } else {
-      navigate("/storecontrol");
+      navigate("/store/manage");
     }
   };
 
