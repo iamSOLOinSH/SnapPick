@@ -21,6 +21,7 @@ SnapPick은 팝업스토어를 손쉽게 관리하고 이용할 수 있는 금�
 9. [**프로젝트 기간**](#📅-프로젝트-기간)
 10. [**팀원 소개**](#👪-팀원-소개)
 11. [**개발환경 빌드 및 실행 방법**](#⚙️-개발환경-빌드-및-실행-방법)
+12. [**API 명세**](#📚-api-명세)
 
 ---
 
@@ -350,6 +351,45 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 
 
 ---
+
+## 📚 API 명세
+
+| **HTTP Method** | **Endpoint**                    | **태그**  | **요약**                        | **설명**                                          |
+|-----------------|---------------------------------|-----------|---------------------------------|---------------------------------------------------|
+| GET             | `/stores/{store_id}`            | store     | 스토어 단일 조회               | 스토어의 상세 정보를 조회합니다.                   |
+| PUT             | `/stores/{store_id}`            | store     | 팝업 스토어 수정               | 기존에 등록한 팝업 스토어의 정보를 수정합니다.    |
+| POST            | `/stores`                       | store     | 팝업 스토어 등록               | 새 팝업 스토어를 등록합니다.                      |
+| POST            | `/stores/{store_id}/visit`      | store     | 스토어 방문 처리               | 스토어 방문 기록을 추가합니다.                    |
+| POST            | `/stores/{store_id}/qr`         | QR        | QR 코드 생성                   | 해당 스토어의 입장용 QR 코드를 생성합니다.        |
+| GET             | `/stores/search`                | store     | 스토어 검색                    | 조건에 맞는 스토어를 검색합니다.                  |
+| GET             | `/stores/me`                    | store     | 내가 가진/방문한 스토어 조회  | 자신이 방문하거나 소유한 스토어 목록을 조회합니다.|
+| GET             | `/products/{product_id}`        | products  | 상품 상세 조회                 | 특정 상품의 상세 정보를 조회합니다.               |
+| PUT             | `/products/{product_id}`        | products  | 상품 수정                      | 기존에 등록된 상품의 정보를 수정합니다.           |
+| DELETE          | `/products/{product_id}`        | products  | 상품 삭제                      | 기존에 등록된 상품을 삭제합니다.                  |
+| GET             | `/products`                     | products  | 상품 목록 조회                 | 특정 스토어에 속한 모든 상품을 조회합니다.        |
+| POST            | `/products`                     | products  | 상품 등록                      | 새 상품을 등록합니다.                             |
+| GET             | `/payment/status`               | payment   | 수령 대기 고객 조회            | 특정 스토어의 수령 대기 고객 정보를 조회합니다.   |
+| PUT             | `/payment/status`               | payment   | 상품 전달 완료 처리            | 상품 수령 완료로 카트의 상태를 갱신합니다.        |
+| GET             | `/payment/{cart_id}`            | payment   | 영수증 단일 조회               | 특정 카트의 영수증을 조회합니다.                  |
+| POST            | `/payment`                      | payment   | 결제 시도                      | 특정 카트를 결제합니다.                           |
+| GET             | `/cart/{cart_id}/items`         | cart      | 카트 상품 조회                 | 특정 카트에 담긴 상품 목록을 조회합니다.          |
+| POST            | `/cart/{cart_id}/items`         | cart      | 카트 상품 추가                 | 특정 카트에 상품을 추가합니다.                    |
+| PUT             | `/cart/{cart_id}/items/{item_id}` | cart      | 카트 상품 수정                 | 카트에 추가된 특정 상품의 수량을 수정합니다.      |
+| DELETE          | `/cart/{cart_id}/items/{item_id}` | cart      | 카트 상품 삭제                 | 카트에서 특정 상품을 삭제합니다.                  |
+| POST            | `/cart`                         | cart      | 카트 생성                      | 특정 스토어의 상품을 담을 카트를 생성합니다.      |
+| GET             | `/accounts`                     | accounts  | 주계좌 번호와 금액 확인        | 주계좌 번호와 금액을 조회합니다.                  |
+| POST            | `/accounts`                     | accounts  | 주계좌 지정(구매자용)         | 구매자의 주계좌를 지정합니다.                     |
+| GET             | `/accounts/transfer`            | accounts  | 입금 송금 내역 조회(판매자용)  | 판매자의 입금 및 송금 내역을 조회합니다.          |
+| GET             | `/accounts/list`                | accounts  | 내 계좌 목록 조회(주계좌 제외) | 사용자의 모든 계좌 목록을 조회합니다.             |
+| POST            | `/accounts/transfer`            | accounts  | 돈 보내기(판매자용)            | 주계좌에서 다른 계좌로 송금합니다.                |
+| GET             | `/accounts/identity`            | accounts  | 1원 송금 보내기                | 1원 송금을 통해 본인 인증을 시도합니다.           |
+| POST            | `/accounts/identity`            | accounts  | 1원 송금 확인하기              | 1원 송금 내역을 확인하여 본인 인증을 완료합니다.  |
+| POST            | `/members/register`             | member    | 회원가입 정보 입력             | 회원가입 정보를 입력합니다.                       |
+| POST            | `/members/pincode`              | member    | 핀코드 재설정                  | 회원의 핀코드를 재설정합니다.                     |
+| GET             | `/members/info`                 | member    | 회원정보 확인                  | 회원의 기본 정보를 조회합니다.                    |
+| GET             | `/manager/deposit`              | manager   | 현금 입금                      | 특정 계좌로 현금을 입금합니다.                    |
+| GET             | `/manager/transaction/inquiry`  | manager   | 거래조회(대사)                 | 특정 날짜의 거래 내역을 조회합니다.               |
+| GET             | `/manager/history`              | manager   | 계좌 거래내역 조회             | 특정 계좌의 거래 내역을 조회합니다.               |
 
 > SnapPick과 함께 팝업스토어의 새로운 경험을 시작하세요!
 
