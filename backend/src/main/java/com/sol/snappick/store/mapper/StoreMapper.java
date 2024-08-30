@@ -1,28 +1,17 @@
 package com.sol.snappick.store.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sol.snappick.store.dto.StoreCreateReq;
 import com.sol.snappick.store.dto.StoreImageDto;
 import com.sol.snappick.store.dto.StoreRes;
 import com.sol.snappick.store.dto.StoreRunningTimeDto;
 import com.sol.snappick.store.dto.StoreUpdateReq;
-import com.sol.snappick.store.dto.storeAPI.StoreAPIDataDto;
-import com.sol.snappick.store.dto.storeAPI.StoreAPIImageDto;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.entity.StoreImage;
 import com.sol.snappick.store.entity.StoreRunningTime;
 import com.sol.snappick.store.entity.StoreTag;
 import com.sol.snappick.store.entity.StoreVisit;
-import com.sol.snappick.util.DayUtil;
-import com.sol.snappick.util.HashtagUtil;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -71,7 +60,7 @@ public interface StoreMapper {
     // storeImage -> storeImageDto
     @Named("mapImageDtos")
     default List<StoreImageDto> mapImageDtos(List<StoreImage> images) {
-        if (images == null) {
+        if(images == null) {
             return null;
         }
         return images.stream()
@@ -98,83 +87,6 @@ public interface StoreMapper {
                            .toList();
     }
 
-    /**
-     * storeAPI 데이터 -> 우리 서비스 데이터 생성 DTO
-     *
-     * @param dto StoreAPIDataDto
-     * @return StoreCreateReq
-     * @throws JsonProcessingException
-     */
-    default StoreCreateReq apiDataToStoreCreateReq(StoreAPIDataDto dto)
-        throws JsonProcessingException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        // string hashtag -> tag list
-        List<String> hashtagList = HashtagUtil.convertToList(dto.getHashtag());
-        // image
-        List<StoreImageDto> images = new ArrayList<>();
-        // runningTime
-        List<StoreRunningTimeDto> runningTimes = new ArrayList<>();
-
-        if (dto.getStoreImage() != null) {
-            // image 바꿔서 넣기
-            for (StoreAPIImageDto image : dto.getStoreImage()) {
-                images.add(StoreImageDto.builder()
-                                        .originImageUrl(image.getUrl())
-                                        .build());
-            }
-        }
-
-        // runningTime 바꿔서 넣기
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        if (dto.getWorkingTime() != null) {
-            // JSON 문자열 -> List<Map<String, Object>> 로 변환
-            List<Map<String, Object>> runningTimeList = objectMapper.readValue(dto.getWorkingTime(),
-                                                                               new TypeReference<List<Map<String, Object>>>() {}
-            );
-
-            // StoreRunningTimeDto 리스트로 변환
-            for (Map<String, Object> map : runningTimeList) {
-                // day 가 없으면 넘기기
-                if (!map.containsKey("day")) {
-                    continue;
-                }
-                String day = (String) map.get("day");
-                DayOfWeek dayOfWeek = DayUtil.mapDayOfWeek(day);
-
-                String startTime = (String) map.get("startDate");
-                String endTime = (String) map.get("endDate");
-
-                runningTimes.add(StoreRunningTimeDto.builder()
-                                                    .dayOfWeek(dayOfWeek)
-                                                    .startTime(startTime)
-                                                    .endTime(endTime)
-                                                    .build());
-            }
-        }
-
-        return StoreCreateReq.builder()
-                             .name(dto.getName())
-                             .description(dto.getStoreDetail()
-                                             .getContents())
-                             .viewCount(dto.getViews())
-                             .location(dto.getAddress())
-                             .latitude(dto.getLatitude())
-                             .longitude(dto.getLongitude())
-                             .operateStartAt(LocalDate.parse(dto.getStartDate()
-                                                                .substring(0,
-                                                                           10
-                                                                )))  // Converting to LocalDate
-                             .operateEndAt(LocalDate.parse(dto.getEndDate()
-                                                              .substring(0, 10)))
-                             .sellerId(null)
-                             .tags(hashtagList)
-                             .images(images)
-                             .runningTimes(runningTimes)
-                             .build();
-    }
-
     @Named("mapVisitCount")
     default int mapVisitCount(List<StoreVisit> visits) {
         return visits != null ? visits.size() : 0;
@@ -193,7 +105,7 @@ public interface StoreMapper {
     @Mapping(target = "operateEndAt", source = "operateEndAt")
     @Mapping(target = "status", source = "status")
     void updateEntityFromDto(
-        StoreUpdateReq storeUpdateReq,
-        @MappingTarget Store store
+            StoreUpdateReq storeUpdateReq,
+            @MappingTarget Store store
     );
 }

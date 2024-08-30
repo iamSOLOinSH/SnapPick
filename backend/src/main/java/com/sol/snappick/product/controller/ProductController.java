@@ -5,6 +5,7 @@ import com.sol.snappick.product.dto.ProductDetailRes;
 import com.sol.snappick.product.dto.ProductSimpleRes;
 import com.sol.snappick.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "products", description = "상품 : 상품 관리 API")
 @RequestMapping("/products")
 public class ProductController {
 
@@ -33,7 +35,7 @@ public class ProductController {
             @RequestParam(name = "store_id") Integer storeId,
             @RequestPart("productCreateReq") ProductCreateReq productCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
-    ) throws Exception{
+    ) throws Exception {
         Integer memberId = Integer.valueOf(authentication.getName());
         ProductDetailRes response = productService.createProduct(memberId, storeId, productCreateReq, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
