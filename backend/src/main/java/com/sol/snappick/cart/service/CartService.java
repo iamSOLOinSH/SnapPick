@@ -254,8 +254,8 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        if (cart.getCustomer()
-                .getId() != memberId) {
+        if (!Objects.equals(cart.getCustomer()
+                .getId(), memberId)) {
             throw new AccessDeniedException();
         }
 
@@ -264,13 +264,11 @@ public class CartService {
                 .orElseThrow(
                         () -> new CartItemNotFoundException());
 
-        //cartItem을 삭제한다.
-        try {
+        //존재한다면 삭제한다.
+        if (cartItemToDelete!=null){
             cartItemRepository.delete(cartItemToDelete);
-            return true;
-        } catch (Exception e) {
-            return false;
         }
+        return true;
     }
 
     /**
