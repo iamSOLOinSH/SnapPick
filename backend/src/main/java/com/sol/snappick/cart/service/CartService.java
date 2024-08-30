@@ -58,7 +58,7 @@ public class CartService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException());
         // - store의 판매자가 이 사용자가 맞는지 확인한다.
-        if (!memberId.equals(store.getMember().getId()))
+        if (memberId.equals(store.getMember().getId()))
             throw new AccessDeniedException();
 
         // - 결제대기 중인 카트가 이미 존재하는지 확인한다.
@@ -234,7 +234,7 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        if (cart.getCustomer().getId() != memberId)
+        if (!Objects.equals(cart.getCustomer().getId(), memberId))
             throw new AccessDeniedException();
 
         //cart에 속하는 cartItem을 조회한다.
