@@ -36,7 +36,7 @@ public class StoreVisitService {
         Member customer = basicMemberService.getMemberById(memberId);
 
         // 카트 조회 또는 생성
-        Cart cart = cartService.getOrCreateCart(customer, store);
+        Cart cart = cartService.getOrCreateCart(customer.getId(), customer, store);
 
         // 현재 시간을 방문 시간으로 설정
         LocalDateTime visitedAt = LocalDateTime.now();
