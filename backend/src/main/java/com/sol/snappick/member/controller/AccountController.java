@@ -67,14 +67,14 @@ public class AccountController {
             @RequestBody AccountTransferReq accountTransferReq
     ) {
         Integer memberId = Integer.valueOf(authentication.getName());
-        // TODO
+        transactionService.sendMoney(memberId, accountTransferReq);
         return ResponseEntity.ok().body(null);
     }
 
 
     @GetMapping("/identity")
     @Operation(summary = "1원 송금 보내기",
-            description = "타행으로 1원 송금을 하여 본인 인증을 시도합니다<br/> 본인의 계좌에만 1원을 송금할 수 있습니다")
+            description = "타행으로 1원 송금을 하여 본인 인증을 시도합니다<br/> 본인의 계좌에만 1원을 송금할 수 있습니다<br/>" + des_header_token)
     public ResponseEntity<String> beforeIdentification(
             Authentication authentication,
             @RequestParam(name = "account_no") String accountNumber) {
@@ -85,7 +85,7 @@ public class AccountController {
 
     @PostMapping("/identity")
     @Operation(summary = "1원 송금 확인하기",
-            description = "1원 송금 내역을 확인하고 본인 인증을 완료합니다")
+            description = "1원 송금 내역을 확인하고 본인 인증을 완료합니다" + des_header_token + des_input + des_IdentificationReq)
     public ResponseEntity<Void> AfterIdentification(
             Authentication authentication,
             @RequestBody IdentificationReq identificationReq

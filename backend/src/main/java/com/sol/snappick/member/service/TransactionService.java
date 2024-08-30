@@ -3,6 +3,7 @@ package com.sol.snappick.member.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sol.snappick.member.dto.AccountSingleReq;
 import com.sol.snappick.member.dto.AccountStateRes;
+import com.sol.snappick.member.dto.AccountTransferReq;
 import com.sol.snappick.member.dto.IdentificationReq;
 import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.entity.Role;
@@ -239,6 +240,72 @@ public class TransactionService {
     }
 
 
+    // 돈 보내기
+    public void sendMoney(Integer memberId, AccountTransferReq accountTransferReq) {
+
+        Member member = basicMemberService.getMemberById(memberId);
+        if (member.getRole() != Role.판매자) {
+            throw new BasicBadRequestException("판매자만 돈을 보낼 수 있습니다");
+        }
+
+        String userKey = member.getUserKey();
+        String toAccountNo = accountTransferReq.getAccountNumber();
+        String fromAccountNo = member.getAccountNumber();
+        Long balance = accountTransferReq.getBalance();
+
+        // 1. 예금주 조회
+        Map<String, Object> requestBody1 = new HashMap<>();
+        requestBody1.put("accountNo", toAccountNo);
+        JsonNode jsonNode1 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireDemandDepositAccountHolderName", "inquireDemandDepositAccountHolderName", HttpMethod.POST, requestBody1, userKey);
+        JsonNode responseData1 = jsonNode1.get("REC");
+
+
+        Integer userId = responseData1.get("userName").asInt();
+        if (!memberId.equals(userId)) {
+            throw new BasicBadRequestException("내 명의의 계좌가 아닙니다");
+        }
+
+        // 2. 이체
+        finOpenApiHandler.printJson(responseData1);
+        String depositTransactionSummary = "snappick 입금";
+        String withdrawalTransactionSummary = "송금 (" + responseData1.get("bankName").asText() + ")";
+
+
+        Map<String, Object> requestBody2 = new HashMap<>();
+        requestBody2.put("withdrawalAccountNo", fromAccountNo);
+        requestBody2.put("depositAccountNo", toAccountNo);
+        requestBody2.put("transactionBalance", balance);
+        requestBody2.put("depositTransactionSummary", depositTransactionSummary);
+        requestBody2.put("withdrawalTransactionSummary", withdrawalTransactionSummary);
+
+        JsonNode jsonNode = finOpenApiHandler.apiRequest("/edu/demandDeposit/updateDemandDepositAccountTransfer", "updateDemandDepositAccountTransfer", HttpMethod.POST, requestBody2, userKey);
+
+        JsonNode responseData2 = jsonNode.get("REC");
+        if (!responseData2.isArray() || responseData2.size() == 0) {
+            throw new BasicBadRequestException("Something went wrong");
+        }
+        finOpenApiHandler.printJson(responseData2);
+
+        // 3. 출금내역 transaction에 저장
+        Integer transactionId = 0;
+        for (JsonNode account : responseData2) {
+            Integer transactionType = account.get("transactionType").asInt();
+            if (transactionType == 2) {
+                Transaction transaction = Transaction.builder()
+                        .transactionUniqueNo(account.get("transactionUniqueNo").textValue())
+                        .member(member)
+                        .type(TransactionType.송금)
+                        .fromAccountNo(fromAccountNo)
+                        .toAccountNo(toAccountNo)
+                        .variation(balance)
+                        .summary(withdrawalTransactionSummary)
+                        .transactedAt(LocalDateTime.now()).build();
+                transactionRepository.save(transaction);
+            }
+        }
+    }
+
+
     /////////////////////////////////////////////////////
 
 
@@ -274,8 +341,8 @@ public class TransactionService {
         for (JsonNode account : responseData) {
             Transaction transaction = Transaction.builder()
                     .transactionUniqueNo(account.get("transactionUniqueNo").textValue())
-                    .accountNo(account.get("accountNo").textValue())
-                    .transactionAccountNo(account.get("transactionAccountNo").textValue())
+                    .fromAccountNo(account.get("accountNo").textValue())
+                    .toAccountNo(account.get("transactionAccountNo").textValue())
                     .variation(balance)
                     .transactedAt(LocalDateTime.now()).build();
 
