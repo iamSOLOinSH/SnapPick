@@ -1,6 +1,7 @@
 package com.sol.snappick.member.controller;
 
 import com.sol.snappick.member.dto.AccountTransferReq;
+import com.sol.snappick.member.dto.TodayTransactionRes;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
 import com.sol.snappick.member.exception.BasicBadRequestException;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+import static com.sol.snappick.global.ApiDescriptions.AccountController.des_string_date;
+import static com.sol.snappick.global.ApiDescriptions.common.des_input;
+
 @RestController
 @RequestMapping("/manager")
 @Tag(name = "manager", description = "멤버 : 관리자 API")
@@ -24,13 +28,15 @@ public class ManagerController {
     @Value("${finopenapi.secretkey}")
     private String secretKey;
 
-    @GetMapping("/")
-    @Operation(summary = "개발중 == 거래조회(대사)")
-    public ResponseEntity<Void> checkTransactions(
-            @RequestParam(name = "secret_key") String secretKey
+    @GetMapping("/transaction/inquiry")
+    @Operation(summary = "거래조회(대사)", description = des_input + des_string_date)
+    public ResponseEntity<TodayTransactionRes> checkTransactions(
+            @RequestParam(name = "secret_key") String secretKey,
+            @RequestParam(name = "date") String date
     ) {
-        // TODO
-        return ResponseEntity.ok().body(null);
+        // TODO 데이터 쌓인 후 테스트
+        checkKey(secretKey);
+        return ResponseEntity.ok().body(managerService.checkTransactions(date));
     }
 
     @GetMapping("/history")

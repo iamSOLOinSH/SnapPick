@@ -1,10 +1,7 @@
 package com.sol.snappick.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sol.snappick.member.dto.AccountSingleReq;
-import com.sol.snappick.member.dto.AccountStateRes;
-import com.sol.snappick.member.dto.AccountTransferReq;
-import com.sol.snappick.member.dto.IdentificationReq;
+import com.sol.snappick.member.dto.*;
 import com.sol.snappick.member.entity.Member;
 import com.sol.snappick.member.entity.Role;
 import com.sol.snappick.member.entity.Transaction;
@@ -12,7 +9,6 @@ import com.sol.snappick.member.entity.TransactionType;
 import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.member.repository.TransactionRepository;
-import com.sol.snappick.product.repository.CartRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,7 +31,6 @@ public class TransactionService {
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
     private final MemberRepository memberRepository;
-    private final CartRepository cartRepository;
     private final TransactionRepository transactionRepository;
 
     @Value("${finopenapi.snappickAccount}")
@@ -304,7 +299,23 @@ public class TransactionService {
 
     /////////////////////////////////////////////////////
 
+    // 판매자의 거래내역 조회
+    public List<TransactionDetailRes> checkTransactions(Integer memberId, String date) {
+        Member member = basicMemberService.getMemberById(memberId);
+        List<TransactionDetailRes> transactionList = new ArrayList<>();
 
+        transactionRepository.findTransactionsByDateString(date).stream()
+                .forEach(t -> {
+                            if (t.getType() != TransactionType.출금 && t.getMember().equals(member)) {
+                                // 추가검증하기
+                                transactionList.add(TransactionDetailRes.fromEntity(t));
+                            }
+                        }
+                );
+        return transactionList;
+    }
+
+    // 결제하기
     public Integer transfer(Member buyer, // 구매자
                             Member seller, // 판매자
                             String withdrawalAccountNo, // 출금계좌(구매자꺼)

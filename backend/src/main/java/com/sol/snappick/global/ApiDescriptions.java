@@ -29,6 +29,14 @@ public class ApiDescriptions {
                 \n
                 """;
 
+        public static final String des_string_date = """
+                \n
+                <b>date</b>
+                \n
+                | 조회날짜 | 8글자 | ex.20240830
+                \n
+                """;
+
         public static final String des_AccountStateRes = """
                 \n
                 <b>AccountStateRes</b>

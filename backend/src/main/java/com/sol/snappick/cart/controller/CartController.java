@@ -69,9 +69,11 @@ public class CartController {
             카트에 추가한 상품들을 조회할 수 있습니다.
             """)
     public ResponseEntity<List<CartItemRes>> updateCartItem(
+            Authentication authentication,
             @PathVariable("cart_id") Integer cartId
     ) throws Exception{
-        List<CartItemRes> response = cartService.readCartItem(cartId);
+        Integer memberId = Integer.valueOf(authentication.getName());
+        List<CartItemRes> response = cartService.readCartItem(memberId, cartId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

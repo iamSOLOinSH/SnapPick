@@ -34,9 +34,7 @@ public class ProductController {
             @RequestPart("productCreateReq") ProductCreateReq productCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
     ) throws Exception{
-        //Integer memberId = Integer.valueOf(authentication.getName());
-        Integer memberId = null;
-
+        Integer memberId = Integer.valueOf(authentication.getName());
         ProductDetailRes response = productService.createProduct(memberId, storeId, productCreateReq, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -52,9 +50,7 @@ public class ProductController {
             @RequestPart("productCreateReq") ProductCreateReq productCreateReq,
             @RequestPart(value = "images", required = false) MultipartFile[] images
     ) throws Exception {
-        //Integer memberId = Integer.valueOf(authentication.getName());
-        Integer memberId = null;
-
+        Integer memberId = Integer.valueOf(authentication.getName());
         ProductDetailRes response = productService.updateProduct(memberId, productId, productCreateReq, images);
         return ResponseEntity.ok(response);
     }
@@ -68,8 +64,7 @@ public class ProductController {
             Authentication authentication,
             @PathVariable(name = "product_id") Integer productId
     ) throws Exception {
-        //Integer memberId = Integer.valueOf(authentication.getName());
-        Integer memberId = null;
+        Integer memberId = Integer.valueOf(authentication.getName());
 
         boolean isDeleted = productService.deleteProduct(memberId, productId);
         return ResponseEntity.ok(isDeleted);
