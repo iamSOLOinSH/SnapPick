@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { Cookies } from "react-cookie";
 import { useBoundStore } from "../store/store";
 import { Layout } from "../components/common/Layout";
 import { Button } from "../components/common/Button";
@@ -9,10 +10,15 @@ import { FaChevronRight } from "react-icons/fa";
 
 const Mypage = () => {
   const navigate = useNavigate();
-  const { user, getUserInfo } = useBoundStore((state) => ({
-    user: state.user,
-    getUserInfo: state.getUserInfo,
-  }));
+  const cookies = new Cookies();
+  const { user, getUserInfo, mainAccount, checkAccounts } = useBoundStore(
+    (state) => ({
+      user: state.user,
+      getUserInfo: state.getUserInfo,
+      mainAccount: state.mainAccount,
+      checkAccounts: state.checkAccounts,
+    }),
+  );
 
   const handleHistory = () => {
     if (user.role === "0") {
@@ -26,9 +32,18 @@ const Mypage = () => {
     navigate(`/account/detail/1`);
   };
 
+  const handleLogout = () => {
+    cookies.remove("token");
+    navigate("/");
+  };
+
   useEffect(() => {
     getUserInfo();
   }, [getUserInfo]);
+
+  useEffect(() => {
+    checkAccounts();
+  }, [checkAccounts]);
 
   return (
     <Layout>
@@ -43,17 +58,18 @@ const Mypage = () => {
           </div>
         </div>
         {/* 프로필 */}
-        <div className="mt-2 flex flex-row items-center p-4">
-          <div className="flex-shrink-0">
+        <div className="mt-2 flex flex-row items-center justify-between p-4">
+          <div className="flex flex-shrink-0 items-center">
             <img
               src={user.imageUrl || "lay.png"}
               className="mb-2 mr-2 h-10 w-10 rounded-full border object-cover"
               alt="Profile image"
             />
+            <div className="text-2xl font-bold">
+              <span className="text-primary">{user.name}</span> 님
+            </div>
           </div>
-          <div className="text-2xl font-bold">
-            <span className="text-primary">{user.name}</span> 님
-          </div>
+          <Button variant="text" content="로그아웃" onClick={handleLogout} />
         </div>
         <div className="mr-2 text-end">
           <Button
@@ -63,14 +79,23 @@ const Mypage = () => {
           />
         </div>
         {/* 계좌  */}
-        <div
-          className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
-          onClick={handleAccountDetail}
-        >
-          <div className="font-semibold">주 계좌</div>
-          <div className="mb-8 text-sm">111-1111-1111</div>
-          <div className="mt-2 text-right text-2xl font-bold">90,000원</div>
-        </div>
+        {mainAccount ? (
+          <div
+            className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
+            onClick={handleAccountDetail}
+          >
+            <div className="font-semibold">{mainAccount.bankName}</div>
+            <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
+            <div className="mt-2 text-right text-2xl font-bold">
+              {mainAccount.theBalance.toLocaleString() + "원"}
+            </div>
+          </div>
+        ) : (
+          <div className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-center text-white shadow-lg">
+            주계좌가 없습니다.
+          </div>
+        )}
+
         {/* 내 계좌 조회  */}
         <div
           className="z-20 mb-4 flex cursor-pointer flex-row items-center justify-between rounded-lg bg-white p-4 shadow-lg"
