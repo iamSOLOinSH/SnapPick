@@ -45,7 +45,7 @@ const StockControlDetail = () => {
   return (
     <Layout>
       <div className="flex min-h-screen flex-col p-4">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 mt-12 flex items-center justify-between">
           <div className="flex items-center">
             <BackButton />
             <h3 className="ml-4 text-2xl font-bold">재고 상세</h3>
