@@ -50,8 +50,8 @@ public class ProductService {
         // 1) 팝업스토어
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException());
-//        if (store.getMember().getId() != memberId)
-//            throw new AccessDeniedException();
+        if (store.getMember().getId() != memberId)
+            throw new AccessDeniedException();
 
         // 2) 이미지
         if (images!=null && images.length>10){
@@ -130,8 +130,8 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException());
 
         //2) 수정 권한 확인
-//        if (productToUpdate.getStore().getMember().getId() != memberId)
-//            throw new AccessDeniedException();
+        if (productToUpdate.getStore().getMember().getId() != memberId)
+            throw new AccessDeniedException();
 
         // 3) 이미지
         if (images!=null && images.length>10){
@@ -190,8 +190,8 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException());
 
         //2) 삭제 권한 확인
-//        if (productToDelete.getStore().getMember().getId()!=memberId)
-//            throw new AccessDeniedException();
+        if (productToDelete.getStore().getMember().getId()!=memberId)
+            throw new AccessDeniedException();
 
         //Product 삭제
         // name, description, price, stock, dailyLimit, personalLimit, images, store, status
