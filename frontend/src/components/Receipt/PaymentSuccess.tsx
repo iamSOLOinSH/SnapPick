@@ -1,11 +1,59 @@
 import { FaCheck } from "react-icons/fa6";
 import { Card } from "../common/Card";
 
-type payProps = {
-  totalPrice: number;
+import { getFormattedDate } from "../../utils/Date";
+
+type runningTimeProps = {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
 };
 
-export const PaymentSuccess: React.FC<payProps> = ({ totalPrice }) => {
+type imagesProps = {
+  originImageUrl: string;
+  thumbnailImageUrl: string;
+};
+
+type payProps = {
+  store: {
+    id: number;
+    name: string;
+    location: string;
+    images: imagesProps[];
+    runningTimes: runningTimeProps[];
+  };
+  payment: {
+    id: number;
+    status: string;
+    store: {
+      id: number;
+      name: string;
+      location: string;
+      images: string[];
+    };
+    customer: {
+      memberId: number;
+      name: string;
+      phoneNumber: string;
+    };
+    totalPrice: number;
+    transactedAt: string;
+    items: {
+      id: number;
+      product: {
+        id: number;
+        name: string;
+        price: number;
+        stock: number;
+        status: string;
+        thumbnailImageUrls: string[];
+      };
+      quantity: number;
+    }[];
+  };
+};
+
+export const PaymentSuccess: React.FC<payProps> = ({ store, payment }) => {
   return (
     <div className="animate-appear">
       <section className="flex flex-col items-center justify-center">
@@ -19,11 +67,11 @@ export const PaymentSuccess: React.FC<payProps> = ({ totalPrice }) => {
           <FaCheck className="h-12 w-12" />
         </div>
         <h2 className="my-4 text-2xl font-bold">결제 성공</h2>
-        <p>팝업스토어 1에</p>
+        <p>{store.name}에</p>
         <p>성공적으로 결제되었습니다.</p>
         <p className="mt-4 text-gray-500">총 금액</p>
         <p className="mb-2 text-2xl font-bold">
-          {totalPrice.toLocaleString()}원
+          {payment.totalPrice.toLocaleString()}원
         </p>
       </section>
       <hr className="mt-2 w-full border-2 border-dashed" />
@@ -31,9 +79,9 @@ export const PaymentSuccess: React.FC<payProps> = ({ totalPrice }) => {
         <p className="my-4 ml-8 font-semibold text-gray-600">팝업 스토어</p>
         <Card
           variant="simple"
-          title="팝업 스토어 1"
-          imageSrc="https://search.pstatic.net/sunny?src=https%3A%2F%2Fi.namu.wiki%2Fi%2F8XSPz74OmwKAlPxupaSpYLQXgHG86E1drwvqaeNB0LnxJ6Vz73iPKe4C2xlkLNBY18QVXJi4PaZYv8rusG_9bQ.webp&type=fff208_208"
-          date="2024년 8월 17일 15:02"
+          title={store.name}
+          imageSrc={store.images[0].thumbnailImageUrl}
+          date={getFormattedDate()}
         />
       </section>
     </div>

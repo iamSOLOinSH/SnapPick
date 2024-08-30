@@ -70,6 +70,7 @@ type CardProps = {
   icon?: React.ReactElement;
   quantity?: number;
   spend?: number;
+  onDelete?: () => Promise<void>;
 };
 
 export const Card: React.FC<CardProps> = ({
@@ -86,6 +87,7 @@ export const Card: React.FC<CardProps> = ({
   spend,
   totalPrice,
   icon,
+  onDelete,
 }) => {
   const styles = CARD_VARIANTS[variant];
 
@@ -114,7 +116,10 @@ export const Card: React.FC<CardProps> = ({
             </div>
           )}
           {price && (
-            <IoCloseSharp className="h-6 w-6 rounded-full text-gray-500 hover:bg-secondary" />
+            <IoCloseSharp
+              className="h-6 w-6 rounded-full text-gray-500 hover:bg-secondary"
+              onClick={onDelete}
+            />
           )}
         </div>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
