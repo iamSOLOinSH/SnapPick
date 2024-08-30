@@ -27,7 +27,7 @@ public class StoreVisitService {
      * @param storeId  스토어 ID
      * @param memberId 사용자 ID
      */
-    public void recordVisit(
+    public Integer recordVisit(
         Integer storeId,
         Integer memberId
     ) throws Exception {
@@ -51,5 +51,8 @@ public class StoreVisitService {
 
         // 방문 기록을 데이터베이스에 저장
         storeVisitRepository.save(storeVisit);
+
+        // cart 의 ID 반환
+        return cart.getId();
     }
 }
