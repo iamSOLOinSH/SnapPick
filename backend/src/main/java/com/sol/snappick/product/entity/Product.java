@@ -73,20 +73,33 @@ public class Product extends BaseEntity {
     }
 
     public void updateDetails(
-            String name,
-            String description,
-            Long price,
-            Integer stock,
-            Integer dailyLimit,
-            Integer personalLimit
-            ) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock=stock;
-        this.dailyLimit = dailyLimit;
-        this.personalLimit = personalLimit;
+        String name,
+        String description,
+        Long price,
+        Integer stock,
+        Integer dailyLimit,
+        Integer personalLimit
+    ) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (price != null) {
+            this.price = price;
+        }
+        if (stock != null) {
+            this.stock = stock;
+        }
+        if (dailyLimit != null) {
+            this.dailyLimit = dailyLimit;
+        }
+        if (personalLimit != null) {
+            this.personalLimit = personalLimit;
+        }
     }
+
 
     // 이미지 관련 메서드
     public void setImages(List<ProductImage> newImages) {
