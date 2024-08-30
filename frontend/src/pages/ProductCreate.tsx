@@ -76,7 +76,7 @@ const ProductCreate = () => {
     formData.append("productCreateReq", JSON.stringify(body));
 
     for (let i = 0; i < productPhotos.length; i++) {
-      formData.append("imageFiles", productPhotos[i]);
+      formData.append("images", productPhotos[i]);
     }
 
     try {

@@ -27,6 +27,7 @@ import AccountVerificationSuccess from "../components/AccountVerification/Accoun
 import AccountTransfer from "../pages/AccountTransfer";
 import AccountList from "../pages/AccountList";
 import Admin from "../pages/Admin";
+import AccountTransferSuccess from "../pages/AccountTransferSuccess";
 
 const Router = () => {
   return (
@@ -62,6 +63,10 @@ const Router = () => {
         element={<AccountVerificationSuccess />}
       />
       <Route path="/account/transfer" element={<AccountTransfer />} />
+      <Route
+        path="/account/transfer/success"
+        element={<AccountTransferSuccess />}
+      />
       <Route path="/account/list" element={<AccountList />} />
       <Route path="/account/detail/:accountId" element={<AccountDetail />} />
       <Route path="/health-check" element={<HealthCheck />} />

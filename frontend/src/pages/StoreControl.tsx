@@ -39,7 +39,7 @@ const StoreControl = () => {
   };
 
   return (
-    <Layout>
+    <Layout className="bg-white">
       <div className="mb-8 mt-12 flex w-full items-center justify-between">
         <BackButton />
         <h2 className="text-center text-2xl font-bold">스토어 관리</h2>

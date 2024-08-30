@@ -14,7 +14,7 @@ const Home = () => {
     "https://i.namu.wiki/i/wXGU6DZbHowc6IB0GYPJpcmdDkLO3TW3MHzjg63jcTJvIzaBKhYqR0l9toBMHTv2OSU4eFKfPOlfrSQpymDJlA.webp";
   const [userName, setUserName] = useState("팝콘");
   const [popularStores, setPopularStores] = useState<Store[]>([]);
-  // const stores = getStores();
+  const [closingStores, setClosingStores] = useState<Store[]>([]);
 
   const handleSearchClick = () => {
     navigate("/search");
@@ -27,7 +27,9 @@ const Home = () => {
   const handleGetStores = async () => {
     try {
       const popularStoresData = await getStores("", 10, 0, "VIEWS");
+      const closingStoresData = await getStores("", 10, 0, "CLOSING_SOON");
       setPopularStores(popularStoresData.data);
+      setClosingStores(closingStoresData.data);
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +99,7 @@ const Home = () => {
             </div>
           </div>
           <div className="flex overflow-x-auto whitespace-nowrap pb-4 pl-2 scrollbar-hide">
-            {popularStores.map((store) => (
+            {closingStores.map((store) => (
               <div
                 key={store.id}
                 className="mr-1 flex-shrink-0 cursor-pointer"

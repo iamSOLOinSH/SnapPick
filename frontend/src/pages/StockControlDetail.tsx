@@ -7,7 +7,7 @@ import { Card } from "../components/common/Card";
 import { PiNotePencilBold } from "react-icons/pi";
 import { NumberSelector } from "../components/common/NumberSelector";
 import { Input } from "../components/common/Input";
-import { getProduct } from "../utils/api/product";
+import { getProduct, modifyProduct } from "../utils/api/product";
 
 const StockControlDetail = () => {
   const NO_PRODUCT_IMG = "https://s3.youm.me/snappick-product/no_product.png";
@@ -64,7 +64,19 @@ const StockControlDetail = () => {
     handleGetProduct();
   }, []);
 
-  const handleProductChange = () => {};
+  const handleProductChange = async () => {
+    const body = {
+      name: productName,
+      stock: quantity,
+    };
+
+    const formData = new FormData();
+    formData.append("productCreateReq", JSON.stringify(body));
+
+    // try {
+    //   const response = await modifyProduct(productId, formData);
+    // }
+  };
 
   return (
     <Layout>
