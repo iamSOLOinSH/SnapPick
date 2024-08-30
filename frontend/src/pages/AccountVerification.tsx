@@ -30,7 +30,7 @@ const AccountVerification = () => {
   // 1원 인증 확인하기
   const checkVerification = async (confirmNumber: string) => {
     try {
-      await validateIdentity(accountNo, parseInt(confirmNumber));
+      await validateIdentity(accountNo, confirmNumber);
 
       navigate("/account/add/success");
     } catch (error) {

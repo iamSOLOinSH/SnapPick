@@ -113,7 +113,7 @@ const StoreSearch = () => {
                   variant="store"
                   title={store?.name}
                   subtitle={store?.location}
-                  imageSrc={store?.images[0]?.originImageUrl}
+                  imageSrc={store?.images[0]?.thumbnailImageUrl}
                 />
               </div>
             ))}

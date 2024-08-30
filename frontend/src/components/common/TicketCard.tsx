@@ -6,7 +6,7 @@ type TicketCardProps = {
   title: string;
   date: string;
   location: string;
-  price: number;
+  price?: number;
   buttonText: string;
   isActive: boolean;
   className?: string;
@@ -63,7 +63,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           {title}
         </h3>
         <span
-          className={clsx("text-sm", isActive ? "text-black" : "text-gray-400")}
+          className={clsx(
+            "flex-shrink-0 text-sm",
+            isActive ? "text-black" : "text-gray-400",
+          )}
         >
           {date}
         </span>
@@ -77,7 +80,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       </div>
       <div className="mt-4 flex justify-between">
         <div className="flex items-center space-x-2">
-          ￦{price.toLocaleString()}
+          {price != null ? `￦${price.toLocaleString()}` : ""}
         </div>
         <button
           className={clsx(

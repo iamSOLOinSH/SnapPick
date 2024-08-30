@@ -21,7 +21,7 @@ const StoreCreateSuccess = () => {
         </div>
       </div>
       <div className="mx-4 flex flex-col gap-2">
-        <Button content="확인" />
+        <Button content="확인" onClick={() => navigate("/store/manage")} />
       </div>
     </Layout>
   );

@@ -43,7 +43,7 @@ const StoreDetail = () => {
           </div>
           <div className="my-3">
             {store?.tags.map((tag: string) => (
-              <Tag key={tag} className="mb-1 mr-1" content={tag} />
+              <Tag key={tag} className="mb-1 mr-1" content={`#${tag}`} />
             ))}
           </div>
           <div className="flex flex-row">
@@ -60,8 +60,9 @@ const StoreDetail = () => {
               {store?.runningTimes.map((time) => (
                 <p className="flex items-center text-sm">
                   <IoTimeOutline className="mr-1" />
-                  {dayTranslations[time?.dayOfWeek]} : {time?.startTime} -{" "}
-                  {time?.endTime}
+                  {dayTranslations[time?.dayOfWeek]} :
+                  {time?.startTime.replace(/:\d{2}$/, "")} -
+                  {time?.endTime.replace(/:\d{2}$/, "")}
                 </p>
               ))}
             </div>
