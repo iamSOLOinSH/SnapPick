@@ -3,10 +3,12 @@ package com.sol.snappick.member.controller;
 import com.sol.snappick.member.dto.AccountTransferReq;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
+import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +21,13 @@ import java.util.ArrayList;
 public class ManagerController {
 
     private final ManagerService managerService;
+    @Value("${finopenapi.secretkey}")
+    private String secretKey;
 
     @GetMapping("/")
     @Operation(summary = "개발중 == 거래조회(대사)")
     public ResponseEntity<Void> checkTransactions(
+            @RequestParam(name = "secret_key") String secretKey
     ) {
         // TODO
         return ResponseEntity.ok().body(null);
@@ -31,8 +36,10 @@ public class ManagerController {
     @GetMapping("/history")
     @Operation(summary = "계좌 거래내역 조회")
     public ResponseEntity<ArrayList<TransactionDetailRes>> getTransaction(
+            @RequestParam(name = "secret_key") String secretKey,
             @RequestParam(name = "account_no") String accouuntNo
     ) {
+        checkKey(secretKey);
         return ResponseEntity.ok().body(
                 managerService.getTransaction(accouuntNo));
     }
@@ -40,10 +47,19 @@ public class ManagerController {
     @PostMapping("/deposit")
     @Operation(summary = "현금 입금")
     public ResponseEntity<TransactionHistoryRes> deposit(
+            @RequestParam(name = "secret_key") String secretKey,
             @RequestBody AccountTransferReq accountTransferReq
     ) {
-        // TODO security
+        checkKey(secretKey);
         return ResponseEntity.ok().body(
                 managerService.deposit(accountTransferReq));
+    }
+
+    //////////////////////////////////
+
+    private void checkKey(String secretKey) {
+        if (!secretKey.equals(this.secretKey)) {
+            throw new BasicBadRequestException("secret_key가 일치하지 않습니다!");
+        }
     }
 }
