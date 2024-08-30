@@ -76,8 +76,6 @@ public class StoreService {
         storeCreateReq.setSellerId(memberId);
 
         Store storeToCreate = createStoreWithDetails(storeCreateReq);
-        log.info("-> storeToCreate: " + storeToCreate.getMember()
-                                                     .getId());
         storeToCreate = storeRepository.save(storeToCreate); // Store 먼저 저장
         storeToCreate.updateStatus(); // status 계산
         // 이미지 처리 및 저장
