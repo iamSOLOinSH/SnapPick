@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { axiosClient } from "../utils/axios";
+import Axios from "../utils/axios";
 
 interface OperationTimeEntry {
   start: string;
@@ -131,17 +131,15 @@ export const createStoreCreationSlice: StateCreator<StoreCreationAction> = (
       runningTimes: createRunningTimes(),
     };
 
-    console.log(stateValues);
-
     const formData = new FormData();
     formData.append("storeCreateReq", JSON.stringify(stateValues));
 
     for (let i = 0; i < state.selectedPhotos.length; i++) {
-      formData.append("images", state.selectedPhotos[i]);
+      formData.append("imageFiles", state.selectedPhotos[i]);
     }
     console.log(state.selectedPhotos[0]);
 
-    const response = await axiosClient.post(`/stores`, formData, {
+    const response = await Axios.post(`/stores`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

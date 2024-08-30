@@ -20,14 +20,7 @@ interface ImageObject {
 }
 
 interface RunningTimesObject {
-  dayOfWeek:
-    | "MONDAY"
-    | "TUESDAY"
-    | "WEDNESDAY"
-    | "THURSDAY"
-    | "FRIDAY"
-    | "SATURDAY"
-    | "SUNDAY";
+  dayOfWeek: string;
   startTime: string;
   endTime: string;
 }

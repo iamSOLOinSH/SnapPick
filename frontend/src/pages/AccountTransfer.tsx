@@ -11,7 +11,7 @@ const AccountTransfer: React.FC = () => {
   const [recipientAccount, setRecipientAccount] = useState("");
 
   const handleTransfer = () => {
-    alert("이체가 완료되었습니다.");
+    // 이체 완료!!
   };
 
   return (

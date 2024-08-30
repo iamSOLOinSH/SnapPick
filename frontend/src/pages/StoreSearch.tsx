@@ -3,8 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { Tag } from "../components/common/Tag";
 import { SearchBar } from "../components/common/SearchBar";
-import { getStores } from "../mocks/store";
 import { Card } from "../components/common/Card";
+import { Store } from "../types/store";
+import { getStores } from "../utils/api/store";
 
 type SortOption = {
   label: string;
@@ -12,9 +13,9 @@ type SortOption = {
 };
 
 const sortOptions: SortOption[] = [
-  { label: "조회수 순", value: "views" },
-  { label: "최신 등록 순", value: "latest" },
-  { label: "운영 마감 임박 순", value: "soon" },
+  { label: "조회수 순", value: "VIEWS" },
+  { label: "최신 등록 순", value: "RECENT" },
+  { label: "운영 마감 임박 순", value: "CLOSING_SOON" },
 ];
 
 const StoreSearch = () => {
@@ -23,14 +24,13 @@ const StoreSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSearched, setIsSearched] = useState(false);
 
-  const [selectedSort, setSelectedSort] = useState<string>("views");
+  const [selectedSort, setSelectedSort] = useState<string>("VIEWS");
   const [searchText, setSearchText] = useState("");
-  const stores = getStores();
+  const [stores, setStores] = useState<Store[]>([]);
 
   useEffect(() => {
     const query = searchParams.get("query") || "";
-    const sort = searchParams.get("sort") || "views";
-    console.log(query);
+    const sort = searchParams.get("sort") || "VIEWS";
     setSearchText(query);
     setSelectedSort(sort);
     setIsSearched(!!query);
@@ -51,15 +51,30 @@ const StoreSearch = () => {
   const handleSearch = () => {
     setIsSearched(true);
     updateURL(searchText, selectedSort);
+
+    handleGetStores();
   };
 
   const handleSearchChange = (value: string) => {
     setSearchText(value);
   };
 
-  const handleStoreDetail = (id: string) => {
+  const handleStoreDetail = (id: number) => {
     navigate(`/store/detail/${id}`);
   };
+
+  const handleGetStores = async () => {
+    try {
+      const storesData = await getStores(searchText, 2000, 0, selectedSort);
+      setStores(storesData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetStores();
+  }, [selectedSort]);
 
   return (
     <Layout>
@@ -96,10 +111,9 @@ const StoreSearch = () => {
                 <Card
                   key={store.id}
                   variant="store"
-                  title={store.title}
-                  subtitle={store.location}
-                  imageSrc={store.imageSrc}
-                  description={store.description}
+                  title={store?.name}
+                  subtitle={store?.location}
+                  imageSrc={store?.images[0]?.originImageUrl}
                 />
               </div>
             ))}

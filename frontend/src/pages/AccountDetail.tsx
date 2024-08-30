@@ -74,7 +74,7 @@ const AccountDetail = () => {
               className="mr-2 rounded-md bg-white px-4 py-2 text-primary"
               onClick={() => navigate("/account/transfer")}
             >
-              이체
+              보내기
             </button>
           </div>
         </div>
