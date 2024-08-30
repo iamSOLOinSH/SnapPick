@@ -176,7 +176,7 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        if (cart.getCustomer().getId() != memberId)
+        if (!Objects.equals(cart.getCustomer().getId(), memberId))
             throw new AccessDeniedException();
 
         //3) cartItem이 존재하는지 확인한다.
