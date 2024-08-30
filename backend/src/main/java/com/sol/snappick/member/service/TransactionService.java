@@ -109,7 +109,8 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<AccountStateRes> getOtherAccount(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
-
+        // 1원 송금으로 오픈뱅킹 서비스 가입안한 사용자는 다른계좌 못봄
+        if (member.getIsOpenBank() == false) return new ArrayList<>();
         String myAccount = member.getAccountNumber();
 
         // 1. 요청 본문 생성
@@ -230,6 +231,9 @@ public class TransactionService {
             throw new BasicBadRequestException("Something went wrong");
         }
 
+        // 4. 엔티티값 갱신
+        member.setIsOpenBank(true);
+        memberRepository.save(member);
     }
 
 
