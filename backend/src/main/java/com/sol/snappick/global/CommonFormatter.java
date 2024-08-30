@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 public class CommonFormatter {
     private static final DecimalFormat formatter = new DecimalFormat("#,###");
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일, HH시 mm분 ss초");
+    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter yyyyMMdd_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public static String yyyyMMddFormat(LocalDate date) {
