@@ -178,6 +178,10 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 ![SpringJPA](https://img.shields.io/badge/Spring_JPA-6DB33F.svg?&style=for-the-badge)
 ![QueryDSL](https://img.shields.io/badge/QueryDSL-1D9FD7.svg?&style=for-the-badge&logoColor=white)
 
+### 테스트 데이터 수집
+![Python](https://img.shields.io/badge/Python-3776AB.svg?&style=for-the-badge&logo=Python&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-111111.svg?style=for-the-badge&logo=OpenAI&logoColor=white)
+
 ### **외부 API**
 ![Kakao](https://img.shields.io/badge/Kakao-FFCD00.svg?&style=for-the-badge&logo=Kakao&logoColor=white)
 ![Naver](https://img.shields.io/badge/Naver_Map-03C75A.svg?&style=for-the-badge&logo=Naver&logoColor=white)
@@ -301,9 +305,10 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
             ```yaml
             spring:
               datasource:
-                url: jdbc:mysql://localhost:3306/snappick
+                url: jdbc:mariadb://localhost:3306/snappick
                 username: your_username
                 password: your_password
+            # 중략
             ```
     3. **빌드 및 실행**:
         ```bash
@@ -325,7 +330,8 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
         - `.env` 파일에 필요한 환경 변수 설정
         - 예시:
             ```
-            REACT_APP_API_URL=http://localhost:8080/api
+            VITE_BACKEND_ADDRESS=http://localhost:8080/api
+            <!-- 중략 -->
             ```
     4. **프론트엔드 서버 실행**:
         ```bash
@@ -333,7 +339,7 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
         ```
 
 4. **데이터베이스 설정**
-    1. **MySQL 데이터베이스 생성**:
+    1. **MariaDB 데이터베이스 생성**:
         ```sql
         CREATE DATABASE snappick;
         ```
