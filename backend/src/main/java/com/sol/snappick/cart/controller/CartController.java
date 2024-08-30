@@ -21,7 +21,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping()
-    @Operation(summary = "카트 생성", description = "상품을 담을 수 있는 카트를 생성합니다.")
+    @Operation(summary = "카트 생성", description = "storeID를 입력해주세요. 해당 스토어의 상품을 담을 수 있는 카트를 생성합니다.")
     public ResponseEntity<CartCreateRes> createCart(
         Authentication authentication,
         @RequestBody Integer storeId
@@ -35,7 +35,8 @@ public class CartController {
 
     @PostMapping("/{cart_id}/items")
     @Operation(summary = "카트 상품 추가", description = """
-            productId, quantity를 담아서 보내주세요.
+            pathVariable로 cart_id를,
+            body에는 productId, quantity를 담아서 보내주세요.
             """)
     public ResponseEntity<CartItemRes> createCartItem(
             Authentication authentication,
@@ -50,7 +51,9 @@ public class CartController {
 
     @PutMapping("/{cart_id}/items/{item_id}")
     @Operation(summary = "카트 상품 수정", description = """
-            카트에 추가한 상품의 옵션, 수량을 수정할 수 있습니다.
+            카트에 추가한 상품의 수량을 수정할 수 있습니다. \n
+            PathVariable에 cart_id, item_id를 담아주시고, \n
+            body에는 product_id, quantity를 담아서 보내주세요. \n
             """)
     public ResponseEntity<CartItemRes> updateCartItem(
             Authentication authentication,
@@ -66,7 +69,8 @@ public class CartController {
 
     @GetMapping("/{cart_id}/items")
     @Operation(summary = "카트 상품 조회", description = """
-            카트에 추가한 상품들을 조회할 수 있습니다.
+            카트에 추가한 상품들을 조회할 수 있습니다.\n
+            pathVariable로 cart_id를 담아주세요.\n
             """)
     public ResponseEntity<List<CartItemRes>> updateCartItem(
             Authentication authentication,
@@ -78,7 +82,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cart_id}/items/{item_id}")
-    @Operation(summary = "카트 상품 삭데", description = """
+    @Operation(summary = "카트 상품 삭제", description = """
             cart_id, item_id를 이용해서 카트에 추가한 상품을 삭제할 수 있습니다.
             """)
     public ResponseEntity<Boolean> deleteCartItem(
