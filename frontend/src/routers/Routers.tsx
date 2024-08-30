@@ -20,6 +20,12 @@ import StockControlDetail from "../pages/StockControlDetail";
 import Order from "../pages/Order";
 import Cart from "../pages/Cart";
 import Products from "../pages/Products";
+import StoreControl from "../pages/StoreControl";
+import AccountVerificationStep from "../pages/AccountVerification";
+import AccountDetail from "../pages/AccountDetail";
+import AccountVerificationSuccess from "../components/AccountVerification/AccountVerificationSuccess";
+import AccountTransfer from "../pages/AccountTransfer";
+import AccountList from "../pages/AccountList";
 
 const Router = () => {
   return (
@@ -29,6 +35,7 @@ const Router = () => {
       <Route path="/profile" element={<Mypage />} />
       <Route path="/stock" element={<StockControl />} />
       <Route path="/stcok/detail/:productId" element={<StockControlDetail />} />
+      <Route path="/storecontrol" element={<StoreControl />} />
       <Route path="/search" element={<StoreSearch />} />
       <Route path="/store/create" element={<StoreCreate />} />
       <Route path="/store/create/success" element={<StoreCreateSuccess />} />
@@ -46,6 +53,14 @@ const Router = () => {
       <Route path="/products" element={<Products />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/receipt" element={<Receipt />} />
+      <Route path="/account/add" element={<AccountVerificationStep />} />
+      <Route
+        path="/account/add/success"
+        element={<AccountVerificationSuccess />}
+      />
+      <Route path="/account/transfer" element={<AccountTransfer />} />
+      <Route path="/account/list" element={<AccountList />} />
+      <Route path="/account/detail/:accountId" element={<AccountDetail />} />
       <Route path="/health-check" element={<HealthCheck />} />
     </Routes>
   );
