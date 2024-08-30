@@ -12,7 +12,7 @@ const OneWonAnimation: FC<OneWonAnimationProps> = ({ onNext }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="mt-20 flex flex-col items-center justify-center">
       <FaCheckCircle className="animate-ping-once mb-4 text-5xl text-green" />
       <div className="mb-2 animate-fadeInSlideUp text-4xl font-bold text-primary">
         1원 전송 완료!

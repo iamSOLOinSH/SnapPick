@@ -6,6 +6,7 @@ import { Button } from "../common/Button";
 
 const AccountVerificationSuccess = () => {
   const navigate = useNavigate();
+
   return (
     <Layout>
       <div className="relative"></div>
@@ -17,7 +18,7 @@ const AccountVerificationSuccess = () => {
         </div>
       </div>
       <div className="mx-4 flex flex-col gap-2">
-        <Button content="확인" />
+        <Button content="확인" onClick={() => navigate("/profile")} />
       </div>
     </Layout>
   );
