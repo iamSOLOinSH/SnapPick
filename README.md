@@ -168,11 +168,11 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 ![Axios](https://img.shields.io/badge/Axios-5A29E4.svg?&style=for-the-badge&logo=Axios&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4.svg?&style=for-the-badge&logo=TailwindCSS&logoColor=white)
 ![ReactQuery](https://img.shields.io/badge/React_Query-FF4154.svg?&style=for-the-badge&logo=ReactQuery&logoColor=white)
-![Jotai](https://img.shields.io/badge/Jotai-000000.svg?&style=for-the-badge&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-634533.svg?&style=for-the-badge&logoColor=white)
 
 ### Backend
 
-![Java](https://img.shields.io/badge/Java-634533.svg?&style=for-the-badge)
+![Java](https://img.shields.io/badge/Java-B07219.svg?&style=for-the-badge)
 ![SpringBoot](https://img.shields.io/badge/Spring_Boot-6DB33F.svg?&style=for-the-badge&logo=SpringBoot&logoColor=white)
 ![SpringSecurity](https://img.shields.io/badge/Spring_Security-6DB33F.svg?&style=for-the-badge&logo=SpringSecurity&logoColor=white)
 ![SpringJPA](https://img.shields.io/badge/Spring_JPA-6DB33F.svg?&style=for-the-badge)
