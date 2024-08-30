@@ -11,80 +11,26 @@ import {
 } from "@tanstack/react-table";
 import { SearchBar } from "../components/common/SearchBar";
 import { Tag } from "../components/common/Tag";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
+import { HiPlus } from "react-icons/hi";
+import { getProducts } from "../utils/api/product";
 
 interface Product {
   id: string;
   name: string;
-  quantity: number;
-  status: "selling" | "soldout";
-  productImg: string;
+  stock: number;
+  status: "판매가능" | "품절";
 }
 
 const StockControl = () => {
   const navigate = useNavigate();
 
+  const { storeId } = useParams<{ storeId?: string }>();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<Product[]>([]);
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const PRODUCT_IMG =
-    "https://www.nintendo.co.kr/character/kirby/assets/img/home/kirby-puffy.png";
-
-  useEffect(() => {
-    const exampleData: Product[] = [
-      {
-        id: "1",
-        name: "스토어 물품 1",
-        quantity: 5413,
-        status: "selling",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "2",
-        name: "스토어 물품 2",
-        quantity: 21,
-        status: "soldout",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "3",
-        name: "스토어물품스토",
-        quantity: 234,
-        status: "selling",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "4",
-        name: "스토어 물품 4",
-        quantity: 234,
-        status: "selling",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "5",
-        name: "스토어 물품 5",
-        quantity: 100,
-        status: "selling",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "6",
-        name: "스토어 물품 6",
-        quantity: 0,
-        status: "soldout",
-        productImg: PRODUCT_IMG,
-      },
-      {
-        id: "7",
-        name: "스토어 물품 7",
-        quantity: 0,
-        status: "soldout",
-        productImg: PRODUCT_IMG,
-      },
-    ];
-    setData(exampleData);
-  }, []);
 
   const columns = React.useMemo<ColumnDef<Product>[]>(
     () => [
@@ -95,36 +41,28 @@ const StockControl = () => {
           const status = info.getValue() as string;
 
           switch (status) {
-            case "selling":
+            case "판매가능":
               return (
                 <div className="flex flex-shrink-0">
                   <Tag content="판매중" variant="primary" />
                 </div>
               );
 
-            case "soldout":
+            case "품절":
               return <Tag content="품절" variant="red" />;
           }
         },
       },
       {
-        accessorFn: (row) => ({ name: row.name, productImg: row.productImg }),
+        accessorFn: (row) => ({ name: row.name }),
         id: "productInfo",
         header: "상품명",
         cell: (info) => {
-          const { name, productImg } = info.getValue() as {
+          const { name } = info.getValue() as {
             name: string;
-            productImg: string;
           };
           return (
             <div className="flex items-center text-left">
-              {/* <div className="mr-2 h-10 w-10 flex-shrink-0 rounded-lg">
-              <img
-                src={productImg}
-                alt="상품 이미지"
-                className="h-full w-full rounded-lg object-cover"
-              />
-            </div> */}
               <span>{name}</span>
             </div>
           );
@@ -132,7 +70,7 @@ const StockControl = () => {
       },
 
       {
-        accessorKey: "quantity",
+        accessorKey: "stock",
         header: "수량",
         cell: (info) => {
           const value = info.getValue() as number;
@@ -145,7 +83,7 @@ const StockControl = () => {
 
   const table = useReactTable({
     columns,
-    data,
+    data: filteredData,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
@@ -154,20 +92,55 @@ const StockControl = () => {
     },
   });
 
-  const handleProductSearch = () => {};
-
   const handleProductDetail = (id: string) => {
     navigate(`/stock/detail/${id}`);
+  };
+
+  useEffect(() => {
+    const handleGetProduct = async () => {
+      if (!storeId) {
+        return;
+      }
+
+      const parsedStoreId = parseInt(storeId, 10);
+      if (isNaN(parsedStoreId)) {
+        return;
+      }
+
+      try {
+        const response = await getProducts(parsedStoreId);
+        setData(response.data);
+        setFilteredData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
+    };
+
+    handleGetProduct();
+  }, [storeId]);
+
+  const handleProductSearch = () => {
+    const lowercasedTerm = searchTerm.toLowerCase();
+    const filtered = data.filter(
+      (product) =>
+        product.name.toLowerCase().includes(lowercasedTerm) ||
+        product.status.toLowerCase().includes(lowercasedTerm),
+    );
+    setFilteredData(filtered);
   };
 
   return (
     <Layout>
       <div className="flex min-h-screen flex-col p-4">
-        <div className="mb-8 mt-12 flex items-center justify-between">
-          <div className="flex items-center">
-            <BackButton />
-            <h3 className="ml-4 text-2xl font-bold">재고 관리</h3>
-          </div>
+        <div className="mb-8 mt-12 flex w-full items-center justify-between">
+          <BackButton />
+          <h2 className="text-center text-2xl font-bold">재고 관리</h2>
+          <button
+            className="rounded border-2 p-2 hover:bg-base"
+            onClick={() => navigate(`/product/create`, { state: storeId })}
+          >
+            <HiPlus />
+          </button>
         </div>
         <div className="mb-4">
           <SearchBar
@@ -214,7 +187,7 @@ const StockControl = () => {
                 <tr
                   key={row.id}
                   className="border-b text-left"
-                  onClick={() => handleProductDetail(row.id)}
+                  onClick={() => handleProductDetail(row?.original?.id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-3">

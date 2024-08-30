@@ -7,14 +7,18 @@ import { Card } from "../components/common/Card";
 import { PiNotePencilBold } from "react-icons/pi";
 import { NumberSelector } from "../components/common/NumberSelector";
 import { Input } from "../components/common/Input";
+import { getProduct } from "../utils/api/product";
 
 const StockControlDetail = () => {
-  const { productId } = useParams();
+  const NO_PRODUCT_IMG = "https://s3.youm.me/snappick-product/no_product.png";
+  const { productId } = useParams<{ productId: string }>();
 
-  const [productName, setProductName] = useState("상품명 이름");
+  const [productName, setProductName] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [editName, setEditName] = useState(productName);
   const [quantity, setQuantity] = useState(3);
+  const [productImg, setProductImg] = useState("");
+  const [isSoldOut, setIsSoldOut] = useState(false);
 
   const editRef = useRef<HTMLInputElement>(null);
 
@@ -37,10 +41,30 @@ const StockControlDetail = () => {
     }
   };
 
-  const handleProductChange = () => {};
+  const handleGetProduct = async () => {
+    try {
+      const response = await getProduct(productId || "");
+      const productData = response?.data;
+      setProductName(productData?.name);
+      setEditName(productData?.name);
+      setQuantity(productData?.stock);
+      setIsSoldOut(productData?.status === "판매가능" ? false : true);
 
-  const PRODUCT_IMG =
-    "https://www.nintendo.co.kr/character/kirby/assets/img/home/kirby-puffy.png";
+      if (productData?.originImageUrls.length === 0) {
+        setProductImg(NO_PRODUCT_IMG);
+      } else {
+        setProductImg(productData?.originImageUrls[0]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetProduct();
+  }, []);
+
+  const handleProductChange = () => {};
 
   return (
     <Layout>
@@ -53,8 +77,8 @@ const StockControlDetail = () => {
         </div>
         <div>
           <h3 className="ml-4 text-xl font-bold">대표사진</h3>
-          <div className="mb-4 p-4">
-            <img src={PRODUCT_IMG} />
+          <div className="mb-4 flex justify-center p-4">
+            <img src={productImg} />
           </div>
           <Card
             variant="status"
@@ -81,10 +105,17 @@ const StockControlDetail = () => {
             variant="status"
             title="상태"
             content={
-              <div className="flex items-center gap-4">
-                <div className="h-3 w-3 rounded-full bg-red"></div>
-                <span>품절</span>
-              </div>
+              isSoldOut ? (
+                <div className="flex items-center gap-4">
+                  <div className="h-3 w-3 rounded-full bg-red"></div>
+                  <span>품절</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <div className="h-3 w-3 rounded-full bg-primary"></div>
+                  <span>판매중</span>
+                </div>
+              )
             }
           />
           <Card

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import { Layout } from "../components/common/Layout";
 import { Success } from "../components/common/Success";
@@ -6,6 +6,9 @@ import { Button } from "../components/common/Button";
 
 const ProductCreateSuccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const storeId = location?.state;
+
   return (
     <Layout>
       <div className="relative"></div>
@@ -17,7 +20,7 @@ const ProductCreateSuccess = () => {
         </div>
       </div>
       <div className="mx-4 flex flex-col gap-2">
-        <Button content="확인" />
+        <Button content="확인" onClick={() => navigate(`/stock/${storeId}`)} />
       </div>
     </Layout>
   );

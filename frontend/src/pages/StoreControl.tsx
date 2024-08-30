@@ -7,22 +7,20 @@ import { TicketCard } from "../components/common/TicketCard";
 import { isToday, formatDate } from "../utils/Date";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
-
-interface StoreControlItem {
-  name: string;
-  location: string;
-  price: number;
-  visitedAt: string;
-}
+import { Store } from "../types/store";
 
 const StoreControl = () => {
   const navigate = useNavigate();
-  const { visitHistory } = useBoundStore((state) => ({
+  const { visitHistory, getVisitHistory } = useBoundStore((state) => ({
     visitHistory: state.visitHistory,
+    getVisitHistory: state.getVisitHistory,
   }));
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredHistory, setFilteredHistory] =
-    useState<StoreControlItem[]>(visitHistory);
+  const [filteredHistory, setFilteredHistory] = useState<Store[]>(visitHistory);
+
+  useEffect(() => {
+    getVisitHistory();
+  }, []);
 
   useEffect(() => {
     if (searchQuery === "") {
@@ -70,12 +68,11 @@ const StoreControl = () => {
             >
               <TicketCard
                 title={item.name}
-                date={formatDate(item.visitedAt, true)}
+                date={formatDate(item.operateStartAt, true)}
                 location={item.location}
-                price={item.price}
                 buttonText="재고 관리"
-                isActive={isToday(item.visitedAt)}
-                onClick={() => navigate("/stock")}
+                isActive={true}
+                onClick={() => navigate(`/stock/${item.id}`)}
               />
             </li>
           ))}
