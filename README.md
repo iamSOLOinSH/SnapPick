@@ -2,7 +2,6 @@
 <div align="center">
     <img src="./images/shinhan_hackaton.png" alt="shinhan_hackaton" width=300px/>
 </div>
----
 
 # 📌 SnapPick (스냅픽)
 
