@@ -20,12 +20,14 @@ import PasswordChange from "../pages/PasswordChange";
 import Order from "../pages/Order";
 import Cart from "../pages/Cart";
 import Products from "../pages/Products";
+import Admin from "../pages/Admin";
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="/profile" element={<Mypage />} />
       <Route path="/stock" element={<StockControl />} />
       <Route path="/stcok/detail/:productId" element={<StockControlDetail />} />

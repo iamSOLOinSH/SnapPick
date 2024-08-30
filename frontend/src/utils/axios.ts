@@ -26,8 +26,9 @@ Axios.interceptors.request.use(
     //   config.headers["Authorization"] = "Bearer " + token;
     //   config.withCredentials = true;
     // }
+
     const token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpbnl1Yjk4QGdtYWlsLmNvbSIsImlhdCI6MTcyNDkyMjA4NywiZXhwIjoxNzI1MTgxMjg3LCJzdWIiOiIzMDA0In0.8NXlO2cyYrbaKZO8bJ7CkAbIjrl7zA0cJhqJycv6J5tBeTHt5jz_wJwUlnqCqbiu";
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpbnl1Yjk4QGdtYWlsLmNvbSIsImlhdCI6MTcyNDk3OTU2MSwiZXhwIjoxNzI1MjM4NzYxLCJzdWIiOiIzMDA0In0.Oo-Qafy18PHLPsHt2Knw9Is3VZKhbw2d9KlY3Lhli9Ja3LTeOjt4GGxSOR3QHwOk";
     config.headers["Authorization"] = "Bearer " + token;
     // config.withCredentials = true;
     return config;

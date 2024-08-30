@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useBoundStore } from "../store/store";
 import { useZxing } from "react-zxing";
@@ -8,17 +8,27 @@ import { BackButton } from "../components/common/BackButton";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
 
+import { checkDayOfWeek } from "../utils/Date";
+
 const Order: React.FC = () => {
   const navigate = useNavigate();
-  const { store } = useBoundStore((state) => ({
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { store, enterStore } = useBoundStore((state) => ({
     store: state.store,
+    enterStore: state.enterStore,
+    videoRef: videoRef.current,
   }));
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<string>("");
   const { ref } = useZxing({
     onDecodeResult(result) {
       setResult(result.getText());
+      enterStore(result.getText()).then((res) => console.log(res));
     },
   });
+
+  const handleEnter = () => {
+    navigate("/products", { state: { ...store } });
+  };
 
   return (
     <Layout className="relative h-[730px] bg-primary">
@@ -49,15 +59,19 @@ const Order: React.FC = () => {
             variant="store"
             title={store.name}
             subtitle="팝업스토어 소개"
-            description={"운영 시간 " + "10:00" + "~" + "20:00"}
-            imageSrc="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzExMDZfMTAy%2FMDAxNjk5MjM1MjM5MTMz.7EbD3HKIW0h8oJzFA-JABsotD-jISJOC6xoyNc-nCNsg.FTLQizWqZmTXJkaN2U-PoVKa1IyOSzqRjur0kglfN6Eg.PNG.jhw96jhw%2Fimage.png&type=ff332_332"
+            description={
+              "운영 시간 " +
+              checkDayOfWeek(store.runningTimes)?.startTime.replace(
+                /:\d{2}$/,
+                "",
+              ) +
+              "~" +
+              checkDayOfWeek(store.runningTimes)?.endTime.replace(/:\d{2}$/, "")
+            }
+            imageSrc={store.images[0]?.thumbnailImageUrl || ""}
           />
           <div className="mx-2">
-            <Button
-              content="입장하기"
-              className="mb-4"
-              onClick={() => navigate("/cart")}
-            />
+            <Button content="입장하기" className="mb-4" onClick={handleEnter} />
           </div>
         </div>
       )}
