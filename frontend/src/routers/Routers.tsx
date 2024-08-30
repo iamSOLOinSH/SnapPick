@@ -27,6 +27,7 @@ import AccountVerificationSuccess from "../components/AccountVerification/Accoun
 import AccountTransfer from "../pages/AccountTransfer";
 import AccountList from "../pages/AccountList";
 import Admin from "../pages/Admin";
+import AccountTransaction from "../pages/AccountTransaction";
 import AccountTransferSuccess from "../pages/AccountTransferSuccess";
 
 const Router = () => {
@@ -35,6 +36,7 @@ const Router = () => {
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<Home />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/accountTransaction" element={<AccountTransaction />} />
       <Route path="/profile" element={<Mypage />} />
       <Route path="/stock/:storeId" element={<StockControl />} />
       <Route path="/stock/detail/:productId" element={<StockControlDetail />} />
