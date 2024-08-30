@@ -72,18 +72,22 @@ public class StoreService {
             throw new StoreImageLimitExceedException();
         }
 
-        basicMemberService.getMemberById(memberId);
-        storeCreateReq.setSellerId(memberId);
+		Member member = basicMemberService.getMemberById(memberId);
+		storeCreateReq.setSellerId(memberId);
 
-        Store storeToCreate = createStoreWithDetails(storeCreateReq);
-        storeToCreate = storeRepository.save(storeToCreate); // Store 먼저 저장
-        storeToCreate.updateStatus(); // status 계산
-        // 이미지 처리 및 저장
-        if(images != null) {
-            List<StoreImage> storeImages = uploadImagesToMinio(images, storeToCreate);
-            storeImageRepository.saveAll(storeImages);
-            storeToCreate.setImages(storeImages);
-        }
+		Store storeToCreate = createStoreWithDetails(storeCreateReq);
+
+		storeToCreate.setMember(member); // Member 설정
+
+		storeToCreate = storeRepository.save(storeToCreate); // Store 먼저 저장
+		storeToCreate.updateStatus(); // status 계산
+		// 이미지 처리 및 저장
+		if(images != null) {
+			List<StoreImage> storeImages = uploadImagesToMinio(images,
+															   storeToCreate);
+			storeImageRepository.saveAll(storeImages);
+			storeToCreate.setImages(storeImages);
+		}
 
         return storeMapper.toDto(storeToCreate);
     }
