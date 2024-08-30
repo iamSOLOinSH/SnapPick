@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+} from "react";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
+import { validateIdentity } from "../../utils/api/account";
+
+type InputRef = HTMLInputElement | null;
 
 interface AccountVerificationStep2Props {
   onNext: () => void;
@@ -11,12 +20,45 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
   onNext,
   onRestart,
 }) => {
-  const [confirmNumber, setConfirmNumber] = useState("");
-  const [isFormComplete, setIsFormComplete] = useState(false);
+  const [confirmNumber, setConfirmNumber] = useState<string[]>([
+    "",
+    "",
+    "",
+    "",
+  ]);
   const [timeLeft, setTimeLeft] = useState(180); // 3분
   const [verificationError, setVerificationError] = useState<string | null>(
     null,
   );
+  const inputRefs = [
+    useRef<InputRef>(null),
+    useRef<InputRef>(null),
+    useRef<InputRef>(null),
+    useRef<InputRef>(null),
+  ];
+
+  const handleChange = (index: number, value: string) => {
+    if (isNaN(Number(value)) || value.length > 1) return;
+
+    const newConfirmNumber = [...confirmNumber];
+
+    newConfirmNumber[index] = value;
+
+    setConfirmNumber(newConfirmNumber);
+
+    if (value && index < 3) {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Backspace" && !confirmNumber[index] && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    }
+  };
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -25,13 +67,13 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
     }
   }, [timeLeft]);
 
-  const handleNumberInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setConfirmNumber(value);
-    setIsFormComplete(value.length === 4);
-  };
+  const handleVerification = async () => {
+    try {
+      const data = await validateIdentity();
+    } catch (error) {
+      console.log(error);
+    }
 
-  const handleVerification = () => {
     if (confirmNumber === "1234") {
       setVerificationError(null);
       onNext(); // 인증 성공
@@ -46,32 +88,49 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const isFormComplete = confirmNumber.every((char) => char !== "");
+
   return (
     <div>
       <div className="mb-4">
-        <Input
-          name="4자리 숫자"
-          placeholder="4자리 숫자"
-          value={confirmNumber}
-          maxLength={4}
-          onChange={handleNumberInput}
-        />
+        <div className="mx-4 flex justify-center gap-4">
+          {confirmNumber.map((char, index) => (
+            <Input
+              key={index}
+              name={`confirmNumber-${index}`}
+              variant="quarter"
+              value={char}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleChange(index, e.target.value)
+              }
+              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
+                handleKeyDown(index, e)
+              }
+              ref={inputRefs[index]}
+              maxLength={1}
+              className="text-center text-2xl"
+              autoComplete="off"
+            />
+          ))}
+        </div>
       </div>
       <div className="mb-4 text-sm text-gray-500">
         남은 시간: {formatTime(timeLeft)}
       </div>
       {verificationError && (
         <div className="mb-4 text-sm text-red">{verificationError}</div>
-      )}
-      {timeLeft > 0 ? (
-        <Button
-          content="인증하기"
-          onClick={handleVerification}
-          disabled={!isFormComplete}
-        />
-      ) : (
-        <Button content="다시 인증하기" onClick={onRestart} />
-      )}
+      )}{" "}
+      <div className="mt-8">
+        {timeLeft > 0 ? (
+          <Button
+            content="인증하기"
+            onClick={handleVerification}
+            disabled={!isFormComplete}
+          />
+        ) : (
+          <Button content="다시 인증하기" onClick={onRestart} />
+        )}
+      </div>
     </div>
   );
 };

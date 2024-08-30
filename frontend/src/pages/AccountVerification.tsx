@@ -5,10 +5,12 @@ import { IoChevronBack } from "react-icons/io5";
 import AccountVerificationStep1 from "../components/AccountVerification/AccountVerificationStep1";
 import AccountVerificationStep2 from "../components/AccountVerification/AccountVerificationStep2";
 import OneWonAnimation from "../components/AccountVerification/OneWonAnimation";
+import { getSendIdentity } from "../utils/api/account";
 
 const AccountVerification = () => {
   const [step, setStep] = useState(1);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [accountNo, setAccountNo] = useState("");
   const navigate = useNavigate();
 
   const handleNextStep = () => {
@@ -20,10 +22,16 @@ const AccountVerification = () => {
   };
 
   const handlePrevStep = () => {
-    if (showAnimation) {
-      setShowAnimation(false);
-    } else if (step > 1) {
-      setStep(step - 1);
+    navigate("/profile");
+  };
+
+  // 1원 송금 보내기
+  const sendOneWon = async (accountNo: string) => {
+    try {
+      const data = await getSendIdentity(accountNo);
+      setShowAnimation(true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -42,7 +50,12 @@ const AccountVerification = () => {
     switch (step) {
       case 1:
         return (
-          <AccountVerificationStep1 onNext={() => setShowAnimation(true)} />
+          <AccountVerificationStep1
+            onNext={(value) => {
+              sendOneWon(value);
+              setAccountNo(value);
+            }}
+          />
         );
       case 2:
         return (
