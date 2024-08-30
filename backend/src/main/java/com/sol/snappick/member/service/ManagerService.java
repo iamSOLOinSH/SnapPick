@@ -5,7 +5,6 @@ import com.sol.snappick.global.CommonFormatter;
 import com.sol.snappick.member.dto.AccountTransferReq;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
-import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +25,6 @@ import static com.sol.snappick.global.CommonFormatter.yyyyMMddFormat;
 @RequiredArgsConstructor
 public class ManagerService {
 
-    private final MemberRepository memberRepository;
-    private final TransactionService transactionService;
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
     @Value("${finopenapi.userkey}")
