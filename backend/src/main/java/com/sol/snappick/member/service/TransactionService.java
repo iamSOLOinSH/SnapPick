@@ -110,6 +110,10 @@ public class TransactionService {
     public List<AccountStateRes> getOtherAccount(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
 
+        // 1원 송금으로 오픈뱅킹 서비스 가입안한 사용자는 다른계좌 못봄
+        if (member.getIsOpenBank() == false) {
+            throw new BasicBadRequestException("1원 송금을 통해 본인인증을 완료해야합니다");
+        }
         String myAccount = member.getAccountNumber();
 
         // 1. 요청 본문 생성
@@ -158,6 +162,11 @@ public class TransactionService {
         if (member.getRole() == Role.판매자) {
             throw new BasicBadRequestException("판매자는 주계좌를 변경할 수 없습니다");
         }
+        //
+        if (member.getIsOpenBank() == false) {
+            throw new BasicBadRequestException("잘못된 요청입니다. 1원 송금을 통해 본인인증을 완료해야합니다");
+        }
+
 
         // 내 계좌목록 불러오기
         Map<String, Object> requestBody = new HashMap<>();
@@ -230,6 +239,9 @@ public class TransactionService {
             throw new BasicBadRequestException("Something went wrong");
         }
 
+        // 4. 엔티티값 갱신
+        member.setIsOpenBank(true);
+        memberRepository.save(member);
     }
 
 
@@ -239,6 +251,9 @@ public class TransactionService {
         Member member = basicMemberService.getMemberById(memberId);
         if (member.getRole() != Role.판매자) {
             throw new BasicBadRequestException("판매자만 돈을 보낼 수 있습니다");
+        }
+        if (member.getIsOpenBank() == false) {
+            throw new BasicBadRequestException("잘못된 요청입니다. 1원 송금을 통해 본인인증을 완료해야합니다");
         }
 
         String userKey = member.getUserKey();

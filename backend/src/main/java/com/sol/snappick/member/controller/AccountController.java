@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "내 계좌 목록 조회(주계좌 제외)",
+    @Operation(summary = "내 계좌 목록 조회(주계좌 제외)<br/>계좌가 없다면 빈 배열을 반환하고, 본인인증을 하지 않는 경우 400에러가 발생됩니다.<br/>",
             description = des_header_token + des_output + des_AccountStateRes)
     public ResponseEntity<List<AccountStateRes>> getAccounts(
             Authentication authentication

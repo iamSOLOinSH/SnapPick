@@ -44,6 +44,9 @@ public class Member extends BaseEntity {
     @Column(length = 36)
     private String userKey;
 
+    @Column(name = "is_open_bank", columnDefinition = "boolean default false")
+    private Boolean isOpenBank;
+
     ////////////// 양방향 매핑
 
     // 방문 기록 목록
@@ -66,6 +69,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.name = name;
         this.profileImageUrl = profileImageUrl;
+        this.isOpenBank = false;
     }
 
     public void updateProfile(String name, String profileImageUrl) {
