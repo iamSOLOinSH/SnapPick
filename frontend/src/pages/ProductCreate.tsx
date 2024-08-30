@@ -4,13 +4,16 @@ import { InputLabel } from "../components/common/InputLabel";
 import { Input } from "../components/common/Input";
 import { PhotoUploader } from "../components/common/PhotoUploader";
 import { Button } from "../components/common/Button";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { TextArea } from "../components/common/TextArea";
 import { BackButton } from "../components/common/BackButton";
 import { Blob_2 } from "../components/common/Background/Blob_2";
+import { makeProduct } from "../utils/api/product";
 
 const ProductCreate = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const storeId = location?.state;
 
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
@@ -53,8 +56,35 @@ const ProductCreate = () => {
       ? productPersonalLimit !== ""
       : productPersonalLimit === "");
 
-  const handleProductCreate = () => {
-    navigate(`/product/create/success`);
+  const handleProductCreate = async () => {
+    const body = {
+      name: productName,
+      description: productDescription,
+      price: parseInt(productPrice),
+      stock: parseInt(productTotalStock),
+      ...(productDailyLimit !== null &&
+        productDailyLimit !== "" && {
+          dailyLimit: parseInt(productDailyLimit),
+        }),
+      ...(productPersonalLimit !== null &&
+        productPersonalLimit !== "" && {
+          personalLimit: parseInt(productPersonalLimit),
+        }),
+    };
+
+    const formData = new FormData();
+    formData.append("productCreateReq", JSON.stringify(body));
+
+    for (let i = 0; i < productPhotos.length; i++) {
+      formData.append("imageFiles", productPhotos[i]);
+    }
+
+    try {
+      const result = makeProduct(storeId, formData);
+      navigate(`/product/create/success`, { state: storeId });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
