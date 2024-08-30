@@ -11,8 +11,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QrUtil {
 
-    private final String LOGO_PATH = "src/main/resources/static/logo.png";
+    private final String LOGO_PATH = "static/logo.png";  // 클래스패스 내의 경로로 변경
 
     public byte[] generateQrCode(
         String text,
@@ -39,7 +39,12 @@ public class QrUtil {
         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
         // 로고 이미지 불러오기
-        BufferedImage logoImage = ImageIO.read(new File(LOGO_PATH));
+        InputStream logoStream = getClass().getClassLoader()
+                                           .getResourceAsStream(LOGO_PATH);
+        if (logoStream == null) {
+            throw new IOException("Logo file not found: " + LOGO_PATH);
+        }
+        BufferedImage logoImage = ImageIO.read(logoStream);
 
         // 로고 이미지 크기를 QR 코드 크기의 1/5로 리사이즈
         int logoWidth = qrImage.getWidth() / 5;

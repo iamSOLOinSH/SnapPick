@@ -42,7 +42,7 @@ public interface StoreMapper {
     @Mapping(source = "images", target = "images", qualifiedByName = "mapImageDtos")
     @Mapping(source = "runningTimes", target = "runningTimes", qualifiedByName = "mapRunningTimeDtos")
     @Mapping(source = "visits", target = "visitCount", qualifiedByName = "mapVisitCount")
-    @Mapping(target = "sellerId", ignore = true)
+    @Mapping(source = "member.id", target = "sellerId")
     StoreRes toDto(Store entity);
 
     List<Store> toEntityList(List<StoreCreateReq> dtoList);
@@ -106,7 +106,7 @@ public interface StoreMapper {
      * @throws JsonProcessingException
      */
     default StoreCreateReq apiDataToStoreCreateReq(StoreAPIDataDto dto)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // string hashtag -> tag list
@@ -131,8 +131,8 @@ public interface StoreMapper {
         if (dto.getWorkingTime() != null) {
             // JSON 문자열 -> List<Map<String, Object>> 로 변환
             List<Map<String, Object>> runningTimeList = objectMapper.readValue(dto.getWorkingTime(),
-                                                                               new TypeReference<List<Map<String, Object>>>() {
-                                                                               });
+                                                                               new TypeReference<List<Map<String, Object>>>() {}
+            );
 
             // StoreRunningTimeDto 리스트로 변환
             for (Map<String, Object> map : runningTimeList) {
@@ -164,10 +164,10 @@ public interface StoreMapper {
                              .longitude(dto.getLongitude())
                              .operateStartAt(LocalDate.parse(dto.getStartDate()
                                                                 .substring(0,
-                                                                           10)))  // Converting to LocalDate
+                                                                           10
+                                                                )))  // Converting to LocalDate
                              .operateEndAt(LocalDate.parse(dto.getEndDate()
-                                                              .substring(0,
-                                                                         10)))
+                                                              .substring(0, 10)))
                              .sellerId(null)
                              .tags(hashtagList)
                              .images(images)
@@ -193,7 +193,7 @@ public interface StoreMapper {
     @Mapping(target = "operateEndAt", source = "operateEndAt")
     @Mapping(target = "status", source = "status")
     void updateEntityFromDto(
-            StoreUpdateReq storeUpdateReq,
-            @MappingTarget Store store
+        StoreUpdateReq storeUpdateReq,
+        @MappingTarget Store store
     );
 }

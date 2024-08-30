@@ -14,6 +14,7 @@ import com.sol.snappick.store.exception.InvalidUUIDFormatException;
 import com.sol.snappick.store.exception.QrGenerateFailException;
 import com.sol.snappick.store.exception.QrInvalidException;
 import com.sol.snappick.store.exception.StoreImageLimitExceedException;
+import com.sol.snappick.store.exception.StoreIsNotYoursException;
 import com.sol.snappick.store.exception.StoreNotFoundException;
 
 @RestControllerAdvice
@@ -116,6 +117,17 @@ public class StoreExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidUUIDFormatException.class)
 	public ResponseEntity<String> handleInvalidUUIDFormatException(InvalidUUIDFormatException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							 .body(e.getMessage());
+	}
+
+	/**
+	 * 당신의 스토어가 아닌 것을 다룰때
+	 * @param e StoreIsNotYoursException
+	 * @return 에러코드 + 에러설명
+	 */
+	@ExceptionHandler(StoreIsNotYoursException.class)
+	public ResponseEntity<String> handleStoreIsNotYoursException(StoreIsNotYoursException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							 .body(e.getMessage());
 	}

@@ -53,6 +53,17 @@ public class ApiDescriptions {
                 """;
 
 
+        public static final String des_IdentificationReq = """
+                \n
+                <b>IdentificationReq</b>
+                \n
+                | Name | Type | Description |
+                |-----|-----|-------|
+                | accountNumber | string | 계좌번호 |
+                | authCode | varchar(4) | 인증코드 4글자 |
+                \n
+                """;
+
     }
 
     public static class common {

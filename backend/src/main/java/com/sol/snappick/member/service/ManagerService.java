@@ -5,7 +5,6 @@ import com.sol.snappick.global.CommonFormatter;
 import com.sol.snappick.member.dto.AccountTransferReq;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
-import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +25,6 @@ import static com.sol.snappick.global.CommonFormatter.yyyyMMddFormat;
 @RequiredArgsConstructor
 public class ManagerService {
 
-    private final MemberRepository memberRepository;
-    private final TransactionService transactionService;
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
     @Value("${finopenapi.userkey}")
@@ -72,7 +69,6 @@ public class ManagerService {
         requestBody3.put("transactionUniqueNo", transactionUniqueNo);
         JsonNode jsonNode3 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireTransactionHistory", "inquireTransactionHistory", HttpMethod.POST, requestBody3, ownerUserkey);
         JsonNode responseData3 = jsonNode3.get("REC");
-        finOpenApiHandler.printJson(responseData3);
 
         accountHolderRes.setBalance(responseData3.get("transactionBalance").asText());
         accountHolderRes.setAfterBalance(responseData3.get("transactionAfterBalance").asText());

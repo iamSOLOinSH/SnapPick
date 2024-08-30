@@ -6,12 +6,14 @@ import com.sol.snappick.store.util.JwtUtil;
 import com.sol.snappick.util.QrUtil;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QrService {
 
     private final JwtUtil jwtUtil;
@@ -42,6 +44,7 @@ public class QrService {
 
             return qrImage;
         } catch (IOException | WriterException e) {
+            log.info(e.getMessage());
             throw new QrGenerateFailException();
         }
     }

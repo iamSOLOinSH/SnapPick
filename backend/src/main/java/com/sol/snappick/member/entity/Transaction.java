@@ -22,11 +22,11 @@ public class Transaction {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "account_no")
-    private String accountNo;
+    @Column(name = "to_account_no")
+    private String toAccountNo;
 
-    @Column(name = "transaction_account_no")
-    private String transactionAccountNo;
+    @Column(name = "from_account_no")
+    private String fromAccountNo;
 
     @Enumerated(EnumType.STRING)
     @Column
