@@ -1,45 +1,35 @@
 import { StateCreator } from "zustand";
 import { membersInfo } from "../utils/api/memeber";
+import { Store } from "../types/store";
+import { getMyStores } from "../utils/api/store";
 
 interface StoreState {
   user: { name: string; imageUrl: string; role: string };
-  visitHistory: {
-    name: string;
-    location: string;
-    price: number;
-    visitedAt: string;
-  }[];
+  visitHistory: Store[];
+  storeList: Store[];
   getUserInfo: () => Promise<void>;
+  getVisitHistory: () => Promise<void>;
 }
 
-export const createUserSlice: StateCreator<StoreState> = (set) => ({
+export const createUserSlice: StateCreator<StoreState> = (set, get) => ({
   user: { name: "", imageUrl: "", role: "" },
-  visitHistory: [
-    {
-      name: "팝업스토어1",
-      location: "수원시 영통구",
-      price: 57000,
-      visitedAt: "2024-08-26T12:00:00Z",
-    },
-    {
-      name: "팝업스토어2",
-      location: "강남구 역삼동",
-      price: 62000,
-      visitedAt: "2024-08-08T12:24:00Z",
-    },
-    {
-      name: "팝업스토어3",
-      location: "강서구 방화동",
-      price: 120000,
-      visitedAt: "2024-02-26T12:00:00Z",
-    },
-    {
-      name: "팝업스토어4",
-      location: "수원시 장안구",
-      price: 12000,
-      visitedAt: "2024-07-12T12:00:00Z",
-    },
-  ],
+  visitHistory: [],
+  storeList: [],
+  getVisitHistory: async () => {
+    try {
+      await get().getUserInfo();
+      const { role } = get().user;
+      const isVisit = role === "판매자" ? false : true;
+
+      const response = await getMyStores(isVisit);
+      const visitHistory = response.data;
+      console.log("test");
+      set({ visitHistory });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getUserInfo: async () => {
     try {
       const response = await membersInfo();

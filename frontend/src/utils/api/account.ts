@@ -11,7 +11,7 @@ export const getSendIdentity = async (accountNo: string) => {
 // 1원 인증 확인
 export const validateIdentity = async (
   accountNumber: string,
-  authCode: number,
+  authCode: string,
 ) => {
   const bodyData = {
     accountNumber,
@@ -25,6 +25,20 @@ export const validateIdentity = async (
 // 주계좌 번호와 금액 확인
 export const getAccounts = () => {
   const response = Axios("/accounts");
+  return response;
+};
+
+// 주계좌 -> 다른 계좌 금액 입금
+export const sendAccountTransfer = async (
+  accountNumber: string,
+  balance: number,
+) => {
+  const bodyData = {
+    accountNumber,
+    balance,
+  };
+
+  const response = await Axios.post("/accounts/transfer", bodyData);
   return response;
 };
 

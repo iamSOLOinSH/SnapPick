@@ -28,6 +28,8 @@ const StoreCreate = () => {
   const handlePrevStep = () => {
     if (step > 1) {
       setStep(step - 1);
+    } else {
+      navigate("/store/manage");
     }
   };
 
@@ -47,16 +49,14 @@ const StoreCreate = () => {
   return (
     <Layout>
       <div className="flex min-h-screen flex-col">
-        {step > 1 && (
-          <div>
-            <button
-              className="rounded border-2 p-2 hover:bg-base"
-              onClick={handlePrevStep}
-            >
-              <IoChevronBack />
-            </button>
-          </div>
-        )}
+        <div>
+          <button
+            className="rounded border-2 p-2 hover:bg-base"
+            onClick={handlePrevStep}
+          >
+            <IoChevronBack />
+          </button>
+        </div>
         <div className="flex justify-end p-4">
           <ProgressSteps currentStep={step} steps={3} />
         </div>

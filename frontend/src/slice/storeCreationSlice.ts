@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import Axios from "../utils/axios";
+import { makeStore } from "../utils/api/store";
 
 interface OperationTimeEntry {
   start: string;
@@ -139,14 +140,12 @@ export const createStoreCreationSlice: StateCreator<StoreCreationAction> = (
     }
     console.log(state.selectedPhotos[0]);
 
-    const response = await Axios.post(`/stores`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    console.log(response);
-
-    get().resetStoreCreation();
+    try {
+      const result = makeStore(formData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      get().resetStoreCreation();
+    }
   },
 });

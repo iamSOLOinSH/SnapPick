@@ -35,3 +35,14 @@ export const verifyVisit = async (storeId: number, token: string) => {
   const response = await Axios.post(`/stores/${storeId}/visit?token=${token}`);
   return response;
 };
+
+// 스토어 등록
+export const makeStore = async (formData: FormData) => {
+  const response = await Axios.post(`/stores`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response;
+};
