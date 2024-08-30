@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
+
 import { useNavigate } from "react-router";
 import { useBoundStore } from "../store/store";
 import { useZxing } from "react-zxing";
+
+import { verifyVisit } from "../utils/api/store";
 
 import { Layout } from "../components/common/Layout";
 import { BackButton } from "../components/common/BackButton";
@@ -12,22 +15,26 @@ import { checkDayOfWeek } from "../utils/Date";
 
 const Order: React.FC = () => {
   const navigate = useNavigate();
+  const [token, setToken] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
+
   const { store, enterStore } = useBoundStore((state) => ({
     store: state.store,
     enterStore: state.enterStore,
     videoRef: videoRef.current,
   }));
-  const [result, setResult] = useState<string>("");
   const { ref } = useZxing({
     onDecodeResult(result) {
-      setResult(result.getText());
-      enterStore(result.getText()).then((res) => console.log(res));
+      setToken(result.getText());
+      enterStore(result.getText());
     },
   });
 
   const handleEnter = () => {
-    navigate("/products", { state: { ...store } });
+    verifyVisit(store.id, token).then((res) => {
+      localStorage.setItem("cartId", res.data.cartId + "");
+      navigate("/products", { state: { id: store.id } });
+    });
   };
 
   return (
@@ -50,7 +57,7 @@ const Order: React.FC = () => {
         <div className="absolute -bottom-8 left-10 h-12 w-12 rounded-bl-md border-b-4 border-l-4 border-white"></div>
         <div className="absolute -bottom-8 right-10 h-12 w-12 rounded-br-md border-b-4 border-r-4 border-white"></div>
       </div>
-      {result && (
+      {!!store.id && (
         <div className="absolute bottom-0 left-0 w-full animate-fadeInSlideUp rounded-tl-md rounded-tr-md bg-white">
           <div className="ml-4 pt-4">
             <p className="text-xl font-semibold">이 스토어에 방문하셨나요?</p>
@@ -58,7 +65,7 @@ const Order: React.FC = () => {
           <Card
             variant="store"
             title={store.name}
-            subtitle="팝업스토어 소개"
+            subtitle={store.location}
             description={
               "운영 시간 " +
               checkDayOfWeek(store.runningTimes)?.startTime.replace(

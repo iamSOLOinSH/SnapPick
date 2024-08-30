@@ -1,4 +1,3 @@
-import { BottomTab } from "./components/common/BottomTab";
 import Router from "./routers/Routers";
 
 function App() {

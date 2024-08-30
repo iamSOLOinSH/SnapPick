@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
+
+import { payment } from "../utils/api/payment";
+import { ModifyCartItem } from "../utils/api/cart";
 
 import { useBoundStore } from "../store/store";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 import { formatDate } from "../utils/Date";
 
@@ -13,67 +16,66 @@ import { Button } from "../components/common/Button";
 import { LuMoveRight } from "react-icons/lu";
 import { FaRegCreditCard } from "react-icons/fa6";
 
-interface Product {
-  title: string;
-  imageSrc: string;
-  price: number;
-  quantity: number;
-}
-
 const Cart = () => {
   const navigate = useNavigate();
-  const { store, getStoreInfo } = useBoundStore((state) => ({
+  const location = useLocation();
+  const {
+    cart,
+    getCartList,
+    mainAccount,
+    checkAccounts,
+    store,
+    searchStoreInfo,
+  } = useBoundStore((state) => ({
+    cart: state.cart,
+    getCartList: state.getCartList,
+    mainAccount: state.mainAccount,
+    checkAccounts: state.checkAccounts,
     store: state.store,
-    getStoreInfo: state.getStoreInfo,
+    searchStoreInfo: state.searchStoreInfo,
   }));
 
-  const [products, setProducts] = useState<Product[]>([
-    {
-      title: "스토어 상품1",
-      imageSrc:
-        "https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300",
-      price: 15000,
-      quantity: 3,
-    },
-    {
-      title: "스토어 상품2",
-      imageSrc:
-        "https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300",
-      price: 20000,
-      quantity: 2,
-    },
-    {
-      title: "스토어 상품3",
-      imageSrc:
-        "https://shopping-phinf.pstatic.net/main_8451971/84519715566.3.jpg?type=f300",
-      price: 25000,
-      quantity: 1,
-    },
-  ]);
+  const cartId = localStorage.getItem("cartId");
 
-  const [account, setAccount] = useState<number>(200000);
-
-  const handleIncrease = (index: number) => {
-    const newProducts = [...products];
-    newProducts[index].quantity += 1;
-    setProducts(newProducts);
-  };
-
-  const handleDecrease = (index: number) => {
-    const newProducts = [...products];
-    if (newProducts[index].quantity > 0) {
-      newProducts[index].quantity -= 1;
-      setProducts(newProducts);
+  const handleChange = (
+    itemId: number,
+    productId: number,
+    quantity: number,
+  ) => {
+    if (cartId) {
+      ModifyCartItem(+cartId, itemId, productId, quantity);
     }
   };
 
   const totalAmount = useCallback(() => {
-    return products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
-  }, [products]);
+    return cart.reduce((acc, cur) => acc + cur.product.price * cur.quantity, 0);
+  }, [cart]);
 
   useEffect(() => {
-    getStoreInfo();
-  }, [getStoreInfo]);
+    if (cartId) getCartList(+cartId);
+  }, [getCartList, cartId]);
+
+  useEffect(() => {
+    checkAccounts();
+  }, [checkAccounts]);
+
+  useEffect(() => {
+    searchStoreInfo(location.state.id);
+  }, [searchStoreInfo, location]);
+
+  const handleMoreCart = () => {
+    navigate("/products", { state: { id: location.state.id } });
+  };
+
+  const handlePayment = () => {
+    payment()
+      .then(() => {
+        navigate("/receipt");
+      })
+      .catch(() => {
+        alert("결제에 실패했습니다.");
+      });
+  };
 
   return (
     <Layout className="relative px-0 pb-0">
@@ -87,7 +89,13 @@ const Cart = () => {
       <div className="relative z-10 bg-white bg-opacity-50">
         <div className="my-4 flex flex-col items-center">
           <div className="h-4" />
-          <Card variant="mini" imageSrc={store.imageUrl} />
+          <Card
+            variant="mini"
+            imageSrc={
+              store.images[0].thumbnailImageUrl ||
+              "https://s3.youm.me/snappick-product/no_product.png"
+            }
+          />
           <h2 className="my-2 text-xl font-bold">{store.name}</h2>
           <p className="mb-4 font-medium text-primary">
             결제 일시 {formatDate(new Date().toISOString(), false)}
@@ -95,29 +103,30 @@ const Cart = () => {
         </div>
       </div>
       <div className="relative flex h-96 w-full flex-col items-center overflow-y-auto bg-primary px-4 scrollbar-hide">
-        {products.map((product, index) => (
+        {cart.map((item) => (
           <Card
-            key={index}
+            key={item.id}
             variant="product"
-            title={product.title}
-            imageSrc={product.imageSrc}
-            price={product.price}
-            totalPrice={product.price * product.quantity}
+            title={item.product.name}
+            imageSrc={item.product.thumbnailImageUrls[0]}
+            price={item.product.price}
+            totalPrice={item.product.price * item.quantity}
             toggle={
               <NumberSelector
-                quantity={product.quantity}
-                onIncrease={() => handleIncrease(index)}
-                onDecrease={() => handleDecrease(index)}
+                quantity={item.quantity}
+                onIncrease={() =>
+                  handleChange(item.id, item.product.id, item.quantity + 1)
+                }
+                onDecrease={() =>
+                  handleChange(item.id, item.product.id, item.quantity - 1)
+                }
               />
             }
           />
         ))}
       </div>
       <div className="relative flex items-center justify-center bg-primary py-4 text-lg text-white">
-        <button
-          className="flex items-center"
-          onClick={() => navigate("/products")}
-        >
+        <button className="flex items-center" onClick={handleMoreCart}>
           더 담기
           <LuMoveRight className="ml-2 h-8 w-8 rounded-full bg-blue-500 p-1" />
         </button>
@@ -131,16 +140,15 @@ const Cart = () => {
         </div>
         <Card
           variant="simple"
-          title={"잔액 " + account.toLocaleString()}
-          subtitle={"결제 후 " + (account - totalAmount()).toLocaleString()}
+          title={"잔액 " + mainAccount.theBalance.toLocaleString()}
+          subtitle={
+            "결제 후 " +
+            (mainAccount.theBalance - totalAmount()).toLocaleString()
+          }
           icon={<FaRegCreditCard className="h-12 w-12" />}
         />
         <div className="mx-2">
-          <Button
-            content="결제하기"
-            className="mb-4"
-            onClick={() => navigate("/receipt")}
-          />
+          <Button content="결제하기" className="mb-4" onClick={handlePayment} />
         </div>
       </div>
     </Layout>
