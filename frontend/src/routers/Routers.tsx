@@ -16,7 +16,7 @@ import StoreCreateSuccess from "../pages/StoreCreateSuccess";
 import Mypage from "../pages/Mypage";
 import StockControl from "../pages/StockControl";
 import StockControlDetail from "../pages/StockControlDetail";
-
+import PasswordChange from "../pages/PasswordChange";
 import Order from "../pages/Order";
 import Cart from "../pages/Cart";
 import Products from "../pages/Products";
@@ -26,12 +26,14 @@ import AccountDetail from "../pages/AccountDetail";
 import AccountVerificationSuccess from "../components/AccountVerification/AccountVerificationSuccess";
 import AccountTransfer from "../pages/AccountTransfer";
 import AccountList from "../pages/AccountList";
+import Admin from "../pages/Admin";
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="/profile" element={<Mypage />} />
       <Route path="/stock" element={<StockControl />} />
       <Route path="/stcok/detail/:productId" element={<StockControlDetail />} />
@@ -48,6 +50,7 @@ const Router = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/signup/success" element={<SignupSuccess />} />
       <Route path="/signup/password" element={<PasswordSetup />} />
+      <Route path="/password/change" element={<PasswordChange />} />
       <Route path="/history" element={<VisitHistory />} />
       <Route path="/order" element={<Order />} />
       <Route path="/products" element={<Products />} />

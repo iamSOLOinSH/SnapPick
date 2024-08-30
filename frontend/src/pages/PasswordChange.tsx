@@ -5,16 +5,14 @@ import { Button } from "../components/common/Button";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 import { BackButton } from "../components/common/BackButton";
 
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 
-import { membersRegister } from "../utils/api/memeber";
+import { membersPincode } from "../utils/api/memeber";
 
 type InputRef = HTMLInputElement | null;
 
-const PasswordSetup: React.FC = () => {
+const PasswordChange: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const prevInfo = location.state;
   const [password, setPassword] = useState<string[]>(["", "", "", ""]);
   const [isSequential, setIsSequential] = useState<boolean>(false);
   const inputRefs = [
@@ -58,9 +56,8 @@ const PasswordSetup: React.FC = () => {
   const isFormComplete = password.every((char) => char !== "");
 
   const handleRegister = async () => {
-    console.log({ ...prevInfo, pinCode: password.join("") });
-    membersRegister({ ...prevInfo, pinCode: password.join("") })
-      .then(() => navigate("/signup/success", { replace: true }))
+    membersPincode(password.join(""))
+      .then(() => navigate("/profile"))
       .catch((err) => console.log(err.response.data));
   };
 
@@ -75,7 +72,9 @@ const PasswordSetup: React.FC = () => {
         <div className="mb-8 mr-8 flex w-full flex-row justify-end">
           <BackButton />
         </div>
-        <h2 className="mb-8 text-2xl font-bold">간편 비밀번호를 입력하세요.</h2>
+        <h2 className="mb-8 text-2xl font-bold">
+          새로운 간편 비밀번호를 입력하세요.
+        </h2>
         <div className="mx-4 flex justify-center gap-4">
           {password.map((char, index) => (
             <Input
@@ -113,11 +112,11 @@ const PasswordSetup: React.FC = () => {
         <Button
           variant="secondary"
           content="취소"
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/profile")}
         />
       </div>
     </Layout>
   );
 };
 
-export default PasswordSetup;
+export default PasswordChange;

@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useBoundStore } from "../store/store";
 import { Layout } from "../components/common/Layout";
+import { Button } from "../components/common/Button";
 import { Blob_1 } from "../components/common/Background/Blob_1";
 import { Blob_2 } from "../components/common/Background/Blob_2";
-import { useNavigate } from "react-router";
 import { FaChevronRight } from "react-icons/fa";
 
 const Mypage = () => {
   const navigate = useNavigate();
-  const PROFILE_IMG =
-    "https://i.namu.wiki/i/wXGU6DZbHowc6IB0GYPJpcmdDkLO3TW3MHzjg63jcTJvIzaBKhYqR0l9toBMHTv2OSU4eFKfPOlfrSQpymDJlA.webp";
-  const [userName, setUserName] = useState("팝콘");
-  const [userType, setUserType] = useState("seller");
+  const { user, getUserInfo } = useBoundStore((state) => ({
+    user: state.user,
+    getUserInfo: state.getUserInfo,
+  }));
 
   const handleHistory = () => {
-    if (userType === "customer") {
+    if (user.role === "0") {
       navigate("/history");
     } else {
       navigate("/storecontrol");
@@ -23,6 +25,10 @@ const Mypage = () => {
   const handleAccountDetail = () => {
     navigate(`/account/detail/1`);
   };
+
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
   return (
     <Layout>
@@ -37,17 +43,33 @@ const Mypage = () => {
           </div>
         </div>
         {/* 프로필 */}
-        <div className="my-2 flex flex-row items-center p-4">
+        <div className="mt-2 flex flex-row items-center p-4">
           <div className="flex-shrink-0">
             <img
-              src={PROFILE_IMG}
+              src={user.imageUrl || "lay.png"}
               className="mb-2 mr-2 h-10 w-10 rounded-full border object-cover"
               alt="Profile image"
             />
           </div>
           <div className="text-2xl font-bold">
-            <span className="text-primary">{userName}</span> 님
+            <span className="text-primary">{user.name}</span> 님
           </div>
+        </div>
+        <div className="mr-2 text-end">
+          <Button
+            variant="text"
+            content="간편 비밀번호 재설정"
+            onClick={() => navigate("/password/change")}
+          />
+        </div>
+        {/* 계좌  */}
+        <div
+          className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
+          onClick={handleAccountDetail}
+        >
+          <div className="font-semibold">주 계좌</div>
+          <div className="mb-8 text-sm">111-1111-1111</div>
+          <div className="mt-2 text-right text-2xl font-bold">90,000원</div>
         </div>
         {/* 내 계좌 조회  */}
         <div
@@ -59,15 +81,6 @@ const Mypage = () => {
             <div className="text-sm text-gray-700">조회하기</div>
             <FaChevronRight className="text-primary" />
           </div>
-        </div>
-        {/* 계좌  */}
-        <div
-          className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
-          onClick={handleAccountDetail}
-        >
-          <div className="font-semibold">주 계좌</div>
-          <div className="mb-8 text-sm">111-1111-1111</div>
-          <div className="mt-2 text-right text-2xl font-bold">90,000원</div>
         </div>
         {/* 스토어 관리  */}
         <div

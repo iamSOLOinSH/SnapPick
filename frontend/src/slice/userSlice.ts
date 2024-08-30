@@ -1,7 +1,8 @@
 import { StateCreator } from "zustand";
+import { membersInfo } from "../utils/api/memeber";
 
 interface StoreState {
-  user: { name: string; imageUrl: string }[];
+  user: { name: string; imageUrl: string; role: string };
   visitHistory: {
     name: string;
     location: string;
@@ -13,11 +14,11 @@ interface StoreState {
     quantity: number;
     price: number;
   }[];
-  login: () => Promise<void>;
+  getUserInfo: () => Promise<void>;
 }
 
 export const createUserSlice: StateCreator<StoreState> = (set) => ({
-  user: [{ name: "일태", imageUrl: "" }],
+  user: { name: "", imageUrl: "", role: "" },
   visitHistory: [
     {
       name: "팝업스토어1",
@@ -48,9 +49,13 @@ export const createUserSlice: StateCreator<StoreState> = (set) => ({
     { name: "스토어 상품 1", quantity: 2, price: 32000 },
     { name: "스토어 상품 2", quantity: 3, price: 21000 },
   ],
-  login: async () => {
-    // const result = await API 요청
-    const result = [{ name: "", imageUrl: "" }];
-    set({ user: result });
+  getUserInfo: async () => {
+    try {
+      const response = await membersInfo();
+      const userData = response.data;
+      set({ user: userData });
+    } catch (error) {
+      console.error(error);
+    }
   },
 });
