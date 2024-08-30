@@ -1,45 +1,105 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { Input } from "../components/common/Input";
 import { Button } from "../components/common/Button";
 import { BackButton } from "../components/common/BackButton";
+import { useBoundStore } from "../store/store";
+import { sendAccountTransfer } from "../utils/api/account";
 
 const AccountTransfer: React.FC = () => {
+  const navigate = useNavigate();
   const { accountId } = useParams<{ accountId: string }>();
+  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [transferAmount, setTransferAmount] = useState("");
   const [recipientAccount, setRecipientAccount] = useState("");
+  const [isTransferring, setIsTransferring] = useState(false);
 
-  const handleTransfer = () => {
-    // 이체 완료!!
+  const { myAccounts, checkAccountsList } = useBoundStore((state) => ({
+    myAccounts: state.myAccounts,
+    checkAccountsList: state.checkAccountsList,
+  }));
+
+  const handleAccountSelect = (accountNumber: string) => {
+    setSelectedAccount(accountNumber);
+  };
+
+  useEffect(() => {
+    checkAccountsList();
+  }, [checkAccountsList]);
+
+  const handleTransfer = async () => {
+    if (!selectedAccount || !transferAmount) {
+      alert("계좌와 이체 금액을 선택해주세요.");
+      return;
+    }
+
+    setIsTransferring(true);
+    try {
+      const response = await sendAccountTransfer(
+        selectedAccount,
+        Number(transferAmount),
+      );
+      if (response.status === 200) {
+        navigate("/account/transfer/success");
+      } else {
+        alert("이체에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("이체 중 오류가 발생했습니다.");
+    } finally {
+      setIsTransferring(false);
+    }
   };
 
   return (
     <Layout>
       <div className="flex min-h-screen flex-col p-4">
-        <div className="mb-8 mt-12 flex flex-row items-center py-2">
+        <div className="mb-4 mt-12 flex flex-row items-center py-2">
           <BackButton />
-          <h1 className="ml-4 text-2xl font-semibold">보내기</h1>
-        </div>
-        {/* 다른 계좌 선택해서 돈 보내기로 변경하기 */}
-        <div className="mb-4">
-          <Input
-            name="recipientAccount"
-            placeholder="받는 사람 계좌번호"
-            value={recipientAccount}
-            onChange={(e) => setRecipientAccount(e.target.value)}
-          />
         </div>
         <div className="mb-4">
-          <Input
-            name="transferAmount"
-            placeholder="보낼 금액"
-            type="number"
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(e.target.value)}
-          />
+          <h1 className="ml-4 text-2xl font-semibold">
+            {selectedAccount
+              ? "이체 금액을 입력해주세요."
+              : "돈을 보낼 계좌를 선택해주세요."}
+          </h1>
         </div>
-        <Button content="보내기" onClick={handleTransfer} />
+        {!selectedAccount ? (
+          <div className="mb-4">
+            {myAccounts.map((account, index) => (
+              <div
+                key={account.accountNumber}
+                className="mb-4 animate-fadeInSlideUp cursor-pointer rounded-lg bg-primary p-4 text-white transition-transform duration-300 hover:scale-105"
+                style={{ animationDelay: `${index * 0.12}s` }}
+                onClick={() => handleAccountSelect(account.accountNumber)}
+              >
+                <div className="font-semibold">{account.bankName}</div>
+                <div className="mb-4 text-sm">{account.accountNumber}</div>
+                <div className="text-right text-2xl font-bold">
+                  {account.theBalance.toLocaleString()}원
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mb-4">
+            <Input
+              name="transfermoney"
+              type="number"
+              placeholder="이체 금액을 입력하세요"
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+            />
+            <Button
+              content="이체하기"
+              onClick={handleTransfer}
+              disabled={isTransferring}
+              className="mt-4 w-full"
+            />
+          </div>
+        )}
       </div>
     </Layout>
   );

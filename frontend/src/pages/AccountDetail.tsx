@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { grantMain } from "../utils/api/account";
 import { Layout } from "../components/common/Layout";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { BackButton } from "../components/common/BackButton";
 
 interface Transaction {
@@ -13,9 +14,14 @@ interface Transaction {
 
 const AccountDetail = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [userType, setUserType] = useState("seller");
-  const [balance, setBalance] = useState(40000);
+  const account = location.state.account;
+
+  const handleMain = () => {
+    grantMain(account.accountNumber);
+    navigate("/home");
+  };
 
   const transactionData: Transaction[] = [
     {
@@ -64,10 +70,10 @@ const AccountDetail = () => {
         </div>
         {/* 계좌  */}
         <div className="rounded-lg bg-primary p-6 text-white">
-          <h2 className="text-lg font-semibold">계좌 이름</h2>
-          <p className="text-sm opacity-80">111-111-1111</p>
+          <h2 className="text-lg font-semibold">{account.bankName}</h2>
+          <p className="text-sm opacity-80">{account.accountNumber}</p>
           <p className="mt-4 text-3xl font-bold">
-            {balance.toLocaleString()}원
+            {account.theBalance.toLocaleString()}원
           </p>
           <div className="mt-4 flex justify-end">
             <button
@@ -78,8 +84,13 @@ const AccountDetail = () => {
             </button>
           </div>
         </div>
+        <div className="mx-16 my-4 py-2 text-center">
+          <button className="hover:underline" onClick={handleMain}>
+            주 계좌로 지정하시겠습니까?
+          </button>
+        </div>
         {/* 거래 내역 */}
-        <div className="mt-2 flex-1 bg-base p-4">
+        {/* <div className="mt-2 flex-1 bg-base p-4">
           <h3 className="font-lg mb-4 font-semibold">최근 거래내역</h3>
           {transactionData.map((transaction) => (
             <div
@@ -98,7 +109,7 @@ const AccountDetail = () => {
               </p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </Layout>
   );

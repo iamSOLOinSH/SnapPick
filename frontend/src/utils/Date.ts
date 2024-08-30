@@ -49,3 +49,23 @@ export const dayTranslations: { [key: string]: string } = {
   SATURDAY: "토",
   SUNDAY: "일",
 };
+
+export const getFormattedDate = () => {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // getMonth() returns 0-based month
+  const date = now.getDate();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+
+  // 월, 일, 시간, 분을 두 자릿수로 포맷팅
+  const formattedMonth = month.toString().padStart(1, "0");
+  const formattedDate = date.toString().padStart(1, "0");
+  const formattedHours = hours.toString().padStart(2, "0");
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+
+  return `${year}년 ${formattedMonth}월 ${formattedDate}일 ${formattedHours}:${formattedMinutes}`;
+};
+
+console.log(getFormattedDate());

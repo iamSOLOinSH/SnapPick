@@ -95,7 +95,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       <div className="w-full">
         <div className="flex space-x-2 overflow-x-auto py-2 scrollbar-hide">
           <button
-            className="flex h-24 w-24 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-base"
+            className="flex h-24 w-24 flex-shrink-0 flex-col items-center justify-center rounded-lg border bg-base"
             onClick={handleClick}
           >
             <MdCameraAlt className="mb-2 text-2xl" />
