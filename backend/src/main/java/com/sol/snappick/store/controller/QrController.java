@@ -31,10 +31,10 @@ public class QrController {
     @Operation(summary = "QR 코드 생성", description = "store의 id를 넣어서 해당 스토어로 입장할 수 있는 QR을 생성하는 API. duration(유효시간) 은 기본 3분")
     public ResponseEntity<byte[]> makeQr(
         @PathVariable("store_id") Integer storeId,
-        // 기본 3분
-        @RequestParam(defaultValue = "180000", required = false, value = "duration") long duration
+        // 기본 30분
+        @RequestParam(defaultValue = "30", required = false, value = "minute") Integer minute
     ) {
-        byte[] response = qrService.generateQrCode(storeId, duration);
+        byte[] response = qrService.generateQrCode(storeId, minute);
         return ResponseEntity.ok()
                              .contentType(MediaType.IMAGE_PNG)
                              .body(response);

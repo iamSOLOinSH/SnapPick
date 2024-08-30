@@ -27,16 +27,16 @@ public class JwtUtil {
     /**
      * 토큰 생성 메서드
      *
-     * @param storeId          사용자 식별자 (예: store id)
-     * @param expirationMillis 토큰 만료 시간 (밀리초)
+     * @param storeId 사용자 식별자 (예: store id)
+     * @param minute  토큰 만료 시간 (분)
      * @return 생성된 JWT 토큰
      */
     public String generateToken(
         String storeId,
-        long expirationMillis
+        Integer minute
     ) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationMillis);
+        Date expiryDate = new Date(now.getTime() + minute * 60 * 1000);
 
         return Jwts.builder()
                    .setSubject(storeId)

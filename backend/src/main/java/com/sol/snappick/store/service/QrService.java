@@ -22,16 +22,16 @@ public class QrService {
     /**
      * QR 코드 생성 메서드
      *
-     * @param uuid
-     * @param duration
+     * @param id
+     * @param minute
      * @return
      */
     public byte[] generateQrCode(
         Integer id,
-        long duration
+        Integer minute
     ) {
         try {
-            String token = jwtUtil.generateToken(String.valueOf(id), duration); // 토큰 생성
+            String token = jwtUtil.generateToken(String.valueOf(id), minute); // 토큰 생성
 
             int width = 500;
             int height = 500;
