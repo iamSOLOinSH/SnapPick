@@ -5,6 +5,7 @@ import { Button } from "../common/Button";
 import { DaumPost } from "./DaumPost";
 import { useBoundStore } from "../../store/store";
 import CustomDatePicker from "./CustomDatePicker";
+import { dayTranslations } from "../../utils/Date";
 
 interface StoreCreateStep2Props {
   setIsFormComplete: (isComplete: boolean) => void;
@@ -28,16 +29,6 @@ const daysOfWeek = [
   "SATURDAY",
   "SUNDAY",
 ];
-
-const dayTranslations: { [key: string]: string } = {
-  MONDAY: "월",
-  TUESDAY: "화",
-  WEDNESDAY: "수",
-  THURSDAY: "목",
-  FRIDAY: "금",
-  SATURDAY: "토",
-  SUNDAY: "일",
-};
 
 const StoreCreateStep2: React.FC<StoreCreateStep2Props> = ({
   setIsFormComplete,
