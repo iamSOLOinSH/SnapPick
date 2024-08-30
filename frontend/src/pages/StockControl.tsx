@@ -86,59 +86,62 @@ const StockControl = () => {
     setData(exampleData);
   }, []);
 
-  const columns = React.useMemo<ColumnDef<Product>[]>(() => [
-    {
-      accessorKey: "status",
-      header: "상태",
-      cell: (info) => {
-        const status = info.getValue() as string;
+  const columns = React.useMemo<ColumnDef<Product>[]>(
+    () => [
+      {
+        accessorKey: "status",
+        header: "상태",
+        cell: (info) => {
+          const status = info.getValue() as string;
 
-        switch (status) {
-          case "selling":
-            return (
-              <div className="flex flex-shrink-0">
-                <Tag content="판매중" variant="primary" />
-              </div>
-            );
+          switch (status) {
+            case "selling":
+              return (
+                <div className="flex flex-shrink-0">
+                  <Tag content="판매중" variant="primary" />
+                </div>
+              );
 
-          case "soldout":
-            return <Tag content="품절" variant="red" />;
-        }
+            case "soldout":
+              return <Tag content="품절" variant="red" />;
+          }
+        },
       },
-    },
-    {
-      accessorFn: (row) => ({ name: row.name, productImg: row.productImg }),
-      id: "productInfo",
-      header: "상품명",
-      cell: (info) => {
-        const { name, productImg } = info.getValue() as {
-          name: string;
-          productImg: string;
-        };
-        return (
-          <div className="flex items-center text-left">
-            {/* <div className="mr-2 h-10 w-10 flex-shrink-0 rounded-lg">
+      {
+        accessorFn: (row) => ({ name: row.name, productImg: row.productImg }),
+        id: "productInfo",
+        header: "상품명",
+        cell: (info) => {
+          const { name, productImg } = info.getValue() as {
+            name: string;
+            productImg: string;
+          };
+          return (
+            <div className="flex items-center text-left">
+              {/* <div className="mr-2 h-10 w-10 flex-shrink-0 rounded-lg">
               <img
                 src={productImg}
                 alt="상품 이미지"
                 className="h-full w-full rounded-lg object-cover"
               />
             </div> */}
-            <span>{name}</span>
-          </div>
-        );
+              <span>{name}</span>
+            </div>
+          );
+        },
       },
-    },
 
-    {
-      accessorKey: "quantity",
-      header: "수량",
-      cell: (info) => {
-        const value = info.getValue() as number;
-        return <span>{value.toLocaleString()}</span>;
+      {
+        accessorKey: "quantity",
+        header: "수량",
+        cell: (info) => {
+          const value = info.getValue() as number;
+          return <span>{value.toLocaleString()}</span>;
+        },
       },
-    },
-  ]);
+    ],
+    [],
+  );
 
   const table = useReactTable({
     columns,
@@ -153,8 +156,8 @@ const StockControl = () => {
 
   const handleProductSearch = () => {};
 
-  const handleProductDetail = (id) => {
-    navigate(`/stcok/detail/${id}`);
+  const handleProductDetail = (id: string) => {
+    navigate(`/stock/detail/${id}`);
   };
 
   return (
