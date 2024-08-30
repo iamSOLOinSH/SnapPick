@@ -47,20 +47,6 @@ public class Member extends BaseEntity {
     @Column(name = "is_open_bank", columnDefinition = "boolean default false")
     private Boolean isOpenBank;
 
-    ////////////// 양방향 매핑
-
-    // 방문 기록 목록
-    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    //    private List<StoreVisite> visits;
-
-    // 판매자가 운영중인 스토어 목록
-    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    //    private List<Store> stores;
-
-    // 결제 내역과 장바구니
-    //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    //    private List<Cart> carts;
-
     protected Member() {
     }
 
