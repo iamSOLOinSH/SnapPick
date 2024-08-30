@@ -1,6 +1,8 @@
 import { FaCheck } from "react-icons/fa6";
 import { Card } from "../common/Card";
 
+import { getFormattedDate } from "../../utils/Date";
+
 type runningTimeProps = {
   dayOfWeek: string;
   startTime: string;
@@ -13,7 +15,6 @@ type imagesProps = {
 };
 
 type payProps = {
-  totalPrice: number;
   store: {
     id: number;
     name: string;
@@ -21,9 +22,38 @@ type payProps = {
     images: imagesProps[];
     runningTimes: runningTimeProps[];
   };
+  payment: {
+    id: number;
+    status: string;
+    store: {
+      id: number;
+      name: string;
+      location: string;
+      images: string[];
+    };
+    customer: {
+      memberId: number;
+      name: string;
+      phoneNumber: string;
+    };
+    totalPrice: number;
+    transactedAt: string;
+    items: {
+      id: number;
+      product: {
+        id: number;
+        name: string;
+        price: number;
+        stock: number;
+        status: string;
+        thumbnailImageUrls: string[];
+      };
+      quantity: number;
+    }[];
+  };
 };
 
-export const PaymentSuccess: React.FC<payProps> = ({ totalPrice, store }) => {
+export const PaymentSuccess: React.FC<payProps> = ({ store, payment }) => {
   return (
     <div className="animate-appear">
       <section className="flex flex-col items-center justify-center">
@@ -41,7 +71,7 @@ export const PaymentSuccess: React.FC<payProps> = ({ totalPrice, store }) => {
         <p>성공적으로 결제되었습니다.</p>
         <p className="mt-4 text-gray-500">총 금액</p>
         <p className="mb-2 text-2xl font-bold">
-          {totalPrice.toLocaleString()}원
+          {payment.totalPrice.toLocaleString()}원
         </p>
       </section>
       <hr className="mt-2 w-full border-2 border-dashed" />
@@ -51,7 +81,7 @@ export const PaymentSuccess: React.FC<payProps> = ({ totalPrice, store }) => {
           variant="simple"
           title={store.name}
           imageSrc={store.images[0].thumbnailImageUrl}
-          date="2024년 8월 17일 15:02"
+          date={getFormattedDate()}
         />
       </section>
     </div>

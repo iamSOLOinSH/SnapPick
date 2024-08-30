@@ -20,7 +20,7 @@ const AccountDetail = () => {
 
   const handleMain = () => {
     grantMain(account.accountNumber);
-    navigate("/profile");
+    navigate("/home");
   };
 
   const transactionData: Transaction[] = [

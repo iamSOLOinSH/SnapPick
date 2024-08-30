@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useBoundStore } from "../store/store";
 
-import { useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 import { Layout } from "../components/common/Layout";
 import { Button } from "../components/common/Button";
@@ -10,21 +10,26 @@ import { PaymentSuccess } from "../components/Receipt/PaymentSuccess";
 import { PaymentDetail } from "../components/Receipt/PaymentDetail";
 
 const Receipt = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const { payment, store, searchStoreInfo } = useBoundStore((state) => ({
-    payment: state.payment,
-    store: state.store,
-    searchStoreInfo: state.searchStoreInfo,
-  }));
+  const { payment, checkReceipt, store, searchStoreInfo } = useBoundStore(
+    (state) => ({
+      payment: state.payment,
+      checkReceipt: state.checkReceipt,
+      store: state.store,
+      searchStoreInfo: state.searchStoreInfo,
+    }),
+  );
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (location.state) {
-      searchStoreInfo(location.state.id);
-    }
-  }, [searchStoreInfo, location.state]);
+  const cartId = localStorage.getItem("cartId");
 
-  const totalPrice = payment.reduce((acc, cur) => acc + cur.price, 0);
+  useEffect(() => {
+    if (location.state && cartId) {
+      searchStoreInfo(location.state.id);
+      checkReceipt(+cartId);
+    }
+  }, [searchStoreInfo, checkReceipt, location.state, cartId]);
 
   return (
     <Layout className="bg-primary">
@@ -40,13 +45,13 @@ const Receipt = () => {
       </header>
       <main className="relative mx-4 mt-4 h-64 min-h-[76vh] rounded-lg bg-white">
         {showDetail ? (
-          <PaymentDetail payment={payment} store={store} />
+          <PaymentDetail store={store} payment={payment} />
         ) : (
-          <PaymentSuccess totalPrice={totalPrice} store={store} />
+          <PaymentSuccess store={store} payment={payment} />
         )}
         <div className="absolute bottom-4 left-0 right-0 z-20 mx-4">
           {showDetail ? (
-            <Button content="확인" onClick={() => console.log("ㅋㅋ")} />
+            <Button content="확인" onClick={() => navigate("/profile")} />
           ) : (
             <Button content="다음" onClick={() => setShowDetail(true)} />
           )}
