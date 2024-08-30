@@ -81,7 +81,7 @@ export default {
           "100%": {
             transform:
               "scale(1) translate(var(--x), var(--y)) rotate(var(--rotate))",
-            opacity: "1",
+            opacity: "0",
           },
         },
         octagonAppear: {

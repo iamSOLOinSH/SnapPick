@@ -11,11 +11,9 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const [userType, setUserType] = useState<"buyer" | "seller" | "">("");
-  const [account, setAccount] = useState("");
   const [businessNumber, setBusinessNumber] = useState("");
   const [contact, setContact] = useState({ part1: "", part2: "", part3: "" });
 
-  const [showAccount, setShowAccount] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showBusinessNumber, setShowBusinessNumber] = useState(false);
 
@@ -26,7 +24,7 @@ const Signup = () => {
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;
     setUserType(name as "buyer" | "seller");
-    setShowAccount(true);
+    setShowContact(true);
 
     if (
       name === "seller" &&
@@ -37,14 +35,6 @@ const Signup = () => {
       setShowBusinessNumber(true);
     } else {
       setShowBusinessNumber(false);
-    }
-  };
-
-  const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setAccount(value);
-    if (value.length > 10) {
-      setShowContact(true);
     }
   };
 
@@ -82,9 +72,18 @@ const Signup = () => {
     }
   };
 
+  const handleNext = () => {
+    navigate("/signup/password", {
+      state: {
+        role: +!!(userType === "seller"),
+        phoneNumber: `${contact.part1}${contact.part2}${contact.part3}`,
+        ...(userType === "seller" && { businessNumber }),
+      },
+    });
+  };
+
   const isFormComplete =
     userType !== "" &&
-    account !== "" &&
     contact.part1.length === 3 &&
     contact.part2.length === 4 &&
     contact.part3.length === 4 &&
@@ -128,24 +127,6 @@ const Signup = () => {
           </div>
 
           <div className="h-24">
-            {" "}
-            {showAccount ? (
-              <div className="mx-4 animate-fadeInSlideUp">
-                <InputLabel name="계좌를 생성하거나 등록해주세요." />
-                <Input
-                  name="계좌 등록"
-                  value={account}
-                  onChange={handleAccountChange}
-                  maxLength={20}
-                />
-              </div>
-            ) : (
-              <div className="h-24" />
-            )}
-          </div>
-
-          <div className="h-24">
-            {" "}
             {showContact ? (
               <div className="mx-4 animate-fadeInSlideUp">
                 <InputLabel name="연락처를 알려주세요." />
@@ -187,7 +168,6 @@ const Signup = () => {
           </div>
 
           <div className="h-24">
-            {" "}
             {showBusinessNumber && userType === "seller" ? (
               <div className="mx-4 animate-fadeInSlideUp">
                 <InputLabel name="사업자 등록 번호를 입력해주세요." />
@@ -206,11 +186,11 @@ const Signup = () => {
             )}
           </div>
         </div>
-        <div className="mx-4 flex flex-col gap-2">
+        <div className="mx-4 mt-12 flex flex-col gap-2">
           <Button
-            content="가입"
+            content="다음"
             disabled={!isFormComplete}
-            onClick={() => navigate("/signup/success")}
+            onClick={handleNext}
           />
           <Button
             variant="secondary"

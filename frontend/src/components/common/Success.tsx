@@ -22,7 +22,7 @@ export const Success = () => {
   return (
     <div className="relative inset-0 flex items-center justify-center">
       {/* 중앙 8각형 체크모양 */}
-      <div className="animate-octagonAppear relative z-50 flex items-center justify-center">
+      <div className="relative z-50 flex animate-octagonAppear items-center justify-center">
         <div
           className="flex h-24 w-24 items-center justify-center bg-primary text-white"
           style={{
@@ -33,10 +33,10 @@ export const Success = () => {
           <FaCheck className="h-12 w-12" />
         </div>
       </div>
-      {[...Array(26)].map((_, index) => (
+      {[...Array(33)].map((_, index) => (
         <div
           key={index}
-          className="confetti-piece animate-explode absolute rounded-sm bg-gradient-to-br from-primary to-secondary"
+          className="confetti-piece absolute animate-explode rounded-sm bg-gradient-to-br from-primary to-secondary"
           style={{
             width: `${Math.random() * 4 + 2}px`,
             height: `${Math.random() * 4 + 2}px`,
