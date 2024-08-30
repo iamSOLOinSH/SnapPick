@@ -7,6 +7,9 @@ import { Card } from "../components/common/Card";
 import { useParams } from "react-router";
 import { ImageObject, Store } from "../types/store";
 import { getStoreInfo } from "../utils/api/store";
+import { dayTranslations } from "../utils/Date";
+import { times } from "lodash";
+import { format } from "date-fns";
 
 const StoreDetail = () => {
   const { storeId } = useParams<{ storeId?: string }>();
@@ -55,14 +58,13 @@ const StoreDetail = () => {
           <div className="mb-4 mt-4">
             <h2 className="mb-2 text-lg font-semibold">운영 시간</h2>
             <div className="space-y-1">
-              <p className="flex items-center text-sm">
-                <IoTimeOutline className="mr-1" />
-                월-금: 11:00 - 22:00
-              </p>
-              <p className="flex items-center text-sm">
-                <IoTimeOutline className="mr-1" />
-                토-일: 10:30 - 22:00
-              </p>
+              {store?.runningTimes.map((time) => (
+                <p className="flex items-center text-sm">
+                  <IoTimeOutline className="mr-1" />
+                  {dayTranslations[time?.dayOfWeek]} : {time?.startTime} -{" "}
+                  {time?.endTime}
+                </p>
+              ))}
             </div>
           </div>
           <hr />
