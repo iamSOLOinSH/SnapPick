@@ -33,6 +33,9 @@ public class MemberService {
                                         MemberRegisterReq memberRegisterReq) {
         Member member = basicMemberService.getMemberById(memberId);
 
+        // for debug
+        System.out.println(member.getUserKey());
+        System.out.println(member.getUserKey() == null);
         if (member.getUserKey() != null) {
             throw new BasicBadRequestException("이미 정보를 입력한 회원입니다");
         }

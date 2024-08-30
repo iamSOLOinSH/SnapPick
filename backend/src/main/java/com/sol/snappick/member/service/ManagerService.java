@@ -97,12 +97,16 @@ public class ManagerService {
         String transactionUniqueNo = responseData2.get("transactionUniqueNo").asText();
 
         ////// 3. 거래내역 단건 조회
-        String ownerUserkey = basicMemberService.getMemberById(accountHolderRes.getName()).getUserKey();
-
+        String ownerUserkey;
+        try {
+            ownerUserkey = basicMemberService.getMemberById(accountHolderRes.getName()).getUserKey();
+        } catch (NumberFormatException e) {
+            throw new BasicBadRequestException("입금이 완료되었습니다. 해당 계좌의 잔액은 확인할 수 없습니다"); // 일반유저 잔액확인하려면 userKey필요
+        }
         Map<String, Object> requestBody3 = new HashMap<>();
         requestBody3.put("accountNo", accountNumber);
         requestBody3.put("transactionUniqueNo", transactionUniqueNo);
-        JsonNode jsonNode3 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireTransactionHistory", "inquireTransactionHistory", HttpMethod.POST, requestBody3, ownerUserkey);
+        JsonNode jsonNode3 = finOpenApiHandler.apiRequest("/edu/demandDeposit/inquireTransactionHistory", "inquireTransactionHistory", HttpMethod.POST, requestBody3, managerUserkey);
         JsonNode responseData3 = jsonNode3.get("REC");
 
         accountHolderRes.setBalance(responseData3.get("transactionBalance").asText());
