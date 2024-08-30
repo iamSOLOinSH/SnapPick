@@ -21,9 +21,13 @@ import com.sol.snappick.product.repository.ProductRepository;
 import com.sol.snappick.store.entity.Store;
 import com.sol.snappick.store.exception.StoreNotFoundException;
 import com.sol.snappick.store.repository.StoreRepository;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,138 +41,148 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
-
     private final ProductMapper productMapper;
 
     @Transactional
     public CartCreateRes createCart(
-        Integer memberId,
-        Integer storeId
+            Integer memberId,
+            Integer storeId
     ) throws Exception {
 
         //유효성 검증
-        //1) member가 존재하는지 확인한다.
+        // - member가 존재하는지 확인한다.
         Member customer = memberRepository.findById(memberId)
-                                          .orElseThrow(
-                                              () -> new AccessDeniedException("존재하지 않는 회원입니다."));
-
-        //2) store가 존재하는지 확인한다.
+                .orElseThrow(
+                        () -> new AccessDeniedException("존재하지 않는 회원입니다."));
+        // - store가 존재하는지 확인한다.
         Store store = storeRepository.findById(storeId)
-                                     .orElseThrow(() -> new StoreNotFoundException());
+                .orElseThrow(() -> new StoreNotFoundException());
+        // - store의 판매자가 이 사용자가 맞는지 확인한다.
+        if (!memberId.equals(store.getMember().getId()))
+            throw new AccessDeniedException();
 
-        //3) CartStatus."결제대기" 중인 카트가 있는지 확인한다.
-        // 없다면 카트를 생성한다.
+        // - 결제대기 중인 카트가 이미 존재하는지 확인한다.
         Cart cartToCreate = cartRepository.findByStoreIdAndCustomerIdAndStatus(
-            storeId, memberId, CartStatus.결제대기);
+                storeId, memberId, CartStatus.결제대기);
+        // 없다면, 카트를 생성한다.
         if (cartToCreate == null) {
             cartToCreate = Cart.builder()
-                               .store(store)
-                               .customer(customer)
-                               .status(CartStatus.결제대기)
-                               .items(new ArrayList<>())
-                               .build();
+                    .store(store)
+                    .customer(customer)
+                    .status(CartStatus.결제대기)
+                    .items(new ArrayList<>())
+                    .build();
         }
-        //있다면 담겨있던 cartItem을 모두 삭제한다.
+        //있다면, 담겨 있던 cartItem을 초기화한다.
         else {
             cartItemRepository.deleteByCartId(cartToCreate.getId());
             cartToCreate.getItems()
-                        .clear();
+                    .clear();
         }
+
+        // DB에 생성한 카트를 저장한다.
         cartToCreate = cartRepository.save(cartToCreate);
-
-        //Cart: store, customer, transaction, items, status
-        //To
-        //CartRes: id, store_id, customer_id, transaction_id, items.size(), status
-
         return CartCreateRes.builder()
-                            .cartId(cartToCreate.getId())
-                            .build();
+                .cartId(cartToCreate.getId())
+                .build();
     }
 
     @Transactional
     public CartItemRes createCartItem(
-        Integer memberId,
-        Integer cartId,
-        CartItemReq cartItemReq
+            Integer memberId,
+            Integer cartId,
+            CartItemReq cartItemReq
     ) throws Exception {
 
         //유효성 검증
         //1) cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
-                                  .orElseThrow(() -> new CartNotFoundException());
+                .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        //        if (cart.getCustomer().getId()!=memberId)
-        //            throw new AccessDeniedException();
+        if (!Objects.equals(cart.getCustomer().getId(), memberId))
+            throw new AccessDeniedException();
 
         //3) 구매하려는 product가 존재하는지 확인한다.
         Product product = productRepository.findById(cartItemReq.getProductId())
-                                           .orElseThrow(() -> new ProductNotFoundException());
+                .orElseThrow(() -> new ProductNotFoundException());
 
         //4) 장바구니에 동일 상품이 있는지 확인한다.
         CartItem cartItemToCreate = cartItemRepository.findByIdAndProductId(
-            cartId, product.getId());
+                cartId, product.getId());
         //없으면 새로 생성한다.
         if (cartItemToCreate == null) {
             cartItemToCreate = CartItem.builder()
-                                       .cart(cart)
-                                       .product(product)
-                                       .quantity(cartItemReq.getQuantity())
-                                       .build();
+                    .cart(cart)
+                    .product(product)
+                    .quantity(cartItemReq.getQuantity())
+                    .build();
         }
-        //이미 존재한다면 quantity만 수정한다.
+        //이미 존재한다면 반영해서 quantity를 수정한다.
         else {
             cartItemToCreate.setQuantity(
-                cartItemReq.getQuantity() + cartItemToCreate.getQuantity());
+                    cartItemReq.getQuantity() + cartItemToCreate.getQuantity());
         }
 
-        //5) 주문 수량이 재고의 개수보다 작은지 확인한다.
+        //5) 주문 수량이 재고의 개수보다 적은지 확인한다.
         if (cartItemToCreate.getQuantity() > product.getStock()) {
             throw new QuantityException();
         }
 
         //6) 주문 수량이 인당 개수 제한을 만족하는지 확인한다.
-        if (cartItemToCreate.getQuantity() > product.getPersonalLimit()) {
-            throw new QuantityException("인당 구매 가능 수량을 넘어서는 수량은 구매할 수 없습니다.");
+        if (product.getPersonalLimit() != 0 && cartItemToCreate.getQuantity() > product.getPersonalLimit()) {
+            throw new QuantityException("인당 구매 수량 제한이 초과되었습니다.");
         }
 
-        //TODO 7) 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
+        //7) 누적 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
+        List<Cart> processedCarts = cartRepository.findByStoreId(cart.getStore().getId());
+        LocalDate today = LocalDate.now();
+        List<Integer> filteredCartIds = processedCarts.stream()
+                .filter(filteredCart -> (filteredCart.getStatus() == CartStatus.결제완료 || filteredCart.getStatus() == CartStatus.수령완료))
+                .filter(filteredCart -> (filteredCart.getTransaction() != null
+                        && filteredCart.getTransaction().getTransactedAt() != null
+                        && filteredCart.getTransaction().getTransactedAt().toLocalDate().isEqual(today)))
+                .map(Cart::getId)
+                .toList();
+        Integer totalQuantity = 0;
+        for (Integer filteredCartId : filteredCartIds) {
+            CartItem item = cartItemRepository.findByCartIdAndProductId(filteredCartId, product.getId());
+            if (item != null) totalQuantity += item.getQuantity();
+        }
+        if (totalQuantity + cartItemReq.getQuantity() > product.getDailyLimit()) {
+            throw new QuantityException("일일 수량 제한이 초과되었습니다.");
+        }
 
         //cart에 cartItem을 추가한다.
         cartItemToCreate = cartItemRepository.save(cartItemToCreate);
-
-        //CartItem: id, cart, product, quantity
-        //To
-        //CartItemRes: id, product, quantity
-
         return CartItemRes.builder()
-                          .id(cartItemToCreate.getId())
-                          .product(productMapper.toSimpleDto(product))
-                          .quantity(cartItemToCreate.getQuantity())
-                          .build();
+                .id(cartItemToCreate.getId())
+                .product(productMapper.toSimpleDto(product))
+                .quantity(cartItemToCreate.getQuantity())
+                .build();
     }
 
     @Transactional
     public CartItemRes updateCartItem(
-        Integer memberId,
-        Integer cartId,
-        Integer itemId,
-        CartItemReq cartItemReq
+            Integer memberId,
+            Integer cartId,
+            Integer itemId,
+            CartItemReq cartItemReq
     ) throws Exception {
 
         //유효성 검증
         //1) cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
-                                  .orElseThrow(() -> new CartNotFoundException());
+                .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        //        if (cart.getCustomer().getId()!=memberId)
-        //            throw new AccessDeniedException();
+        if (cart.getCustomer().getId() != memberId)
+            throw new AccessDeniedException();
 
         //3) cartItem이 존재하는지 확인한다.
         CartItem cartItemToUpdate = cartItemRepository.findById(itemId)
-                                                      .orElseThrow(
-                                                          () -> new CartItemNotFoundException());
+                .orElseThrow(
+                        () -> new CartItemNotFoundException());
 
         //4) 주문 수량이 재고의 개수를 넘지 않는지 확인한다.
         Product product = cartItemToUpdate.getProduct();
@@ -177,56 +191,73 @@ public class CartService {
         }
 
         //5) 주문 수량이 인당 개수 제한을 만족하는지 확인한다.
-        if (cartItemReq.getQuantity() > product.getPersonalLimit()) {
+        if (product.getPersonalLimit() != 0 && cartItemReq.getQuantity() > product.getPersonalLimit()) {
             throw new QuantityException("인당 구매 가능 수량을 넘어서는 수량은 구매할 수 없습니다.");
         }
 
-        //TODO 6) 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
+        //6) 주문 수량이 일일 개수 제한을 만족하는지 확인한다.
+        List<Cart> processedCarts = cartRepository.findByStoreId(cart.getStore().getId());
+        LocalDate today = LocalDate.now();
+        List<Integer> filteredCartIds = processedCarts.stream()
+                .filter(filteredCart -> (filteredCart.getStatus() == CartStatus.결제완료 || filteredCart.getStatus() == CartStatus.수령완료))
+                .filter(filteredCart -> (filteredCart.getTransaction() != null
+                        && filteredCart.getTransaction().getTransactedAt() != null
+                        && filteredCart.getTransaction().getTransactedAt().toLocalDate().isEqual(today)))
+                .map(Cart::getId)
+                .toList();
+        Integer totalQuantity = 0;
+        for (Integer filteredCartId : filteredCartIds) {
+            CartItem item = cartItemRepository.findByCartIdAndProductId(filteredCartId, product.getId());
+            if (item != null) totalQuantity += item.getQuantity();
+        }
+        if (totalQuantity + cartItemReq.getQuantity() > product.getDailyLimit()) {
+            throw new QuantityException("일일 수량 제한이 초과되었습니다.");
+        }
 
         //quantity를 갱신한다.
         cartItemToUpdate.updateDetails(cartItemReq.getQuantity());
         cartItemToUpdate = cartItemRepository.save(cartItemToUpdate);
 
         return CartItemRes.builder()
-                          .id(cartItemToUpdate.getId())
-                          .product(productMapper.toSimpleDto(cartItemToUpdate.getProduct()))
-                          .quantity(cartItemToUpdate.getQuantity())
-                          .build();
+                .id(cartItemToUpdate.getId())
+                .product(productMapper.toSimpleDto(cartItemToUpdate.getProduct()))
+                .quantity(cartItemToUpdate.getQuantity())
+                .build();
     }
 
     @Transactional
-    public List<CartItemRes> readCartItem(Integer cartId) {
+    public List<CartItemRes> readCartItem(Integer memberId, Integer cartId) throws Exception {
 
         //유효성 검증
         //1) cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
-                                  .orElseThrow(() -> new CartNotFoundException());
+                .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
-        //        if (cart.getCustomer().getId()!=memberId)
-        //            throw new AccessDeniedException();
+        if (cart.getCustomer().getId() != memberId)
+            throw new AccessDeniedException();
 
         //cart에 속하는 cartItem을 조회한다.
-        List<CartItem> items = cartItemRepository.findByCart(cart);
+        List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
         return items.stream()
-                    .map(item -> (CartItemRes.builder()
-                                             .id(item.getId())
-                                             .product(productMapper.toSimpleDto(item.getProduct()))
-                                             .quantity(item.getQuantity())
-                                             .build()))
-                    .collect(Collectors.toList());
+                .map(item -> (CartItemRes.builder()
+                        .id(item.getId())
+                        .product(productMapper.toSimpleDto(item.getProduct()))
+                        .quantity(item.getQuantity())
+                        .build()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public Boolean deleteCartItem(
-        Integer memberId,
-        Integer cartId,
-        Integer itemId
+            Integer memberId,
+            Integer cartId,
+            Integer itemId
     ) throws Exception {
         //유효성 검증
         //1) cart가 존재하는지 확인한다.
         Cart cart = cartRepository.findById(cartId)
-                                  .orElseThrow(() -> new CartNotFoundException());
+                .orElseThrow(() -> new CartNotFoundException());
 
         //2) cart 접근 권한을 확인한다.
         if (cart.getCustomer()
@@ -236,8 +267,8 @@ public class CartService {
 
         //3) cartItem이 존재하는지 확인한다.
         CartItem cartItemToDelete = cartItemRepository.findById(itemId)
-                                                      .orElseThrow(
-                                                          () -> new CartItemNotFoundException());
+                .orElseThrow(
+                        () -> new CartItemNotFoundException());
 
         //cartItem을 삭제한다.
         try {
@@ -258,25 +289,26 @@ public class CartService {
      */
     @Transactional
     public Cart getOrCreateCart(
-        Member customer,
-        Store store
+            Integer memberId,
+            Member customer,
+            Store store
     ) throws Exception {
         //1) CartStatus."결제대기" 중인 카트가 있는지 확인한다.
         Cart cartToCreate = cartRepository.findByStoreIdAndCustomerIdAndStatus(
-            store.getId(), customer.getId(), CartStatus.결제대기);
+                store.getId(), customer.getId(), CartStatus.결제대기);
         if (cartToCreate == null) {
             cartToCreate = Cart.builder()
-                               .store(store)
-                               .customer(customer)
-                               .status(CartStatus.결제대기)
-                               .items(new ArrayList<>())
-                               .build();
+                    .store(store)
+                    .customer(customer)
+                    .status(CartStatus.결제대기)
+                    .items(new ArrayList<>())
+                    .build();
         }
         //있다면 담겨있던 cartItem을 모두 삭제한다.
         else {
             cartItemRepository.deleteByCartId(cartToCreate.getId());
             cartToCreate.getItems()
-                        .clear();
+                    .clear();
         }
         cartToCreate = cartRepository.save(cartToCreate);
 
@@ -286,6 +318,6 @@ public class CartService {
     @Transactional(readOnly = true)
     public Cart getCartById(Integer cartId) {
         return cartRepository.findById(cartId)
-                             .orElseThrow(CartNotFoundException::new);
+                .orElseThrow(CartNotFoundException::new);
     }
 }
