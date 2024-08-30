@@ -5,21 +5,13 @@ import { IoChevronBack } from "react-icons/io5";
 import AccountVerificationStep1 from "../components/AccountVerification/AccountVerificationStep1";
 import AccountVerificationStep2 from "../components/AccountVerification/AccountVerificationStep2";
 import OneWonAnimation from "../components/AccountVerification/OneWonAnimation";
-import { getSendIdentity } from "../utils/api/account";
+import { getSendIdentity, validateIdentity } from "../utils/api/account";
 
 const AccountVerification = () => {
   const [step, setStep] = useState(1);
   const [showAnimation, setShowAnimation] = useState(false);
   const [accountNo, setAccountNo] = useState("");
   const navigate = useNavigate();
-
-  const handleNextStep = () => {
-    if (step < 2) {
-      setStep(step + 1);
-    } else if (step === 2) {
-      navigate("/account/add/success");
-    }
-  };
 
   const handlePrevStep = () => {
     navigate("/profile");
@@ -30,6 +22,17 @@ const AccountVerification = () => {
     try {
       const data = await getSendIdentity(accountNo);
       setShowAnimation(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 1원 인증 확인하기
+  const checkVerification = async (confirmNumber: string) => {
+    try {
+      await validateIdentity(accountNo, parseInt(confirmNumber));
+
+      navigate("/account/add/success");
     } catch (error) {
       console.log(error);
     }
@@ -60,8 +63,10 @@ const AccountVerification = () => {
       case 2:
         return (
           <AccountVerificationStep2
-            onNext={handleNextStep}
-            onRestart={() => setStep(1)}
+            onNext={(value) => {
+              checkVerification(value);
+            }}
+            onRestart={() => sendOneWon(accountNo)}
           />
         );
 

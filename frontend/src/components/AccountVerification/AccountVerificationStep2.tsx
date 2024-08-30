@@ -7,12 +7,11 @@ import React, {
 } from "react";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
-import { validateIdentity } from "../../utils/api/account";
 
 type InputRef = HTMLInputElement | null;
 
 interface AccountVerificationStep2Props {
-  onNext: () => void;
+  onNext: (value: string) => void;
   onRestart: () => void;
 }
 
@@ -68,18 +67,19 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
   }, [timeLeft]);
 
   const handleVerification = async () => {
-    try {
-      const data = await validateIdentity();
-    } catch (error) {
-      console.log(error);
-    }
+    onNext(confirmNumber.join(""));
+    // try {
+    //   const data = await validateIdentity();
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
-    if (confirmNumber === "1234") {
-      setVerificationError(null);
-      onNext(); // 인증 성공
-    } else {
-      setVerificationError("인증에 실패했습니다. 다시 시도해주세요.");
-    }
+    // if (confirmNumber === "1234") {
+    //   setVerificationError(null);
+    //   // 인증 성공
+    // } else {
+    //   setVerificationError("인증에 실패했습니다. 다시 시도해주세요.");
+    // }
   };
 
   const formatTime = (time: number) => {
