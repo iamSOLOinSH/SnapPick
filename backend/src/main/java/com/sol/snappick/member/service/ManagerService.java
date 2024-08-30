@@ -3,8 +3,12 @@ package com.sol.snappick.member.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sol.snappick.global.CommonFormatter;
 import com.sol.snappick.member.dto.AccountTransferReq;
+import com.sol.snappick.member.dto.TodayTransactionRes;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
+import com.sol.snappick.member.entity.TransactionType;
+import com.sol.snappick.member.exception.BasicBadRequestException;
+import com.sol.snappick.member.repository.TransactionRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +21,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.sol.snappick.global.CommonFormatter.yyyyMMddFormat;
 
@@ -27,8 +32,38 @@ public class ManagerService {
 
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
+    private final TransactionRepository transactionRepository;
+
     @Value("${finopenapi.userkey}")
     private String managerUserkey;
+
+    // 거래조회
+    public TodayTransactionRes checkTransactions(String date) {
+
+        if (date.length() != 8) {
+            throw new BasicBadRequestException("입력값은 '20240901'와 같은 형식의 8글자여야 합니다");
+        }
+
+
+        TodayTransactionRes todayTransactionRes = new TodayTransactionRes();
+        AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
+        AtomicReference<Long> cnt = new AtomicReference<>(0L);
+
+
+        transactionRepository.findTransactionsByDateString(date).stream()
+                .forEach(t -> {
+                            if (t.getType() == TransactionType.출금) {
+                                // 추가검증하기
+                                cnt.updateAndGet(v -> v + 1);
+                                totalAmount.updateAndGet(v -> v + t.getVariation());
+                            }
+                        }
+                );
+        todayTransactionRes.setTotalAmount(totalAmount.get());
+        todayTransactionRes.setCnt(cnt.get());
+
+        return todayTransactionRes;
+    }
 
     // 예금주 조회
     private JsonNode inquireDemandDepositAccountHolderName(String accountNumber) {

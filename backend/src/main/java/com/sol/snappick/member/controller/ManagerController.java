@@ -1,6 +1,7 @@
 package com.sol.snappick.member.controller;
 
 import com.sol.snappick.member.dto.AccountTransferReq;
+import com.sol.snappick.member.dto.TodayTransactionRes;
 import com.sol.snappick.member.dto.TransactionDetailRes;
 import com.sol.snappick.member.dto.TransactionHistoryRes;
 import com.sol.snappick.member.exception.BasicBadRequestException;
@@ -25,12 +26,14 @@ public class ManagerController {
     private String secretKey;
 
     @GetMapping("/")
-    @Operation(summary = "개발중 == 거래조회(대사)")
-    public ResponseEntity<Void> checkTransactions(
-            @RequestParam(name = "secret_key") String secretKey
+    @Operation(summary = "거래조회(대사)")
+    public ResponseEntity<TodayTransactionRes> checkTransactions(
+            @RequestParam(name = "secret_key") String secretKey,
+            @RequestParam(name = "date") String date
     ) {
-        // TODO
-        return ResponseEntity.ok().body(null);
+        // TODO 데이터 쌓인 후 테스트
+        checkKey(secretKey);
+        return ResponseEntity.ok().body(managerService.checkTransactions(date));
     }
 
     @GetMapping("/history")

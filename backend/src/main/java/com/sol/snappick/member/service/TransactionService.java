@@ -12,7 +12,6 @@ import com.sol.snappick.member.entity.TransactionType;
 import com.sol.snappick.member.exception.BasicBadRequestException;
 import com.sol.snappick.member.repository.MemberRepository;
 import com.sol.snappick.member.repository.TransactionRepository;
-import com.sol.snappick.product.repository.CartRepository;
 import com.sol.snappick.util.fin.FinOpenApiHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,7 +34,6 @@ public class TransactionService {
     private final FinOpenApiHandler finOpenApiHandler;
     private final BasicMemberService basicMemberService;
     private final MemberRepository memberRepository;
-    private final CartRepository cartRepository;
     private final TransactionRepository transactionRepository;
 
     @Value("${finopenapi.snappickAccount}")
