@@ -44,7 +44,7 @@ public class Member extends BaseEntity {
     @Column(length = 36)
     private String userKey;
 
-    @Column(name = "is_open_bank")
+    @Column(name = "is_open_bank", columnDefinition = "boolean default false")
     private Boolean isOpenBank;
 
     ////////////// 양방향 매핑
