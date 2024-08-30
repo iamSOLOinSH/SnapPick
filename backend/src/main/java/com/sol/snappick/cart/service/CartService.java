@@ -108,21 +108,15 @@ public class CartService {
                 .orElseThrow(() -> new ProductNotFoundException());
 
         //4) 장바구니에 동일 상품이 있는지 확인한다.
-        CartItem cartItemToCreate = cartItemRepository.findByIdAndProductId(
+        CartItem cartItemToCreate = cartItemRepository.findByCartIdAndProductId(
                 cartId, product.getId());
-        //없으면 새로 생성한다.
-        if (cartItemToCreate == null) {
-            cartItemToCreate = CartItem.builder()
-                    .cart(cart)
-                    .product(product)
-                    .quantity(cartItemReq.getQuantity())
-                    .build();
-        }
-        //이미 존재한다면 반영해서 quantity를 수정한다.
-        else {
-            cartItemToCreate.setQuantity(
-                    cartItemReq.getQuantity() + cartItemToCreate.getQuantity());
-        }
+        //있으면 삭제한다.
+        if (cartItemToCreate!=null) cartItemRepository.deleteById(cartItemToCreate.getId());
+        cartItemToCreate = CartItem.builder()
+                .cart(cart)
+                .product(product)
+                .quantity(cartItemReq.getQuantity())
+                .build();
 
         //5) 주문 수량이 재고의 개수보다 적은지 확인한다.
         if (cartItemToCreate.getQuantity() > product.getStock()) {
