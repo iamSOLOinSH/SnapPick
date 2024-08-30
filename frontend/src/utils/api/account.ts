@@ -11,7 +11,7 @@ export const getSendIdentity = async (accountNo: string) => {
 // 1원 인증 확인
 export const validateIdentity = async (
   accountNumber: string,
-  authCode: number,
+  authCode: string,
 ) => {
   const bodyData = {
     accountNumber,
