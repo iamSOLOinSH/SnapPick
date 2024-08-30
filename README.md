@@ -1,9 +1,13 @@
 ## SnapPick : 팝업스토어 특화 커머셜 모바일 앱
-![shinhan_hackaton](./images/shinhan_hackaton.png)
+<div align="center">
+    <img src="./images/shinhan_hackaton.png" alt="shinhan_hackaton" width=300px/>
+</div>
 ---
 
 # 📌 SnapPick (스냅픽)
-![logo](./images/snappick_logo.png)
+<div align="center">
+    <img src="./images/snappick_logo.png" alt="shinhan_hackaton" width=200px/>
+</div>
 SnapPick은 팝업스토어를 손쉽게 관리하고 이용할 수 있는 금융 커머셜 모바일 애플리케이션입니다. 판매자는 자신만의 팝업스토어를 등록하고 관리할 수 있으며, 소비자는 간편하게 팝업스토어를 검색하고 상품을 구매할 수 있습니다. SnapPick을 통해 팝업스토어와 관련된 모든 것을 간편하게 해결하세요!
 
 ---
