@@ -33,11 +33,15 @@ const AccountVerification = () => {
 
   // 1원 인증 확인하기
   const checkVerification = async (confirmNumber: string) => {
+    setError("");
     try {
       await validateIdentity(accountNo, confirmNumber);
 
       navigate("/account/add/success", {
-        state: { fromQr: true, cartId: location.state.cartId },
+        state: {
+          fromQr: location.state.fromQr,
+          cartId: location?.state?.cartId,
+        },
       });
     } catch (error) {
       console.log(error);

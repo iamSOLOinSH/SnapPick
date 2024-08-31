@@ -38,7 +38,7 @@ const VisitHistory = () => {
   }, [getVisitHistory]);
 
   return (
-    <Layout>
+    <Layout className="bg-white">
       <div className="mb-8 mt-12 flex items-center justify-between">
         <BackButton />
         <h2 className="flex-grow text-center text-2xl font-bold">결제 내역</h2>

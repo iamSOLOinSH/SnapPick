@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { Cookies } from "react-cookie";
 
 import { Layout } from "../components/common/Layout";
 import { InputLabel } from "../components/common/InputLabel";
@@ -9,6 +10,7 @@ import { Blob_1 } from "../components/common/Background/Blob_1";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const [userType, setUserType] = useState<"buyer" | "seller" | "">("");
   const [businessNumber, setBusinessNumber] = useState("");
@@ -20,6 +22,15 @@ const Signup = () => {
   const part1Ref = useRef<HTMLInputElement>(null);
   const part2Ref = useRef<HTMLInputElement>(null);
   const part3Ref = useRef<HTMLInputElement>(null);
+
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  useEffect(() => {
+    if (token) {
+      cookies.set("token", token);
+    }
+  }, [token]);
 
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;

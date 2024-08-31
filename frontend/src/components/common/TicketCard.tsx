@@ -18,10 +18,8 @@ export const TicketCard: React.FC<TicketCardProps> = ({
   date,
   location,
   price,
-  buttonText,
   isActive,
   className,
-  onClick,
 }) => {
   return (
     <div
@@ -82,17 +80,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({
         <div className="flex items-center space-x-2">
           {price != null ? `￦${price.toLocaleString()}` : ""}
         </div>
-        <button
-          className={clsx(
-            "rounded-lg px-3 py-1 text-sm",
-            isActive
-              ? "bg-primary text-white hover:bg-secondary hover:text-black"
-              : "text-grey-600 bg-gray-300 hover:bg-gray-600 hover:text-white",
-          )}
-          onClick={onClick}
-        >
-          {buttonText}
-        </button>
       </div>
       <div
         className={clsx(
