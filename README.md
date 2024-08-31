@@ -297,6 +297,14 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
     <img src="./images/판매자회원가입.gif" alt="판매자회원가입" height=300px/>
 </div>
 
+**스토어 등록**
+<div align="center">
+    <img src="./images/판매자스토어등록1.gif" alt="판매자스토어등록1" height=300px/>
+</div>
+<div align="center">
+    <img src="./images/판매자스토어등록2.gif" alt="판매자스토어등록1" height=300px/>
+</div>
+
 **재고관리**
 <div align="center">
     <img src="./images/판매자재고관리.gif" alt="판매자재고관리" height=300px/>
