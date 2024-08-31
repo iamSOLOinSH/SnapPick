@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Cookies } from "react-cookie";
+// import { Cookies } from "react-cookie";
 
 export const BASE_URL = import.meta.env.VITE_BACKEND_ADDRESS;
 
@@ -13,7 +13,7 @@ export const axiosClient = axios.create({
   headers: HEADERS,
 });
 
-const cookies = new Cookies();
+// const cookies = new Cookies();
 
 const Axios = axios.create({
   baseURL: BASE_URL,
@@ -21,12 +21,14 @@ const Axios = axios.create({
 
 Axios.interceptors.request.use(
   (config) => {
-    const token = cookies.get("token");
-    if (token) {
-      config.headers["Authorization"] = "Bearer " + token;
-      config.withCredentials = true;
-    }
+    // const token = cookies.get("token");
+    // if (token) {
+    //   config.headers["Authorization"] = "Bearer " + token;
+    //   config.withCredentials = true;
+    // }
 
+    const token =
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpbnl1Yjk4QGdtYWlsLmNvbSIsImlhdCI6MTcyNDgxMDE1MiwiZXhwIjoxNzI1NDE0OTUyLCJzdWIiOiIyNTIyIn0.BFvGYYQmxgAVSiJhizrIgfNImZbWL22QwrxDWHzfF2AwriBhL9uLvrFJQU8jAwr3";
     config.headers["Authorization"] = "Bearer " + token;
     // config.withCredentials = true;
     return config;
