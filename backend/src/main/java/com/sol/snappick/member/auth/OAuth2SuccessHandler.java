@@ -51,7 +51,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if (member.getUserKey() == null) {
             // 회원가입에 폼정보 입력 안된 사람이라면
-            getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/signup");
+            getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/signup" +
+                    "?token=" + accessToken);
         } else {
             getRedirectStrategy().sendRedirect(request, response, frontendUrl + "/home");
         }
