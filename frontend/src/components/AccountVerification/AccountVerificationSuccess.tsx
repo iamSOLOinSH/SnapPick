@@ -1,11 +1,24 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 import { Layout } from "../common/Layout";
 import { Success } from "../common/Success";
 import { Button } from "../common/Button";
 
+import { getAccountList, grantMain } from "../../utils/api/account";
+
 const AccountVerificationSuccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleMove = async () => {
+    if (location.state.fromQr) {
+      const accounts = await getAccountList();
+      await grantMain(accounts.data[0].accountNumber);
+      navigate("/cart", { state: { cartId: location.state.cartId } });
+    } else {
+      navigate("/profile");
+    }
+  };
 
   return (
     <Layout>
@@ -18,7 +31,7 @@ const AccountVerificationSuccess = () => {
         </div>
       </div>
       <div className="mx-4 flex flex-col gap-2">
-        <Button content="확인" onClick={() => navigate("/profile")} />
+        <Button content="확인" onClick={handleMove} />
       </div>
     </Layout>
   );
