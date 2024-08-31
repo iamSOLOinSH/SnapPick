@@ -18,7 +18,7 @@ public class JwtConfig {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_KEY = "Authorization";
     //    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7);
-    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(3);
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(3);
     private String secretKey;
     private String issuer;
 

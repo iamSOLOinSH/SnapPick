@@ -4,6 +4,7 @@ import com.sol.snappick.member.dto.DetailMemberInfoRes;
 import com.sol.snappick.member.dto.MemberRegisterReq;
 import com.sol.snappick.member.dto.SimpleMemberInfoRes;
 import com.sol.snappick.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-
+    @Hidden
     @GetMapping("/dev/info")
     @Operation(summary = "(개발용) 회원정보 확인",
             description = "액세스 토큰, 또는 이메일, 또는 id를 통해 회원정보를 확인합니다")
@@ -84,9 +85,9 @@ public class MemberController {
         return ResponseEntity.ok().body(responseData);
     }
 
-
+    @Hidden
     @GetMapping("/dev/token")
-    @Operation(summary = "(개발용) 액세스 토큰 발급", description = "토큰 유효시간은 10분입니다!")
+    @Operation(summary = "(개발용) 액세스 토큰 발급", description = "토큰 유효시간은 5분입니다!")
     public ResponseEntity<String> getToken(
             @RequestParam(name = "member_id") Integer memberId
     ) {

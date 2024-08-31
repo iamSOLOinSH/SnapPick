@@ -61,12 +61,7 @@ public class FinOpenApiHandler {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-        // for 서버 debug
-//        System.out.println("======header of request message=======");
-//        printJson(headerNode);
-//        System.out.println("======================================");
-
+        
         // UserKey가 필요한 api라면
         if (userKey != null) {
             ((ObjectNode) headerNode).put("userKey", userKey);

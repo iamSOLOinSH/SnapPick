@@ -72,7 +72,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    //////////////////////////////////////////////// 개발용
+    ////////////////////////////////////////////////
 
     @Transactional(readOnly = true)
     public List<DetailMemberInfoRes> getMemberInfo(String value, String type) {
@@ -96,6 +96,6 @@ public class MemberService {
 
     public String generateToken(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
-        return tokenService.generateToken(member, Duration.ofMinutes(10));
+        return tokenService.generateToken(member, Duration.ofMinutes(5));
     }
 }

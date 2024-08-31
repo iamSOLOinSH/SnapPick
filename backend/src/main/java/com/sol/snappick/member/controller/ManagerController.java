@@ -34,7 +34,6 @@ public class ManagerController {
             @RequestParam(name = "secret_key") String secretKey,
             @RequestParam(name = "date") String date
     ) {
-        // TODO 데이터 쌓인 후 테스트
         checkKey(secretKey);
         return ResponseEntity.ok().body(managerService.checkTransactions(date));
     }

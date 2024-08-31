@@ -110,9 +110,6 @@ public class TransactionService {
     public List<AccountStateRes> getOtherAccount(Integer memberId) {
         Member member = basicMemberService.getMemberById(memberId);
 
-        System.out.println(member.getIsOpenBank());
-        System.out.println(member.getIsOpenBank() == false);
-        // TODO
         // 1원 송금으로 오픈뱅킹 서비스 가입안한 사용자는 다른계좌 못봄
         if (member.getIsOpenBank() == false) {
             throw new BasicBadRequestException("1원 송금을 통해 본인인증을 완료해야합니다");
