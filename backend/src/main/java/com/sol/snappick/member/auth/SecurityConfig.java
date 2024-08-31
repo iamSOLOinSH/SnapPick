@@ -55,7 +55,7 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(memberRepository, tokenService); // 여기 뭐넣지
+        return new OAuth2SuccessHandler(memberRepository, tokenService);
     }
 
 }
