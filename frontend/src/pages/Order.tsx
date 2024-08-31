@@ -34,20 +34,21 @@ const Order: React.FC = () => {
     verifyVisit(store.id, token).then((res) => {
       localStorage.setItem("cartId", res.data + "");
       localStorage.setItem("storeId", store.id + "");
+      window.scrollTo(0, 0);
       navigate("/products", { state: { id: store.id } });
     });
   };
 
   return (
     <Layout className="relative h-[730px] bg-primary">
-      <div className="my-4 flex items-center justify-between">
+      <div className="mt-16 flex items-center justify-between">
         <BackButton className="border-1 rounded-xl border-white text-white hover:text-black" />
         <h2 className="flex-grow text-center text-xl font-bold text-white">
           스토어 입장
         </h2>
         <div className="w-8" />
       </div>
-      <div className="relative flex flex-col items-center">
+      <div className="relative mt-24 flex flex-col items-center">
         <h3 className="mb-12 text-xl font-semibold text-white">
           QR 코드를 스캔해주세요
         </h3>
