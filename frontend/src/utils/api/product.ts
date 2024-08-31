@@ -25,7 +25,7 @@ export const getProduct = async (productId: string) => {
 
 // 상품 수정
 export const modifyProduct = async (productId: string, formData: FormData) => {
-  const response = await Axios.post(
+  const response = await Axios.put(
     `/products?product_id=${productId}`,
     formData,
     {
@@ -35,5 +35,11 @@ export const modifyProduct = async (productId: string, formData: FormData) => {
     },
   );
 
+  return response;
+};
+
+// 상품 삭제
+export const deleteProduct = async (productId: string) => {
+  const response = await Axios.delete(`/products/${productId}`);
   return response;
 };

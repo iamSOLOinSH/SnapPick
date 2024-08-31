@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Layout } from "../components/common/Layout";
 import { BackButton } from "../components/common/BackButton";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { PiNotePencilBold } from "react-icons/pi";
 import { NumberSelector } from "../components/common/NumberSelector";
-import { Input } from "../components/common/Input";
-import { getProduct, modifyProduct } from "../utils/api/product";
+import { deleteProduct, getProduct, modifyProduct } from "../utils/api/product";
+import { useSnackbar } from "notistack";
 
 const StockControlDetail = () => {
   const NO_PRODUCT_IMG = "https://s3.youm.me/snappick-product/no_product.png";
   const { productId } = useParams<{ productId: string }>();
 
+  const navigate = useNavigate();
   const [productName, setProductName] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [editName, setEditName] = useState(productName);
@@ -21,6 +22,7 @@ const StockControlDetail = () => {
   const [isSoldOut, setIsSoldOut] = useState(false);
 
   const editRef = useRef<HTMLInputElement>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity - 1);
@@ -38,6 +40,16 @@ const StockControlDetail = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleEdit();
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    try {
+      const response = await deleteProduct(productId || "");
+
+      navigate(-1);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -73,19 +85,30 @@ const StockControlDetail = () => {
     const formData = new FormData();
     formData.append("productCreateReq", JSON.stringify(body));
 
-    // try {
-    //   const response = await modifyProduct(productId, formData);
-    // }
+    try {
+      const response = await modifyProduct(productId || "", formData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Layout>
       <div className="flex min-h-screen flex-col p-4">
-        <div className="mb-8 mt-12 flex items-center justify-between">
-          <div className="flex items-center">
-            <BackButton />
-            <h3 className="ml-4 text-2xl font-bold">재고 상세</h3>
-          </div>
+        <div className="mb-8 mt-12 flex w-full items-center justify-between">
+          <BackButton />
+          <h3 className="ml-4 text-2xl font-bold">재고 상세</h3>
+          <button
+            className="rounded border-2 p-2 hover:bg-base"
+            onClick={() => {
+              handleDeleteProduct();
+              enqueueSnackbar("삭제되었습니다.", {
+                variant: "default",
+              });
+            }}
+          >
+            삭제
+          </button>
         </div>
         <div>
           <h3 className="ml-4 text-xl font-bold">대표사진</h3>

@@ -54,5 +54,6 @@ interface Product {
   name: string;
   price: number;
   stock: number;
+  status: string;
   thumbnailImageUrls: string[];
 }
