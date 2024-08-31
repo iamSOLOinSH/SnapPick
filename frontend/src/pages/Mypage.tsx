@@ -28,10 +28,6 @@ const Mypage = () => {
     }
   };
 
-  const handleAccountDetail = () => {
-    navigate(`/account/detail/1`);
-  };
-
   const handleLogout = () => {
     cookies.remove("token");
     navigate("/");
@@ -80,13 +76,20 @@ const Mypage = () => {
         </div>
         {/* 계좌  */}
         {mainAccount ? (
-          <div
-            className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
-            onClick={handleAccountDetail}
-          >
-            <div className="font-semibold">{mainAccount.bankName}</div>
-            <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
-            <div className="mt-2 text-right text-2xl font-bold">
+          <div className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 text-white shadow-lg">
+            <div className="mb-2 flex items-start justify-between">
+              <div>
+                <div className="font-semibold">{mainAccount.bankName}</div>
+                <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
+              </div>
+              <button
+                className="rounded-md bg-white px-4 py-1 text-primary"
+                onClick={() => navigate("/account/transfer")}
+              >
+                보내기
+              </button>
+            </div>
+            <div className="mt-2 text-right text-xl font-bold">
               {mainAccount.theBalance.toLocaleString() + "원"}
             </div>
           </div>
