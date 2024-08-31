@@ -35,13 +35,13 @@ const VisitHistory = () => {
 
   useEffect(() => {
     getVisitHistory();
-  }, []);
+  }, [getVisitHistory]);
 
   return (
     <Layout>
       <div className="mb-8 mt-12 flex items-center justify-between">
         <BackButton />
-        <h2 className="flex-grow text-center text-2xl font-bold">방문 기록</h2>
+        <h2 className="flex-grow text-center text-2xl font-bold">결제 내역</h2>
         <div className="w-8" />
       </div>
       <div className="mx-2 mb-2">

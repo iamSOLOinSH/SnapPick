@@ -7,11 +7,14 @@ import { BackButton } from "../components/common/BackButton";
 
 import { useNavigate, useLocation } from "react-router";
 
-import { membersRegister } from "../utils/api/memeber";
+import { useCookies } from "react-cookie";
+
+import axios from "axios";
 
 type InputRef = HTMLInputElement | null;
 
 const PasswordSetup: React.FC = () => {
+  const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
   const location = useLocation();
   const prevInfo = location.state;
@@ -23,6 +26,8 @@ const PasswordSetup: React.FC = () => {
     useRef<InputRef>(null),
     useRef<InputRef>(null),
   ];
+
+  const token = cookies["token"];
 
   const handleChange = (index: number, value: string) => {
     if (isNaN(Number(value)) || value.length > 1) return;
@@ -58,7 +63,19 @@ const PasswordSetup: React.FC = () => {
   const isFormComplete = password.every((char) => char !== "");
 
   const handleRegister = async () => {
-    membersRegister({ ...prevInfo, pinCode: password.join("") })
+    axios
+      .post(
+        `${import.meta.env.VITE_BACKEND_ADDRESS}/member/register`,
+        {
+          ...prevInfo,
+          pinCode: password.join(""),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
       .then(() => navigate("/signup/success", { replace: true }))
       .catch((err) => console.log(err.response.data));
   };

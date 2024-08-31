@@ -13,14 +13,14 @@ const Mypage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const cookies = new Cookies();
-  const { user, getUserInfo, mainAccount, checkAccounts } = useBoundStore(
-    (state) => ({
+  const { user, getUserInfo, mainAccount, checkAccounts, clearStore } =
+    useBoundStore((state) => ({
       user: state.user,
       getUserInfo: state.getUserInfo,
       mainAccount: state.mainAccount,
       checkAccounts: state.checkAccounts,
-    }),
-  );
+      clearStore: state.clearStore,
+    }));
 
   const handleHistory = () => {
     if (user.role === "구매자") {
@@ -32,6 +32,7 @@ const Mypage = () => {
 
   const handleLogout = () => {
     cookies.remove("token");
+    clearStore();
     enqueueSnackbar("로그아웃 되었습니다.", {
       variant: "default",
     });
@@ -127,7 +128,7 @@ const Mypage = () => {
             <div className="text-xl font-bold">
               나의{" "}
               <span>
-                {user.role === "구매자" ? "방문 이력" : "스토어 관리"}
+                {user.role === "구매자" ? "결제 내역" : "스토어 관리"}
               </span>
             </div>
             <div className="text-sm text-gray-500">자세히 보기 &nbsp; &gt;</div>
