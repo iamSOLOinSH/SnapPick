@@ -46,6 +46,12 @@ const AccountVerification = () => {
             setShowAnimation(false);
             setStep(2);
           }}
+          onCheck={() => {
+            window.open(
+              `https://snappick.youm.me/accountTransaction?accountNo=${accountNo}`,
+              "_blank",
+            );
+          }}
         />
       );
     }

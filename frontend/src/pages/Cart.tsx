@@ -16,7 +16,10 @@ import { Button } from "../components/common/Button";
 import { LuMoveRight } from "react-icons/lu";
 import { FaRegCreditCard } from "react-icons/fa6";
 
+import { useSnackbar } from "notistack";
+
 const Cart = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -98,10 +101,14 @@ const Cart = () => {
           navigate("/receipt", { state: { id: location.state.id } });
         })
         .catch(() => {
-          alert("결제에 실패했습니다.");
+          enqueueSnackbar("결제에 실패했습니다.", {
+            variant: "error",
+          });
         });
     } else {
-      alert("잔액이 부족합니다.");
+      enqueueSnackbar("잔액이 부족합니다.", {
+        variant: "error",
+      });
     }
   };
 

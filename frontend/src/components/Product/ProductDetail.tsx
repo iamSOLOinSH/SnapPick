@@ -6,6 +6,8 @@ import { Button } from "../common/Button";
 import { ImageSlider } from "../common/ImageSlider";
 import { NumberSelector } from "../common/NumberSelector";
 
+import { useSnackbar } from "notistack";
+
 interface Product {
   id: number;
   name: string;
@@ -23,6 +25,7 @@ export const ProductDetail: React.FC<ProductModalProps> = ({
   product,
   onClose,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [quantity, setQuantity] = useState<number>(1);
 
   const cartId = localStorage.getItem("cartId");
@@ -41,14 +44,23 @@ export const ProductDetail: React.FC<ProductModalProps> = ({
     if (cartId) {
       addCartItem(+cartId, product.id, quantity)
         .then(() => {
-          alert("장바구니에 담았습니다.");
+          enqueueSnackbar("장바구니에 담았습니다.", {
+            variant: "success",
+          });
           onClose();
         })
         .catch(() => {
-          alert("장바구니에 담는 중 문제가 발생했습니다.");
+          enqueueSnackbar("장바구니에 담는 중 문제가 발생했습니다.", {
+            variant: "error",
+          });
         });
     } else {
-      alert("카트 ID를 찾을 수 없습니다. 다시 시도해 주세요.");
+      enqueueSnackbar(
+        "카트 ID를 찾을 수 없습니다. 나중에 다시 시도해 주세요.",
+        {
+          variant: "error",
+        },
+      );
     }
   };
 

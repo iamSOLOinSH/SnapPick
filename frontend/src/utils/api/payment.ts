@@ -13,13 +13,13 @@ export const getPayment = (cartId: number) => {
 };
 
 // 수령 대기 고객 조회
-export const getCustomerWaiting = (storeId: number) => {
+export const getCustomerWaiting = (storeId: string) => {
   const response = Axios(`/payment/status?store_id=${storeId}`);
   return response;
 };
 
 // 상품 전달 완료 처리
 export const sendDeliveryComplete = (cartId: number) => {
-  const response = Axios.put(`/payment/status?card_id=${cartId}`);
+  const response = Axios.put(`/payment/status?cartId=${cartId}`);
   return response;
 };
