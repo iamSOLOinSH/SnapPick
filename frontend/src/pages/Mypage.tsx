@@ -91,12 +91,14 @@ const Mypage = () => {
                 <div className="font-semibold">{mainAccount.bankName}</div>
                 <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
               </div>
-              <button
-                className="rounded-md bg-white px-4 py-1 text-primary"
-                onClick={() => navigate("/account/transfer")}
-              >
-                보내기
-              </button>
+              {user.role === "판매자" && (
+                <button
+                  className="rounded-md bg-white px-4 py-1 text-primary"
+                  onClick={() => navigate("/account/transfer")}
+                >
+                  보내기
+                </button>
+              )}
             </div>
             <div className="mt-2 text-right text-xl font-bold">
               {mainAccount.theBalance.toLocaleString() + "원"}

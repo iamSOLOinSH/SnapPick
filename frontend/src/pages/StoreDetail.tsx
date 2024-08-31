@@ -4,14 +4,17 @@ import { ImageSlider } from "../components/common/ImageSlider";
 import { IoLocationOutline, IoTimeOutline } from "react-icons/io5";
 import { Tag } from "../components/common/Tag";
 import { useParams } from "react-router";
-import { ImageObject, Store } from "../types/store";
+import { ImageObject, Product, Store } from "../types/store";
 import { getStoreInfo } from "../utils/api/store";
 import { dayTranslations } from "../utils/Date";
+import { getProducts } from "../utils/api/product";
+import { Card } from "../components/common/Card";
 
 const StoreDetail = () => {
   const { storeId } = useParams<{ storeId?: string }>();
   const [store, setStore] = useState<Store>();
   const [storeImgList, setStoreImgList] = useState<string[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const handleStoreInfo = async () => {
@@ -29,6 +32,19 @@ const StoreDetail = () => {
     };
     handleStoreInfo();
   }, [storeId]);
+
+  useEffect(() => {
+    const handleGetProduct = async () => {
+      try {
+        const productData = await getProducts(Number(storeId));
+        setProducts(productData.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    handleGetProduct();
+  }, []);
 
   return (
     <Layout>
@@ -72,28 +88,33 @@ const StoreDetail = () => {
               dangerouslySetInnerHTML={{ __html: store?.description || "" }}
             ></p>
           </div>
-          {/* <hr />
+          <hr />
           <div className="mt-4">
             <h2 className="mb-4 text-lg font-semibold">상품 소개</h2>
             <div className="flex justify-center">
               <div className="grid grid-cols-2 gap-8">
-                {stores.map((store) => (
+                {products.map((product) => (
                   <div
-                    key={store.id}
+                    key={product.id}
                     className="cursor-pointer transition-transform duration-300 hover:scale-105"
-                    onClick={() => handleProductDetail(store.id)}
                   >
                     <Card
                       variant="big"
-                      title={store.title}
-                      imageSrc={store.imageSrc}
+                      title={product?.name}
+                      imageSrc={
+                        product.thumbnailImageUrls.length > 0
+                          ? product.thumbnailImageUrls[0]
+                          : "https://s3.youm.me/snappick-product/random_box.png"
+                      }
                     />
-                    <p className="text-sm">￦30,000원</p>
+                    <p className="text-sm">
+                      ￦{product?.price.toLocaleString()}원
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </Layout>

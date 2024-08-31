@@ -13,11 +13,15 @@ type InputRef = HTMLInputElement | null;
 interface AccountVerificationStep2Props {
   onNext: (value: string) => void;
   onRestart: () => void;
+  error: string | null;
+  setError: (error: string | null) => void;
 }
 
 const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
   onNext,
   onRestart,
+  error,
+  setError,
 }) => {
   const [confirmNumber, setConfirmNumber] = useState<string[]>([
     "",
@@ -26,9 +30,6 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
     "",
   ]);
   const [timeLeft, setTimeLeft] = useState(180); // 3분
-  const [verificationError, setVerificationError] = useState<string | null>(
-    null,
-  );
   const inputRefs = [
     useRef<InputRef>(null),
     useRef<InputRef>(null),
@@ -68,18 +69,6 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
 
   const handleVerification = async () => {
     onNext(confirmNumber.join(""));
-    // try {
-    //   const data = await validateIdentity();
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-    // if (confirmNumber === "1234") {
-    //   setVerificationError(null);
-    //   // 인증 성공
-    // } else {
-    //   setVerificationError("인증에 실패했습니다. 다시 시도해주세요.");
-    // }
   };
 
   const formatTime = (time: number) => {
@@ -117,9 +106,8 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
       <div className="mb-4 text-sm text-gray-500">
         남은 시간: {formatTime(timeLeft)}
       </div>
-      {verificationError && (
-        <div className="mb-4 text-sm text-red">{verificationError}</div>
-      )}{" "}
+      {error && <div className="mt-2 text-sm text-red">{error}</div>}
+
       <div className="mt-8">
         {timeLeft > 0 ? (
           <Button
