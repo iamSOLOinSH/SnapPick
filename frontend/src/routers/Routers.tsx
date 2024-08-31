@@ -37,6 +37,7 @@ const AccountTransferSuccess = lazy(
   () => import("../pages/AccountTransferSuccess"),
 );
 const ReceiptConfirm = lazy(() => import("../pages/ReceiptConfirm"));
+const AccountTransaction = lazy(() => import("../pages/AccountTransaction"));
 
 import Spinner from "../components/common/Spinner";
 
@@ -46,6 +47,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/accountTransaction" element={<AccountTransaction />} />
         <Route path="/profile" element={<Mypage />} />
         <Route path="/stock/:storeId" element={<StockControl />} />
         <Route

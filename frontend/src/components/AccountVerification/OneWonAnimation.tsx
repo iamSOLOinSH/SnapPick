@@ -4,12 +4,11 @@ import { Button } from "../common/Button";
 
 interface OneWonAnimationProps {
   onNext: () => void;
+  onCheck: () => void;
 }
 
-const OneWonAnimation: FC<OneWonAnimationProps> = ({ onNext }) => {
-  const handleCheckNow = () => {
-    window.open("", "_blank");
-  };
+const OneWonAnimation: FC<OneWonAnimationProps> = ({ onNext, onCheck() }) => {
+
 
   return (
     <div className="mt-20 flex flex-col items-center justify-center">
@@ -22,7 +21,7 @@ const OneWonAnimation: FC<OneWonAnimationProps> = ({ onNext }) => {
       </p>
       <Button
         content="지금 확인하러 가기"
-        onClick={handleCheckNow}
+        onClick={onCheck}
         variant="text"
       />
       <Button content="다음" onClick={onNext} className="mt-4" />
