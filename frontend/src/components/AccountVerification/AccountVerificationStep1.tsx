@@ -4,10 +4,14 @@ import { Button } from "../common/Button";
 
 interface AccountVerificationStep1Props {
   onNext: (value: string) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
 }
 
 const AccountVerificationStep1: React.FC<AccountVerificationStep1Props> = ({
   onNext,
+  error,
+  setError,
 }) => {
   const [account, setAccount] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
@@ -29,6 +33,7 @@ const AccountVerificationStep1: React.FC<AccountVerificationStep1Props> = ({
           onChange={handleNumberInput}
         />
       </div>
+      {error && <div className="mt-2 text-sm text-red">{error}</div>}
       <div className="mt-9">
         <Button
           content="다음"

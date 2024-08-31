@@ -11,6 +11,7 @@ const AccountVerification = () => {
   const [step, setStep] = useState(1);
   const [showAnimation, setShowAnimation] = useState(false);
   const [accountNo, setAccountNo] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,8 +24,10 @@ const AccountVerification = () => {
     try {
       const data = await getSendIdentity(accountNo);
       setShowAnimation(true);
+      setError(null);
     } catch (error) {
       console.log(error);
+      setError("오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -38,6 +41,7 @@ const AccountVerification = () => {
       });
     } catch (error) {
       console.log(error);
+      setError("인증 번호가 올바르지 않습니다. 다시 확인해 주세요.");
     }
   };
 
@@ -67,6 +71,8 @@ const AccountVerification = () => {
               sendOneWon(value);
               setAccountNo(value);
             }}
+            error={error}
+            setError={setError}
           />
         );
       case 2:
@@ -75,6 +81,8 @@ const AccountVerification = () => {
             onNext={(value) => {
               checkVerification(value);
             }}
+            error={error}
+            setError={setError}
             onRestart={() => sendOneWon(accountNo)}
           />
         );

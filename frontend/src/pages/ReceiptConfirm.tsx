@@ -6,6 +6,7 @@ import { getCustomerWaiting, sendDeliveryComplete } from "../utils/api/payment";
 import { Customer } from "../types/customer";
 import CustomerCard from "../components/ReceiptConfirm/CustomerCard";
 import ProductModal from "../components/ReceiptConfirm/ProductModal";
+import { useSnackbar } from "notistack";
 
 const ReceiptConfirm = () => {
   const { storeId } = useParams<{ storeId?: string }>();
@@ -14,6 +15,7 @@ const ReceiptConfirm = () => {
     null,
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const handleCustomerWaiting = async () => {
@@ -37,7 +39,9 @@ const ReceiptConfirm = () => {
     try {
       await sendDeliveryComplete(customerId);
       setCustomers(customers.filter((customer) => customer.id !== customerId));
-      alert("수령 확인 처리되었습니다.");
+      enqueueSnackbar("수령 확인 되었습니다.", {
+        variant: "default",
+      });
     } catch (error) {
       console.error(error);
     }
@@ -52,6 +56,8 @@ const ReceiptConfirm = () => {
 
       {/* 고객 목록 */}
       <div className="px-4">
+        <p className="mb-1 p-1">미수령 건 : {customers?.length} 개</p>
+
         {customers.map((customer) => (
           <CustomerCard
             key={customer.id}

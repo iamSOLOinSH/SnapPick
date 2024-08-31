@@ -48,3 +48,12 @@ interface StoreData {
   storeVisitDto: StoreVisitDto;
   cartPurchasedDto: CartPurchasedDto;
 }
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  status: string;
+  thumbnailImageUrls: string[];
+}
