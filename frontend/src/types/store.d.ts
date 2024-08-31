@@ -24,3 +24,27 @@ interface RunningTimesObject {
   startTime: string;
   endTime: string;
 }
+
+interface StoreDetailDto {
+  storeId: number;
+  name: string;
+  location: string;
+}
+
+interface StoreVisitDto {
+  storeVisitId: number;
+  cartId: number;
+  visitedAt: string;
+}
+
+interface CartPurchasedDto {
+  cartId: number;
+  transactionId: number;
+  purchasedAmount: number;
+}
+
+interface StoreData {
+  storeDetailDto: StoreDetailDto;
+  storeVisitDto: StoreVisitDto;
+  cartPurchasedDto: CartPurchasedDto;
+}

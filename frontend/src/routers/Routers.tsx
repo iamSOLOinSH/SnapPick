@@ -29,6 +29,7 @@ import AccountList from "../pages/AccountList";
 import Admin from "../pages/Admin";
 import AccountTransaction from "../pages/AccountTransaction";
 import AccountTransferSuccess from "../pages/AccountTransferSuccess";
+import ReceiptConfirm from "../pages/ReceiptConfirm";
 
 const Router = () => {
   return (
@@ -41,6 +42,7 @@ const Router = () => {
       <Route path="/stock/:storeId" element={<StockControl />} />
       <Route path="/stock/detail/:productId" element={<StockControlDetail />} />
       <Route path="/store/manage" element={<StoreControl />} />
+      <Route path="/store/reception/:storeId" element={<ReceiptConfirm />} />
       <Route path="/search" element={<StoreSearch />} />
       <Route path="/store/create" element={<StoreCreate />} />
       <Route path="/store/create/success" element={<StoreCreateSuccess />} />
