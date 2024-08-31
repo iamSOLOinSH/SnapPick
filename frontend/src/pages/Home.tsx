@@ -75,7 +75,7 @@ const Home = () => {
         {/* 인기 스토어 */}
         <div className="z-10">
           <h3 className="p-2 text-lg font-semibold">인기 스토어</h3>
-          <div className="flex overflow-x-auto whitespace-nowrap pb-4 pl-2 scrollbar-hide">
+          <div className="flex h-40 overflow-x-auto whitespace-nowrap pb-4 pl-2 scrollbar-hide">
             {popularStores.map((store) => (
               <div
                 key={store.id}
