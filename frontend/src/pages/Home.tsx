@@ -7,12 +7,15 @@ import { Blob_2 } from "../components/common/Background/Blob_2";
 import { Blob_1 } from "../components/common/Background/Blob_1";
 import { Store } from "../types/store";
 import { getStores } from "../utils/api/store";
+import { useBoundStore } from "../store/store";
 
 const Home = () => {
   const navigate = useNavigate();
-  const PROFILE_IMG =
-    "https://i.namu.wiki/i/wXGU6DZbHowc6IB0GYPJpcmdDkLO3TW3MHzjg63jcTJvIzaBKhYqR0l9toBMHTv2OSU4eFKfPOlfrSQpymDJlA.webp";
-  const [userName, setUserName] = useState("팝콘");
+  const { user, getUserInfo } = useBoundStore((state) => ({
+    user: state.user,
+    getUserInfo: state.getUserInfo,
+  }));
+
   const [popularStores, setPopularStores] = useState<Store[]>([]);
   const [closingStores, setClosingStores] = useState<Store[]>([]);
 
@@ -39,6 +42,10 @@ const Home = () => {
     handleGetStores();
   }, []);
 
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
+
   return (
     <Layout>
       <div className="flex min-h-screen flex-col">
@@ -52,17 +59,17 @@ const Home = () => {
           </div>
         </div>
         {/* 프로필 */}
-        <div className="my-12 p-4">
+        <div className="my-20 p-4">
           <div className="flex-shrink-0">
             <img
-              src={PROFILE_IMG}
+              src={user.imageUrl || "lay.png"}
               className="mb-2 h-12 w-12 rounded-full border object-cover"
               alt="Profile image"
             />
           </div>
           <div className="text-3xl font-bold">
             안녕하세요, <br />
-            <span className="text-primary">{userName}</span> 님
+            <span className="text-primary">{user.name}</span> 님
           </div>
         </div>
         {/* 인기 스토어 */}

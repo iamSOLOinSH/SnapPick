@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { grantMain } from "../utils/api/account";
 import { Layout } from "../components/common/Layout";
 import { useNavigate, useLocation } from "react-router";
 import { BackButton } from "../components/common/BackButton";
 
-interface Transaction {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: "deposit" | "withdrawal";
-}
+// interface Transaction {
+//   id: string;
+//   description: string;
+//   amount: number;
+//   date: string;
+//   type: "deposit" | "withdrawal";
+// }
 
 const AccountDetail = () => {
   const navigate = useNavigate();
@@ -23,43 +23,43 @@ const AccountDetail = () => {
     navigate("/home");
   };
 
-  const transactionData: Transaction[] = [
-    {
-      id: "1",
-      description: "SSAFY",
-      amount: 1000000,
-      date: "2024-09-14 04:44",
-      type: "deposit",
-    },
-    {
-      id: "2",
-      description: "왕갈비",
-      amount: 25000,
-      date: "2024-09-11 04:44",
-      type: "withdrawal",
-    },
-    {
-      id: "3",
-      description: "스타벅스",
-      amount: 6000,
-      date: "2024-09-17 00:44",
-      type: "withdrawal",
-    },
-    {
-      id: "4",
-      description: "쿠팡",
-      amount: 20000,
-      date: "2024-09-17 01:44",
-      type: "withdrawal",
-    },
-    {
-      id: "5",
-      description: "커피빈",
-      amount: 4500,
-      date: "2024-09-17 04:44",
-      type: "withdrawal",
-    },
-  ];
+  // const transactionData: Transaction[] = [
+  //   {
+  //     id: "1",
+  //     description: "SSAFY",
+  //     amount: 1000000,
+  //     date: "2024-09-14 04:44",
+  //     type: "deposit",
+  //   },
+  //   {
+  //     id: "2",
+  //     description: "왕갈비",
+  //     amount: 25000,
+  //     date: "2024-09-11 04:44",
+  //     type: "withdrawal",
+  //   },
+  //   {
+  //     id: "3",
+  //     description: "스타벅스",
+  //     amount: 6000,
+  //     date: "2024-09-17 00:44",
+  //     type: "withdrawal",
+  //   },
+  //   {
+  //     id: "4",
+  //     description: "쿠팡",
+  //     amount: 20000,
+  //     date: "2024-09-17 01:44",
+  //     type: "withdrawal",
+  //   },
+  //   {
+  //     id: "5",
+  //     description: "커피빈",
+  //     amount: 4500,
+  //     date: "2024-09-17 04:44",
+  //     type: "withdrawal",
+  //   },
+  // ];
 
   return (
     <Layout>
@@ -86,7 +86,7 @@ const AccountDetail = () => {
         </div>
         <div className="mx-16 my-4 py-2 text-center">
           <button className="hover:underline" onClick={handleMain}>
-            주 계좌로 지정하시겠습니까?
+            주 계좌로 지정
           </button>
         </div>
         {/* 거래 내역 */}
