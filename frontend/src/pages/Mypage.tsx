@@ -7,8 +7,10 @@ import { Button } from "../components/common/Button";
 import { Blob_1 } from "../components/common/Background/Blob_1";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 import { FaChevronRight } from "react-icons/fa";
+import { useSnackbar } from "notistack";
 
 const Mypage = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const cookies = new Cookies();
   const { user, getUserInfo, mainAccount, checkAccounts } = useBoundStore(
@@ -30,6 +32,9 @@ const Mypage = () => {
 
   const handleLogout = () => {
     cookies.remove("token");
+    enqueueSnackbar("로그아웃 되었습니다.", {
+      variant: "default",
+    });
     navigate("/");
   };
 

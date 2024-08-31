@@ -23,4 +23,5 @@ node_modules
 
 # 추가
 .env
+tokens.json
 package-lock.json

@@ -2,8 +2,41 @@ import { Layout } from "../components/common/Layout";
 import { Blob_1 } from "../components/common/Background/Blob_1";
 import { Blob_2 } from "../components/common/Background/Blob_2";
 import { Blob_3 } from "../components/common/Background/Blob_3";
+import { Button } from "../components/common/Button";
+
+import tokens from "../../tokens.json";
+import { Cookies } from "react-cookie";
+import { useNavigate } from "react-router";
+
+import { useSnackbar } from "notistack";
+
+type Tokens = {
+  [key: string]: string;
+};
 
 const Main = () => {
+  const cookies = new Cookies();
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleExperience = () => {
+    const randomEmail = `${Math.floor(Math.random() * 1000) + 2001}@ssafy.com`;
+    const token = (tokens as Tokens)[randomEmail];
+
+    if (token) {
+      cookies.set("token", token);
+
+      enqueueSnackbar(`체험하기를 통해 ${randomEmail}로 로그인되었습니다.`, {
+        variant: "info",
+      });
+
+      navigate("/home");
+    } else {
+      enqueueSnackbar("해당 이메일에 대한 토큰이 없습니다.", {
+        variant: "error",
+      });
+    }
+  };
   return (
     <Layout>
       {/* 배경 박스들 */}
@@ -26,7 +59,9 @@ const Main = () => {
         <img src="shc_symbol_ci.png" className="h-44 w-44" />
         <h1 className="font-title text-4xl font-bold">SnapPick</h1>
       </div>
-
+      <div className="mr-2 text-end text-lg font-semibold">
+        <Button variant="text" content="체험하기" onClick={handleExperience} />
+      </div>
       <a
         className="relative z-20 flex w-full items-center justify-center rounded-md bg-kakao py-1 hover:ring-1"
         href={import.meta.env.VITE_KAKAO_LOGIN_ADDRESS}

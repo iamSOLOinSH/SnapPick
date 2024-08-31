@@ -1,10 +1,17 @@
 import Router from "./routers/Routers";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   return (
-    <div>
+    <SnackbarProvider
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+      autoHideDuration={1000}
+    >
       <Router />
-    </div>
+    </SnackbarProvider>
   );
 }
 
