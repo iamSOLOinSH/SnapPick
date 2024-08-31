@@ -6,9 +6,11 @@ import { Button } from "../components/common/Button";
 import { BackButton } from "../components/common/BackButton";
 import { useBoundStore } from "../store/store";
 import { sendAccountTransfer } from "../utils/api/account";
+import { useSnackbar } from "notistack";
 
 const AccountTransfer: React.FC = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { accountId } = useParams<{ accountId: string }>();
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [transferAmount, setTransferAmount] = useState("");
@@ -30,7 +32,9 @@ const AccountTransfer: React.FC = () => {
 
   const handleTransfer = async () => {
     if (!selectedAccount || !transferAmount) {
-      alert("계좌와 이체 금액을 선택해주세요.");
+      enqueueSnackbar("계좌와 이체 금액을 선택해주세요.", {
+        variant: "default",
+      });
       return;
     }
 
@@ -43,11 +47,15 @@ const AccountTransfer: React.FC = () => {
       if (response.status === 200) {
         navigate("/account/transfer/success");
       } else {
-        alert("이체에 실패했습니다. 다시 시도해주세요.");
+        enqueueSnackbar("이체에 실패했습니다. 다시 시도해주세요.", {
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error(error);
-      alert("이체 중 오류가 발생했습니다.");
+      enqueueSnackbar("이체 중 오류가 발생했습니다.", {
+        variant: "error",
+      });
     } finally {
       setIsTransferring(false);
     }

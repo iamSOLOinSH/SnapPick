@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { MdCameraAlt } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import { useSnackbar } from "notistack";
 
 interface Photo {
   file: File;
@@ -20,6 +21,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   maxFileSize = 5, // 5MB
   onPhotosChange,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,11 +51,15 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
     );
 
     if (oversizedFiles.length > 0) {
-      alert(`크기가 ${maxFileSize}MB를 초과할 수 없습니다!`);
+      enqueueSnackbar(`크기가 ${maxFileSize}MB를 초과할 수 없습니다!`, {
+        variant: "error",
+      });
     }
 
     if (targetFiles.length > remainingSlots) {
-      alert(`최대 ${maxPhotos}개의 사진만 업로드할 수 있습니다.`);
+      enqueueSnackbar(`최대 ${maxPhotos}개의 사진만 업로드할 수 있습니다.`, {
+        variant: "error",
+      });
     }
 
     const newPhotos = filesToProcess

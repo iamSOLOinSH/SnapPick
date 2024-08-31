@@ -2,7 +2,6 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
 
 const Main = lazy(() => import("../pages/Main"));
-const HealthCheck = lazy(() => import("../pages/HealthCheck"));
 const Signup = lazy(() => import("../pages/Signup"));
 const SignupSuccess = lazy(() => import("../pages/SignupSuccess"));
 const PasswordSetup = lazy(() => import("../pages/PasswordSetup"));
@@ -34,7 +33,6 @@ const AccountVerificationSuccess = lazy(
 );
 const AccountTransfer = lazy(() => import("../pages/AccountTransfer"));
 const AccountList = lazy(() => import("../pages/AccountList"));
-const Admin = lazy(() => import("../pages/Admin"));
 const AccountTransferSuccess = lazy(
   () => import("../pages/AccountTransferSuccess"),
 );
@@ -48,7 +46,6 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="/profile" element={<Mypage />} />
         <Route path="/stock/:storeId" element={<StockControl />} />
         <Route
@@ -87,7 +84,6 @@ const Router = () => {
         <Route path="/account/list" element={<AccountList />} />
         <Route path="/account/detail/:accountId" element={<AccountDetail />} />
         <Route path="/store/reception/:storeId" element={<ReceiptConfirm />} />
-        <Route path="/health-check" element={<HealthCheck />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
