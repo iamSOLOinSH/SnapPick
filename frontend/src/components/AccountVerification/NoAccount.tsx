@@ -7,7 +7,7 @@ const NoAccount: FC = () => {
   const navigate = useNavigate();
 
   const goToVerification = () => {
-    navigate("/account/add");
+    navigate("/account/add", { state: { fromQr: false } });
   };
 
   return (

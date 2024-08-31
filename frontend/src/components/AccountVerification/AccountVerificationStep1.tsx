@@ -31,6 +31,7 @@ const AccountVerificationStep1: React.FC<AccountVerificationStep1Props> = ({
           value={account}
           maxLength={16}
           onChange={handleNumberInput}
+          autoComplete="off"
         />
       </div>
       {error && <div className="mt-2 text-sm text-red">{error}</div>}
