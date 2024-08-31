@@ -129,8 +129,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
                            .from(storeVisit)
                            .join(storeVisit.store, store)
                            .where(storeVisit.customer.id.eq(memberId)
-                                                        .and(storeVisit.cart.status.eq(
-                                                            CartStatus.수령완료)))
+                                                        .and(storeVisit.cart.status.in(
+                                                            CartStatus.수령완료, CartStatus.결제완료)))
                            .fetch();
     }
 }
