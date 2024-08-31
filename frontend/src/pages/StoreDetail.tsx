@@ -3,13 +3,10 @@ import { Layout } from "../components/common/Layout";
 import { ImageSlider } from "../components/common/ImageSlider";
 import { IoLocationOutline, IoTimeOutline } from "react-icons/io5";
 import { Tag } from "../components/common/Tag";
-import { Card } from "../components/common/Card";
 import { useParams } from "react-router";
 import { ImageObject, Store } from "../types/store";
 import { getStoreInfo } from "../utils/api/store";
 import { dayTranslations } from "../utils/Date";
-import { times } from "lodash";
-import { format } from "date-fns";
 
 const StoreDetail = () => {
   const { storeId } = useParams<{ storeId?: string }>();
