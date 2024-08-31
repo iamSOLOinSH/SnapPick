@@ -28,7 +28,7 @@ Axios.interceptors.request.use(
     // }
 
     const token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpbnl1Yjk4QGdtYWlsLmNvbSIsImlhdCI6MTcyNDgxMDE1MiwiZXhwIjoxNzI1NDE0OTUyLCJzdWIiOiIyMzk3In0.N78lEBCo_mAnWFEfOKWzBPW3z3UU-84yPRDzvo7NhZFJ1r56szDHkZ_6pC56PuKW";
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpbnl1Yjk4QGdtYWlsLmNvbSIsImlhdCI6MTcyNDgxMDE1MiwiZXhwIjoxNzI1NDE0OTUyLCJzdWIiOiIyNTIyIn0.BFvGYYQmxgAVSiJhizrIgfNImZbWL22QwrxDWHzfF2AwriBhL9uLvrFJQU8jAwr3";
     config.headers["Authorization"] = "Bearer " + token;
     // config.withCredentials = true;
     return config;

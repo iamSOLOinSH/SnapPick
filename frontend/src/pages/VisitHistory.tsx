@@ -5,37 +5,37 @@ import { BackButton } from "../components/common/BackButton";
 import { SearchBar } from "../components/common/SearchBar";
 import { TicketCard } from "../components/common/TicketCard";
 import { isToday, formatDate } from "../utils/Date";
-
-interface VisitHistoryItem {
-  name: string;
-  location: string;
-  price: number;
-  visitedAt: string;
-}
+import { StoreData } from "../types/store";
 
 const VisitHistory = () => {
-  const { visitHistory } = useBoundStore((state) => ({
-    visitHistory: state.visitHistory,
+  const { storeDataVisitHistory, getVisitHistory } = useBoundStore((state) => ({
+    storeDataVisitHistory: state.storeDataVisitHistory,
+    getVisitHistory: state.getVisitHistory,
   }));
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredHistory, setFilteredHistory] =
-    useState<VisitHistoryItem[]>(visitHistory);
+  const [filteredHistory, setFilteredHistory] = useState<StoreData[]>(
+    storeDataVisitHistory,
+  );
 
   useEffect(() => {
     if (searchQuery === "") {
-      setFilteredHistory(visitHistory);
+      setFilteredHistory(storeDataVisitHistory);
     }
-  }, [searchQuery, visitHistory]);
+  }, [searchQuery, storeDataVisitHistory]);
 
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
-    const filtered = visitHistory.filter(
+    const filtered = storeDataVisitHistory.filter(
       (item) =>
-        item.name.toLowerCase().includes(query) ||
-        item.location.toLowerCase().includes(query),
+        item?.storeDetailDto?.name.toLowerCase().includes(query) ||
+        item?.storeDetailDto?.location.toLowerCase().includes(query),
     );
     setFilteredHistory(filtered);
   };
+
+  useEffect(() => {
+    getVisitHistory();
+  }, []);
 
   return (
     <Layout>
@@ -61,12 +61,12 @@ const VisitHistory = () => {
               style={{ animationDelay: `${index * 0.12}s` }}
             >
               <TicketCard
-                title={item.name}
-                date={formatDate(item.visitedAt, true)}
-                location={item.location}
-                price={item.price}
+                title={item?.storeDetailDto?.name}
+                date={formatDate(item?.storeVisitDto?.visitedAt, true)}
+                location={item?.storeDetailDto?.location}
+                price={item?.cartPurchasedDto?.purchasedAmount}
                 buttonText="상세 보기"
-                isActive={isToday(item.visitedAt)}
+                isActive={isToday(item?.storeVisitDto?.visitedAt)}
               />
             </li>
           ))}

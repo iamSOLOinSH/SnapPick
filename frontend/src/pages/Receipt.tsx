@@ -37,7 +37,7 @@ const Receipt = () => {
         <div className="absolute left-[32px] top-[-63px] z-0 animate-octagonAppear">
           <Ribbons />
         </div>
-        <div className="mt-8 flex justify-center scrollbar-hide">
+        <div className="mt-16 flex justify-center scrollbar-hide">
           <h1 className="z-10 inline-block rounded-full bg-primary p-2 text-center text-2xl text-white">
             모바일 영수증
           </h1>
@@ -49,7 +49,7 @@ const Receipt = () => {
         ) : (
           <PaymentSuccess store={store} payment={payment} />
         )}
-        <div className="absolute bottom-4 left-0 right-0 z-20 mx-4">
+        <div className="absolute bottom-4 left-0 right-0 z-30 mx-4">
           {showDetail ? (
             <Button content="확인" onClick={() => navigate("/profile")} />
           ) : (
@@ -66,7 +66,7 @@ const Receipt = () => {
         </div>
         {/* 아래 물결 */}
         <svg
-          className="absolute bottom-0 left-2 h-40 w-full"
+          className="absolute bottom-0 left-2 z-20 h-40 w-full"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"

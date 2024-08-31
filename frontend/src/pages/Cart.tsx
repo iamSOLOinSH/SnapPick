@@ -94,6 +94,7 @@ const Cart = () => {
     if (mainAccount.theBalance - totalAmount() >= 0 && cartId) {
       payment(+cartId)
         .then(() => {
+          localStorage.clear();
           navigate("/receipt", { state: { id: location.state.id } });
         })
         .catch(() => {
@@ -105,7 +106,7 @@ const Cart = () => {
   };
 
   return (
-    <Layout className="relative px-0 pb-0">
+    <Layout className="relative bg-transparent px-0 pb-20">
       <div className="relative">
         <div className="absolute right-[-150px] top-[20px] z-0 h-96 w-96 origin-top-right rotate-[15deg] transform bg-secondary" />
         <div className="absolute right-[-240px] top-[160px] z-0 h-[600px] w-[400px] origin-top-right rotate-45 transform bg-primary" />
@@ -162,7 +163,7 @@ const Cart = () => {
       <div className="relative flex items-center justify-center bg-primary py-4 pb-4 text-4xl font-semibold text-white">
         총 {totalAmount().toLocaleString()}원
       </div>
-      <div className="relative bottom-2 left-0 w-full animate-fadeInSlideUp rounded-tl-xl rounded-tr-xl bg-white">
+      <div className="relative bottom-0 left-0 w-full animate-fadeInSlideUp bg-transparent">
         <div className="mb-4 ml-8 pt-4">
           <p className="text-xl font-semibold">
             내 계좌 <span className="text-primary">{mainAccount.bankName}</span>

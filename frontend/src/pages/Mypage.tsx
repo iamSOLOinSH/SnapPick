@@ -21,15 +21,11 @@ const Mypage = () => {
   );
 
   const handleHistory = () => {
-    if (user.role === "0") {
+    if (user.role === "구매자") {
       navigate("/history");
     } else {
       navigate("/store/manage");
     }
-  };
-
-  const handleAccountDetail = () => {
-    navigate(`/account/detail/1`);
   };
 
   const handleLogout = () => {
@@ -50,15 +46,15 @@ const Mypage = () => {
       <div className="flex min-h-screen flex-col">
         {/* 배경 박스들 */}
         <div className="relative">
-          <div className="absolute left-[-270px] top-[250px] z-10">
+          <div className="absolute left-[-270px] top-[390px] z-10 animate-moveBlob1">
             <Blob_1 />
           </div>
-          <div className="absolute right-[-250px] top-[110px]">
+          <div className="absolute right-[-250px] top-[110px] animate-moveBlob2">
             <Blob_2 />
           </div>
         </div>
         {/* 프로필 */}
-        <div className="mt-2 flex flex-row items-center justify-between p-4">
+        <div className="mt-20 flex flex-row items-center justify-between p-4">
           <div className="flex flex-shrink-0 items-center">
             <img
               src={user.imageUrl || "lay.png"}
@@ -71,39 +67,49 @@ const Mypage = () => {
           </div>
           <Button variant="text" content="로그아웃" onClick={handleLogout} />
         </div>
-        <div className="mr-2 text-end">
-          <Button
-            variant="text"
-            content="간편 비밀번호 재설정"
-            onClick={() => navigate("/password/change")}
-          />
-        </div>
         {/* 계좌  */}
+        <div className="mb-2 ml-2 mt-16 flex justify-between text-2xl font-semibold">
+          <div>주계좌</div>
+          <div className="mr-2 text-end">
+            <Button
+              variant="text"
+              content="간편 비밀번호 재설정"
+              onClick={() => navigate("/password/change")}
+            />
+          </div>
+        </div>
         {mainAccount ? (
-          <div
-            className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-white shadow-lg"
-            onClick={handleAccountDetail}
-          >
-            <div className="font-semibold">{mainAccount.bankName}</div>
-            <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
-            <div className="mt-2 text-right text-2xl font-bold">
+          <div className="z-20 mb-8 cursor-pointer rounded-lg bg-primary p-4 text-white shadow-lg">
+            <div className="mb-2 flex items-start justify-between">
+              <div>
+                <div className="font-semibold">{mainAccount.bankName}</div>
+                <div className="mb-8 text-sm">{mainAccount.accountNumber}</div>
+              </div>
+              <button
+                className="rounded-md bg-white px-4 py-1 text-primary"
+                onClick={() => navigate("/account/transfer")}
+              >
+                보내기
+              </button>
+            </div>
+            <div className="mt-2 text-right text-xl font-bold">
               {mainAccount.theBalance.toLocaleString() + "원"}
             </div>
           </div>
         ) : (
-          <div className="z-20 mb-4 cursor-pointer rounded-lg bg-primary p-4 py-4 text-center text-white shadow-lg">
+          <div className="z-20 mb-8 cursor-pointer rounded-lg bg-primary p-4 py-4 text-center text-white shadow-lg">
             주계좌가 없습니다.
           </div>
         )}
 
         {/* 내 계좌 조회  */}
         <div
-          className="z-20 mb-4 flex cursor-pointer flex-row items-center justify-between rounded-lg bg-white p-4 shadow-lg"
+          className="z-20 mb-8 flex cursor-pointer flex-row items-center justify-between rounded-lg bg-white p-4 shadow-lg"
           onClick={() => navigate("/account/list")}
         >
           <div className="text-xl font-bold">내 계좌</div>
           <div className="flex flex-row items-center justify-center">
-            <div className="text-sm text-gray-700">조회하기</div>
+            <div className="text-sm text-gray-700">조회하기 &nbsp;</div>
             <FaChevronRight className="text-primary" />
           </div>
         </div>
@@ -113,12 +119,17 @@ const Mypage = () => {
           onClick={handleHistory}
         >
           <div>
-            <div className="text-xl font-bold">나의 스토어 관리</div>
-            <div className="text-sm text-gray-500">자세히 보기 &gt;</div>
+            <div className="text-xl font-bold">
+              나의{" "}
+              <span>
+                {user.role === "구매자" ? "방문 이력" : "스토어 관리"}
+              </span>
+            </div>
+            <div className="text-sm text-gray-500">자세히 보기 &nbsp; &gt;</div>
           </div>
-          <div className="text-3xl">
+          <div className="mr-2 text-3xl">
             <span role="img" aria-label="pencil">
-              ✏️
+              {user.role === "구매자" ? "🏃" : "✏️"}
             </span>
           </div>
         </div>
