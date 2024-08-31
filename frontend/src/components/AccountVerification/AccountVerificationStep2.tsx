@@ -68,18 +68,6 @@ const AccountVerificationStep2: React.FC<AccountVerificationStep2Props> = ({
 
   const handleVerification = async () => {
     onNext(confirmNumber.join(""));
-    // try {
-    //   const data = await validateIdentity();
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-    // if (confirmNumber === "1234") {
-    //   setVerificationError(null);
-    //   // 인증 성공
-    // } else {
-    //   setVerificationError("인증에 실패했습니다. 다시 시도해주세요.");
-    // }
   };
 
   const formatTime = (time: number) => {
