@@ -37,7 +37,7 @@ public class StoreVisit {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
