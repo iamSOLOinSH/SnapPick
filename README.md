@@ -259,9 +259,9 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 
 ## 시연 영상
 
-[시연 영상 링크](#) (영상이 준비되면 여기에 링크를 걸어주세요.)
-
 ### 기능별 시연 영상
+**구매자**
+
 **로그인**
 
 <div align="center">
@@ -287,6 +287,21 @@ MZ 세대는 이색적인 경험을 중시하며, 이를 SNS에 공유하고자 
 <div align="center">
     <img src="./images/결제및내역조회.gif" alt="결제및내역조회" height=300px/>
 </div>
+
+---
+
+**판매자**
+
+**판매자 회원가입**
+<div align="center">
+    <img src="./images/판매자회원가입.gif" alt="판매자회원가입" height=300px/>
+</div>
+
+**재고관리**
+<div align="center">
+    <img src="./images/판매자재고관리.gif" alt="판매자재고관리" height=300px/>
+</div>
+
 
 
 ---
