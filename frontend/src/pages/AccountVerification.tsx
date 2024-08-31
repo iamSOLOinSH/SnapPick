@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { IoChevronBack } from "react-icons/io5";
 import AccountVerificationStep1 from "../components/AccountVerification/AccountVerificationStep1";
@@ -12,6 +12,7 @@ const AccountVerification = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [accountNo, setAccountNo] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handlePrevStep = () => {
     navigate("/profile");
@@ -32,7 +33,9 @@ const AccountVerification = () => {
     try {
       await validateIdentity(accountNo, confirmNumber);
 
-      navigate("/account/add/success");
+      navigate("/account/add/success", {
+        state: { fromQr: true, cartId: location.state.cartId },
+      });
     } catch (error) {
       console.log(error);
     }

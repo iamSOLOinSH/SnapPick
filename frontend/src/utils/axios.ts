@@ -26,8 +26,6 @@ Axios.interceptors.request.use(
       config.headers["Authorization"] = "Bearer " + token;
       config.withCredentials = true;
     }
-
-    config.headers["Authorization"] = "Bearer " + token;
     // config.withCredentials = true;
     return config;
   },

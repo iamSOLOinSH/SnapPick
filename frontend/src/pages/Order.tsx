@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useNavigate } from "react-router";
 import { useBoundStore } from "../store/store";
@@ -18,9 +18,10 @@ const Order: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const { store, enterStore } = useBoundStore((state) => ({
+  const { store, enterStore, clearStore } = useBoundStore((state) => ({
     store: state.store,
     enterStore: state.enterStore,
+    clearStore: state.clearStore,
     videoRef: videoRef.current,
   }));
   const { ref } = useZxing({
@@ -38,6 +39,12 @@ const Order: React.FC = () => {
       navigate("/products", { state: { id: store.id } });
     });
   };
+
+  useEffect(() => {
+    return () => {
+      clearStore();
+    };
+  }, [clearStore]);
 
   return (
     <Layout className="relative h-[730px] bg-primary">
