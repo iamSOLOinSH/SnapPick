@@ -25,6 +25,7 @@ interface StoreState {
   getAllStores: () => Promise<void>;
   searchStoreInfo: (storeId: string) => Promise<void>;
   enterStore: (token: string) => Promise<void>;
+  clearStore: () => void;
 }
 
 export const createStoreSlice: StateCreator<StoreState> = (set) => ({
@@ -32,7 +33,6 @@ export const createStoreSlice: StateCreator<StoreState> = (set) => ({
     id: 0,
     name: "",
     location: "",
-    cartId: 0,
     images: [],
     runningTimes: [],
   }, // 조회한 스토어 정보를 담을 변수
@@ -50,5 +50,16 @@ export const createStoreSlice: StateCreator<StoreState> = (set) => ({
     const result = await validateQr(token);
     console.log(result.data);
     set({ store: result.data });
+  },
+  clearStore: () => {
+    set({
+      store: {
+        id: 0,
+        name: "",
+        location: "",
+        images: [],
+        runningTimes: [],
+      },
+    });
   },
 });

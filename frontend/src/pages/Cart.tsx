@@ -93,11 +93,14 @@ const Cart = () => {
     navigate("/products", { state: { id: location.state.id } });
   };
 
+  const handleMakeAccount = () => {
+    navigate("/account/add", { state: { fromQr: true, cartId: cartId } });
+  };
+
   const handlePayment = () => {
     if (mainAccount.theBalance - totalAmount() >= 0 && cartId) {
       payment(+cartId)
         .then(() => {
-          localStorage.clear();
           navigate("/receipt", { state: { id: location.state.id } });
         })
         .catch(() => {
@@ -176,18 +179,38 @@ const Cart = () => {
             내 계좌 <span className="text-primary">{mainAccount.bankName}</span>
           </p>
         </div>
-        <Card
-          variant="simple"
-          title={"잔액 " + mainAccount.theBalance?.toLocaleString()}
-          subtitle={
-            "결제 후 " +
-            (mainAccount.theBalance - totalAmount()).toLocaleString()
-          }
-          icon={<FaRegCreditCard className="h-12 w-12" />}
-        />
-        <div className="mx-2">
-          <Button content="결제하기" className="mb-4" onClick={handlePayment} />
-        </div>
+        {mainAccount ? (
+          <div>
+            {" "}
+            <Card
+              variant="simple"
+              title={"잔액 " + mainAccount.theBalance?.toLocaleString()}
+              subtitle={
+                "결제 후 " +
+                (mainAccount.theBalance - totalAmount()).toLocaleString()
+              }
+              icon={<FaRegCreditCard className="h-12 w-12" />}
+            />
+            <div className="mx-2">
+              <Button
+                content="결제하기"
+                className="mb-4"
+                onClick={handlePayment}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div>
+              <p className="mb-2">주계좌가 존재하지 않습니다.</p>
+              <Button
+                variant="secondary"
+                content="계좌 등록하러가기"
+                onClick={handleMakeAccount}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

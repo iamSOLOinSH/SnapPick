@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Layout } from "../components/common/Layout";
 import { IoChevronBack } from "react-icons/io5";
 import AccountVerificationStep1 from "../components/AccountVerification/AccountVerificationStep1";
@@ -13,6 +13,7 @@ const AccountVerification = () => {
   const [accountNo, setAccountNo] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handlePrevStep = () => {
     navigate("/profile");
@@ -34,7 +35,10 @@ const AccountVerification = () => {
   const checkVerification = async (confirmNumber: string) => {
     try {
       await validateIdentity(accountNo, confirmNumber);
-      navigate("/account/add/success");
+
+      navigate("/account/add/success", {
+        state: { fromQr: true, cartId: location.state.cartId },
+      });
     } catch (error) {
       console.log(error);
       setError("인증 번호가 올바르지 않습니다. 다시 확인해 주세요.");
