@@ -84,7 +84,7 @@ const Products = () => {
               </div>
             ))}
         </div>
-        <div className="mb-8 w-full px-4">
+        <div className="mb-8 mt-28 w-full px-4">
           <Button content="장바구니로 가기" onClick={handleCart} />
         </div>
       </div>

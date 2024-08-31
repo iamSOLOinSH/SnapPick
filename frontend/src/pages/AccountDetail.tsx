@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { grantMain } from "../utils/api/account";
 import { Layout } from "../components/common/Layout";
 import { useNavigate, useLocation, useParams } from "react-router";
@@ -14,6 +14,7 @@ const AccountDetail = () => {
     grantMain(account.accountNumber);
     navigate("/home");
   };
+
 
   return (
     <Layout>
@@ -32,7 +33,7 @@ const AccountDetail = () => {
         </div>
         <div className="mx-16 my-4 py-2 text-center">
           <button className="hover:underline" onClick={handleMain}>
-            주 계좌로 지정하시겠습니까?
+            주 계좌로 지정
           </button>
         </div>
       </div>
